@@ -1,0 +1,2530 @@
+{% extends "polls/common.html" %}
+{% load static %}
+{% load activity_tags %}
+{% load get_name %}
+{% block extra_css %}
+	<link rel="stylesheet" type="text/css" href="{% static 'polls/css/jquery-ui.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'login/css/public_profile.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'polls/css/questionDetail.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'polls/css/createPoll.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'login/css/company_admin.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'polls/css/askbypoll-widget-style.css' %}" />
+{% endblock %}
+{% block extra_js %}
+	<!--Remove this and also chart.js<script src="{% static 'login/js/Chart.js' %}" ></script> -->
+	<!--<script type='text/javascript' src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['bar','PieChart']}]}"></script>-->
+	<script type="text/javascript" src="{% static 'js/d3.js' %}"></script>
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="{% static 'login/js/company_admin.js' %}"></script>
+	<script type="text/javascript" src="{% static 'login/js/countryStateCityLoader.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery.csv-0.71.min.js' %}"></script>
+	<script src="{% static 'js/jquery-ui.js' %}"></script>
+	<script src="{% static 'js/jquery.autocomplete.multiselect.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/html2canvas.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jspdf-debug.js' %}"></script>
+
+{% endblock %}
+{% block content %}
+	<div id="mobile-dashboard">
+		<p>Dashboard is currently available only on Desktops and would be coming soon to mobiles as well. If you require special assistance please contact support.</p>
+	</div>
+	<section id="content" class="clearfix">
+		<div id="dashboard-menu" class="clearfix">
+			<ul class="dashboard-menu-items clearfix">
+				<li class="dashboard-menu-li selectedLi">Dashboard</li>
+				<li class="dashboard-menu-li">Polls</li>
+				<li class="dashboard-menu-li">Followers</li>
+				<li id="dashboard-groups-tab" class="dashboard-menu-li">Groups</li>
+				<li class="dashboard-menu-li">Messages</li>
+				<li class="dashboard-menu-li">Feed</li>
+				<li class="dashboard-menu-li">Advanced</li>
+				<li id="dashboard-surveys-tab" class="dashboard-menu-li">Surveys</li>
+				<li id="dashboard-export-tab" class="dashboard-menu-li">Export</li>
+				<!-- li class="dashboard-menu-li">Feedback</li -->
+			</ul>
+		</div>
+		<div id="dashboard-content" class="admin-dash-div clearfix">
+			<div class="dashboard-header">
+				<p>Dashboard</p>
+			</div>
+			<div class="dashboard-stats">
+				<ul class="dashboard-stats-ul">
+					<li class="first-li">{{ polls_count }} Poll{{ polls_count|pluralize }} <span class="see-more-details">Details</span></li>
+					<li class="second-li">{{ followers_count }} Follower{{ followers_count|pluralize }} <span class="see-more-details">Details</span></li>
+					<li class="third-li">{{ credits }} pCoin{{ credits|pluralize }} <span class="see-more-details">Details</span></li>
+				</ul>
+				<div class="graphs-cube">
+					<div class="graph-admin">
+						<div id="chart_div">
+							<script>
+								 google.setOnLoadCallback(drawChart);
+						      	function drawChart() {
+								console.log("chart draw called");
+						      		var dashboardData = [['Month', 'Polls', 'Views', 'Votes']];
+									{% for dash_dict in dash_graph %}
+										var dash_list = ["{{ dash_dict.month_name }}",{{ dash_dict.polls }},{{ dash_dict.views }},{{ dash_dict.votes }}];
+										dashboardData.push(dash_list)
+									{% endfor %}
+									// console.log(dashboardData);
+									var data = google.visualization.arrayToDataTable(dashboardData);
+									// console.log(dashboardData);
+
+							        var options = {
+							          chart: {
+							            title: 'Polls, Views, and Votes: Last 3 months',
+							          },
+							          bars: 'horizontal', // Required for Material Bar Charts.
+							          hAxis: {format: 'decimal'},
+							          height: 400,
+							          colors: ['#1b9e77', '#d95f02', '#7570b3']
+							        };
+
+							        var chart = new google.charts.Bar(document.getElementById('chart_div'));
+									console.log(dashboardData);
+
+							        chart.draw(data, google.charts.Bar.convertOptions(options));
+									console.log(dashboardData);
+						      }
+							</script>
+						</div>
+					</div>
+					<div class="cube-admin">
+						<div id="cube">
+							<div class="face" id="f2"><span class="cube-num">{{ total_views }}</span><span class="cube-text">Views</span></div>
+							<div class="face" id="f3"><span class="cube-num">23</span><span class="cube-text">Active Users</span></div>
+							<div class="face" id="f4"><span class="cube-num">{{ votes_count }}</span><span class="cube-text">Votes</span></div>
+							<div class="face" id="f5"><span class="cube-num">{{ following_count }}</span><span class="cube-text">Following</span></div>
+						</div>
+					</div>
+				</div>
+				<ul class="dashboard-recent">
+					<li>Recent Activity </li>
+					{% for activity in flat_feed_activities|slice:":5" %}
+					<li>
+						<div class="liDetail">
+							{% if activity.verb == "question" %}
+								<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+								<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>asked
+								{% if user.id != context_user.id and not activity.visible_public %}
+								a private/anonymous poll
+								{% else %}
+								<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a>
+								{% endif %}
+								<span id="activity{{ activity.id }}"> </span></span>
+							{% elif activity.verb == "voted" %}
+								<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+								<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>voted on {% if user.id != context_user.id and not activity.visible_public %}
+								a private poll
+								{% else %}
+								<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a>
+								{% endif %} <span id="activity{{ activity.id }}"> </span></span>
+							{% elif activity.verb == "votedBet" %}
+								<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+								<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>voted on {% if user.id != context_user.id and not activity.visible_public %}
+								a private poll
+								{% else %}
+								<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a>
+								{% endif %} putting {{ activity.points }} credits <span id="activity{{ activity.id }}"> </span></span>
+							{% elif activity.verb == "follow" or activity.verb == "followed" %}
+								<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+								<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>followed <a href="{{ activity.target_user_url }}"><span class="activity_url">{{ user.username|getName:activity.target_user_name }}</span></a> <span id="activity{{ activity.id }}"> </span></span>
+							{% else %}
+								<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+								<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>{{ activity.verb}} <a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> <span id="activity{{ activity.id }}"> </span></span>
+							{% endif %}
+							{% if activity.verb != "credits"  %}
+								</p>
+								<p class="desc">{{ activity.question_desc }}</p>
+								</div>
+							{% endif %}
+						</div>
+						<script>
+							var currentDate = new Date();
+							var offset = currentDate.getTimezoneOffset();
+							var serverActivityDate = new Date({{ activity.time.year }}, {{ activity.time.month }} - 1, {{ activity.time.day }}, {{ activity.time.hour }}, {{ activity.time.minute }}, {{ activity.time.second }});
+							var localActvityDate = new Date({{ activity.time.year }}, {{ activity.time.month }} - 1, {{ activity.time.day }}, {{ activity.time.hour }}, {{ activity.time.minute }}-offset, {{ activity.time.second }});
+							$('#activity{{ activity.id }}').text(' '+jQuery.timeago(localActvityDate).toString());
+						</script>
+					</li>
+					{% endfor %}<span class="see-more-details">Details</span>
+				</ul>
+			</div>
+		</div>
+		<div id="polls-content" class="admin-dash-div clearfix">
+			<div class="dashboard-header">
+				<p>Polls</p>
+			</div>
+			<div class="dashboard-stats clearfix">
+				<ul class="dashboard-recent">
+					<li> Polls Asked</li>
+					{% for question in polls %}
+					<li class="li-margin-polls">
+						<div class="liDetail">
+							<div class="check_analyse">
+							<p class="main activity_url analyse_question_text" id="analyse---{{ question.poll.id }}">
+								{{question.poll.question_text}}
+							</p>
+							<p class="pollsDesc">{{ question.poll.description }}</p>
+							<p class="check"><span id="mail-poll---{{question.poll.id}}" class="see-more-details see-more-details-p mail-poll">Email</span><span id="embed-code---{{question.poll.id}}" class="see-more-details see-more-details-p embed-poll-code">Embed</span><span class="see-more-details see-more-details-p question-u"><a href="{% url 'polls:polls_vote' question.poll.id question.poll.que_slug %}">Go To Question</a></span><span class="see-more-details see-more-details-p" id="polls-votes-count---{{question.poll.id}}">{{ question.votes }} Vote{{ question.votes|pluralize }}</span></p>
+							</div>
+						</div>
+						<div class="shareOnMail" id="mail-Poll---{{ question.poll.id }}Div">
+							<div class="askbypoll-group-filter" id="askbypoll-group-filter---{{ question.poll.id }}">
+								<p class="askbypoll-group-filter-p"> Select your demographics </p>
+								<select class="askbypoll-group-filter-age" id="askbypoll-group-filter-age---{{ question.poll.id }}" name="age">
+									<option value="notSelected">Age Group?</option>
+									<option value="<19"><19</option>
+									<option value="20-25">20-25</option>
+									<option value="26-30">26-30</option>
+									<option value="31-35">31-35</option>
+									<option value="36-50">36-50</option>
+									<option value=">50">>50</option>
+								</select>
+								<select class="askbypoll-group-filter-gender" id="askbypoll-group-filter-gender---{{ question.poll.id }}" name="gender">
+									<option value="notSelected">Gender</option>
+									<option value="Female">Female</option>
+									<option value="Male">Male</option>
+									<option value="D">Rather Not Say</option>
+								</select>
+								<!-- <select class="askbypoll-group-filter-profession" id="askbypoll-group-filter-profession---{{ question.poll.id }}" name="profession">
+									<option value="notSelected">Profession</option>
+								</select> -->
+								<select class="askbypoll-group-filter-country" id="askbypoll-group-filter-country---{{ question.poll.id }}" name="country">
+									<option value="notSelected">Country</option>
+								</select>
+								<select class="askbypoll-group-filter-state" id="askbypoll-group-filter-state---{{ question.poll.id }}" name="state">
+									<option value="notSelected">State</option>
+								</select>
+								<!-- <input name="city" type="text" id="askbypoll-group-filter-city---{{ question.poll.id }}" class="askbypoll-group-filter-city" placeholder="City" /> -->
+							</div>
+							<div class="email-widget-email-list-div" id="email-widget-email-list-div---{{ question.poll.id }}">
+								<!-- <p class="askbypoll-group-filter-p"> Enter recipient email id's </p> -->
+								<p class="padding-bottom-border-p">
+									<label class="mailPollLabel" for="mailPoll---{{ question.poll.id }}">Email List:</label><br>
+									<textarea class="mailPollTextArea" id="mailPoll---{{ question.poll.id }}" name="mailPollIds" placeholder="Provide emails separated by ';'"></textarea>
+								</p>
+								<!-- <p class="askbypoll-group-filter-p"> Enter recipient email id's </p> -->
+								<p class="padding-bottom-border-p">
+									<label for="csv-upload-email---{{ question.poll.id }}" style="width: 16rem;">Upload Email List (.csv format)</label>
+				        			<input type="file" class="csv-upload-email" name="File Upload" id="csv-upload-email---{{ question.poll.id }}" accept=".csv" />
+								</p>
+							</div>
+							<div class="email-widget-template-div" id="email-widget-template-div---{{ question.poll.id }}">
+								<!-- <p class="askbypoll-group-filter-p"> Enter recipient email id's </p> -->
+								<p></p>
+								<div class="preview-template-div mail-poll-widget-type-p">
+									<label class="mail-poll-widget-type-label" for="mail-poll-widget-type---{{ question.poll.id }}">Select email Template: </label>
+									<select class="mail-poll-widget-type" id="mail-poll-widget-type---{{ question.poll.id }}" name="widgettype">
+										<option value="basic_abp">Default</option>
+										{% for template in user.extendeduser.company.emailtemplates_set.all %}
+											<option value="{{ template.name }}">{{ template.get_display_name }}</option>
+										{% endfor %}
+									</select>
+									<button class="email-preview" id="email-preview---{{ question.poll.id }}">Preview</button>
+								</div>
+								<div class="share-template-div mail-poll-widget-type-p">
+									<button class="send-mail-using-widget" id="send-mail-using-widget---{{ question.poll.id }}">All Set to Go, Share!</button>
+								</div>
+								<div class="save-template-div mail-poll-widget-type-p">
+									<input type="text" name="email-template-name" id="email-template-name---{{ question.poll.id }}" placeholder="Template name"/>
+									<button class="email-save" id="email-save---{{ question.poll.id }}">Save</button>
+								</div>
+							</div>
+							<div class="askbypoll-email-preview-form" id="askbypoll-email-preview-form---{{ question.poll.id }}">
+								<div class="askbypoll-email-preview-form-child askbypoll-email-form" id="askbypoll-email-form---{{ question.poll.id }}">
+									<p class="askbypoll-email-preview-sub" id="askbypoll-email-preview-sub-form---{{ question.poll.id }}">Subject : <p><textarea class="askbypoll-email-preview-sub-form-text" id="askbypoll-email-preview-sub-form-text---{{ question.poll.id }}"></textarea></p></p>
+								</div>
+								<div class="askbypoll-email-preview-form-child askbypoll-email-preview" id="askbypoll-email-preview---{{ question.poll.id }}">
+									<p class="askbypoll-email-preview-sub" id="askbypoll-email-preview-sub---{{ question.poll.id }}"></p>
+								</div>
+							</div>
+						</div>
+						<div class="embedPollDiv" id="embed-code---{{ question.poll.id }}Div">
+							<p class="embedCodeP">
+								<label class="embedCodeLabel" for="embedCodeWithoutData">DIV for Widget without data :</label>
+								<textarea class="embedCodeTextArea" id="embedCodeWithoutData---{{ question.poll.id }}" name="embedCodeNoData" maxlength="400" readonly><div class="askbypoll-embed-poll" id="askbypoll-embed-poll---{{ question.poll.id }}"></div></textarea>
+							</p>
+
+							<span style="color:orange; padding-left:1rem; padding-right:1rem; font-size:25px;">or</span>
+							<p class="embedCodeP">
+								<label class="embedCodeLabel" for="embedCodeWithData">DIV for Widget with data :</label>
+								<textarea class="embedCodeTextArea" id="embedCodeWithData---{{ question.poll.id }}" name="embedCodeData" maxlength="400" readonly><div class="askbypoll-embed-poll" id="askbypoll-data-embed-poll---{{ question.poll.id }}"></div></textarea>
+							</p>
+							<p id="embedCodeDivP" class="embedCodeP">
+								<label class="embedCodeLabel" for="embedCodeDiv">Include this script in the page :</label>
+								<textarea class="embedCodeTextArea" id="embedCodeDiv---{{ question.poll.id }}" name="embedCodePlaceholderDiv" maxlength="400" readonly><script type='text/javascript' src='https://www.askbypoll.com/static/js/widgetwithdatas.js'></script></textarea>
+							</p>
+						</div>
+						<div class="analysis" id="analyse---{{ question.poll.id }}Div">
+							<div class="choices clearfix">
+								<div class="cta">
+									{% for choice in question.poll.choice_set.all %}
+									{% if choice.choice_image %}
+										<figure>
+											<img class="choiceImage choiceDetailImage" src="/media/choices/{{ choice.get_file_name }}" alt="{{ choice.choice_text }}">
+											<figcaption class="choiceFigCaption">
+												{% if choice.choice_text %}
+													Choice{{ forloop.counter }} : {{ choice.choice_text }}
+												{% else %}
+													Choice{{ forloop.counter }}
+												{% endif %}
+											</figcaption>
+										</figure>
+									{% else %}
+										Choice{{ forloop.counter }} : "{{ choice.choice_text }}"
+										<br/>
+									{% endif %}
+									{% endfor %}
+								</div>
+							</div>
+							<div id="pollsChart---{{ question.poll.id }}" class="pollsChartClass">
+							</div>
+							<select class="analyseSelect" id="analyse---{{ question.poll.id }}Select">
+								<option value="nochoice">Select</option>
+								{% for choice in question.poll.choice_set.all %}
+									<option value="choice{{ choice.id }}">Choice {{ forloop.counter }}</option>
+								{% endfor %}
+							</select>
+							<div class="gender">
+								<div class="graphContainer">
+									<p> Gender </p>
+									<div class="question_analyse_chart" id="genderChart---{{ question.poll.id }}">
+									</div>
+								</div>
+							</div>
+							<div class="age">
+								<div class="graphContainer">
+									<p> Age </p>
+									<div class="question_analyse_chart" id="ageChart---{{ question.poll.id }}">
+									</div>
+								</div>
+							</div>
+							<div class="location">
+								<div class="graphContainer">
+									<p> Location </p><div id="mapBackButton---{{ question.poll.id }}" class="back" onClick="back('{{ csrf_token }}','',{{ question.poll.id }})"><i class="fa fa-arrow-left"></i></div>
+									<div class="question_analyse_chart_loc" id="locationChart---{{ question.poll.id }}">
+									</div>
+								</div>
+							</div>
+							<div class="others">
+								<div class="graphContainer">
+									<p> Profession </p>
+									<div class="question_analyse_chart" id="othersChart---{{ question.poll.id }}">
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		<div id="surveys-content" class="admin-dash-div clearfix">
+			<div class="dashboard-header">
+				Surveys
+			</div>
+			<div class="create-survey">
+				<form id="create-survey-form" class="create-survey-content-form" method="POST" action="{% url 'polls:create_survey' %}"  enctype="multipart/form-data">
+					{% csrf_token %}
+					<p class="form-p">
+						<label class="required" for="surveyName">Name</label>
+						<input type="text" id ="surveyName" name="surveyName" placeholder="Survey Name" maxlength="64"></input>
+					</p>
+					<p class="form-p">
+						<label for="surveyDescription">Description</label>
+						<textarea id ="surveyDescription" name="surveyDescription" placeholder="Description" maxlength="400"></textarea>
+					</p>
+					<p class="form-p">
+						<label for="thanks-msg">Survey Submit Text</label>
+						<textarea id ="thanks-msg" name="thanks-msg" placeholder="Enter the thank you message to be displayed in the end of max 400 characters" maxlength="400">Thank You for Completing the Survey!!!</textarea>
+					</p>
+					<p class="form-p">
+						<label for="qExpiry">Expires On</label>
+						<select id="qExpiry_month" name="qExpiry_month">
+								<option value="0">Month</option>
+								<option value="1">January</option>
+								<option value="2">February</option>
+								<option value="3">March</option>
+								<option value="4">April</option>
+								<option value="5">May</option>
+								<option value="6">June</option>
+								<option value="7">July</option>
+								<option value="8">August</option>
+								<option value="9">September</option>
+								<option value="10">October</option>
+								<option value="11">November</option>
+								<option value="12">December</option>
+						</select>
+						<select id="qExpiry_day" name="qExpiry_day">
+								<option value="0">Day</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+								<option value="12">12</option>
+								<option value="13">13</option>
+								<option value="14">14</option>
+								<option value="15">15</option>
+								<option value="16">16</option>
+								<option value="17">17</option>
+								<option value="18">18</option>
+								<option value="19">19</option>
+								<option value="20">20</option>
+								<option value="21">21</option>
+								<option value="22">22</option>
+								<option value="23">23</option>
+								<option value="24">24</option>
+								<option value="25">25</option>
+								<option value="26">26</option>
+								<option value="27">27</option>
+								<option value="28">28</option>
+								<option value="29">29</option>
+								<option value="30">30</option>
+								<option value="31">31</option>
+						</select>
+						<select id="qExpiry_year" name="qExpiry_year">
+								<option value="0">Year</option>
+								<option value="2015">2015</option>
+								<option value="2016">2016</option>
+								<option value="2017">2017</option>
+								<option value="2018">2018</option>
+								<option value="2019">2019</option>
+								<option value="2020">2020</option>
+								<option value="2021">2021</option>
+								<option value="2022">2022</option>
+								<option value="2023">2023</option>
+								<option value="2024">2024</option>
+								<option value="2025">2025</option>
+								<option value="2026">2026</option>
+								<option value="2027">2027</option>
+								<option value="2028">2028</option>
+								<option value="2029">2029</option>
+								<option value="2030">2030</option>
+								<option value="2031">2031</option>
+								<option value="2032">2032</option>
+								<option value="2033">2033</option>
+								<option value="2034">2034</option>
+								<option value="2035">2035</option>
+								<option value="2036">2036</option>
+								<option value="2037">2037</option>
+								<option value="2038">2038</option>
+								<option value="2039">2039</option>
+								<option value="2040">2040</option>
+								<option value="2041">2041</option>
+								<option value="2042">2042</option>
+								<option value="2043">2043</option>
+								<option value="2044">2044</option>
+								<option value="2045">2045</option>
+								<option value="2046">2046</option>
+								<option value="2047">2047</option>
+								<option value="2048">2048</option>
+								<option value="2049">2049</option>
+								<option value="2050">2050</option>
+								<option value="2051">2051</option>
+								<option value="2052">2052</option>
+								<option value="2053">2053</option>
+								<option value="2054">2054</option>
+								<option value="2055">2055</option>
+								<option value="2056">2056</option>
+								<option value="2057">2057</option>
+								<option value="2058">2058</option>
+								<option value="2059">2059</option>
+								<option value="2060">2060</option>
+								<option value="2061">2061</option>
+								<option value="2062">2062</option>
+								<option value="2063">2063</option>
+								<option value="2064">2064</option>
+								<option value="2065">2065</option>
+								<option value="2066">2066</option>
+								<option value="2067">2067</option>
+								<option value="2068">2068</option>
+								<option value="2069">2069</option>
+								<option value="2070">2070</option>
+								<option value="2071">2071</option>
+								<option value="2072">2072</option>
+								<option value="2073">2073</option>
+								<option value="2074">2074</option>
+								<option value="2075">2075</option>
+								<option value="2076">2076</option>
+								<option value="2077">2077</option>
+								<option value="2078">2078</option>
+								<option value="2079">2079</option>
+								<option value="2080">2080</option>
+								<option value="2081">2081</option>
+								<option value="2082">2082</option>
+								<option value="2083">2083</option>
+								<option value="2084">2084</option>
+								<option value="2085">2085</option>
+								<option value="2086">2086</option>
+								<option value="2087">2087</option>
+								<option value="2088">2088</option>
+								<option value="2089">2089</option>
+								<option value="2090">2090</option>
+								<option value="2091">2091</option>
+								<option value="2092">2092</option>
+								<option value="2093">2093</option>
+								<option value="2094">2094</option>
+								<option value="2095">2095</option>
+								<option value="2096">2096</option>
+								<option value="2097">2097</option>
+								<option value="2098">2098</option>
+								<option value="2099">2099</option>
+								<option value="2100">2100</option>
+								<option value="2101">2101</option>
+								<option value="2102">2102</option>
+								<option value="2103">2103</option>
+								<option value="2104">2104</option>
+								<option value="2105">2105</option>
+								<option value="2106">2106</option>
+								<option value="2107">2107</option>
+								<option value="2108">2108</option>
+								<option value="2109">2109</option>
+								<option value="2110">2110</option>
+								<option value="2111">2111</option>
+								<option value="2112">2112</option>
+								<option value="2113">2113</option>
+								<option value="2114">2114</option>
+								<option value="2115">2115</option>
+						</select>
+						<select name="qExpiry_hr" id="qExpiry_hr">
+								<option value="0">hr</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+								<option value="12">12</option>
+						</select>
+						<select name="qExpiry_min" id="qExpiry_hr">
+								<option value="-1">min</option>
+								<option value="0">0</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+								<option value="12">12</option>
+								<option value="13">13</option>
+								<option value="14">14</option>
+								<option value="15">15</option>
+								<option value="16">16</option>
+								<option value="17">17</option>
+								<option value="18">18</option>
+								<option value="19">19</option>
+								<option value="20">20</option>
+								<option value="21">21</option>
+								<option value="22">22</option>
+								<option value="23">23</option>
+								<option value="24">24</option>
+								<option value="25">25</option>
+								<option value="26">26</option>
+								<option value="27">27</option>
+								<option value="28">28</option>
+								<option value="29">29</option>
+								<option value="30">30</option>
+								<option value="31">31</option>
+								<option value="32">32</option>
+								<option value="33">33</option>
+								<option value="34">34</option>
+								<option value="35">35</option>
+								<option value="36">36</option>
+								<option value="37">37</option>
+								<option value="38">38</option>
+								<option value="39">39</option>
+								<option value="40">40</option>
+								<option value="41">41</option>
+								<option value="42">42</option>
+								<option value="43">43</option>
+								<option value="44">44</option>
+								<option value="45">45</option>
+								<option value="46">46</option>
+								<option value="47">47</option>
+								<option value="48">48</option>
+								<option value="49">49</option>
+								<option value="50">50</option>
+								<option value="51">51</option>
+								<option value="52">52</option>
+								<option value="53">53</option>
+								<option value="54">54</option>
+								<option value="55">55</option>
+								<option value="56">56</option>
+								<option value="57">57</option>
+								<option value="58">58</option>
+								<option value="59">59</option>
+						</select>
+						<select name="qExpiry_ap" id="qExpiry_ap">
+								<option value="AM">AM</option>
+								<option value="PM">PM</option>
+						</select>
+					</p>
+					<p class="form-p">
+						<label for="categories">Category <i id="category_tooltip_fa" class="fa fa-info-circle"></i></label>
+						<input id="categories" type="text" name="categories" style="border:none;">
+						<input id="selectedCategories" type="hidden" name="selectedCategories" value="">
+					</p>
+					<p>
+						<label for="groups">Group</label>
+						<input id="groups" type="text" name="groups" style="border:none;">
+						<input id="selectedGroups" type="hidden" name="selectedGroups" value="">
+					</p>
+					<p style="margin-top:2rem">
+						<label for="shareImage">Featured Image <i id="featuredimage_tooltip_fa" class="fa fa-info-circle"></i></label>
+						<input id="shareImage" class="fileButtonClass" type="file" name="shareImage" accept="image/*">
+					</p>
+					<p class="anonymous" style="margin-top:2rem">
+						<input id="protectResult" name="protectResult" type="checkbox">
+						<label for="protectResult">Protect Survey Result </label>
+					</p>
+					<p class="anonymous" style="margin-top:2rem">
+						<input id="mandatory" name="mandatory" type="checkbox">
+						<label for="mandatory">Make All Questions Mandatory </label>
+					</p>
+					<p class="anonymous" style="margin-top:2rem">
+						<input id="addComment" name="addComment" type="checkbox">
+						<label for="addComment">Require Feedback on every Question </label>
+					</p>
+					<div class="survey-questions">
+					</div>
+					<i class="fa fa-plus-circle add-q"> Add Question</i>
+					<input class="submit btn surveySubmit" type="submit" value="Create" id="createSurveySubmit"/>
+				</form>
+				<div class="tooltip" id="category_tooltip">
+					<span>Categories list:<br></span>
+					{% for cat in categories %}
+						<span class="cat_title_tooltip">{{ cat }},    </span>
+					{% endfor %}
+				</div>
+				<div class="tooltip" id="featuredimage_tooltip">
+					<span class="cat_title_tooltip">This image will be used as the cover picture for social media sharing.</span>
+				</div>
+			</div>
+			<div class="dashboard-stats clearfix">
+				<p id="create-new-survey" class="btn" onclick="createSurvey()"> Create New </p>
+				<ul class="dashboard-recent">
+					<li> Survey</li>
+					{% for survey_det in surveys %}
+						<li class="li-margin-polls">
+							<div class="liDetail">
+								<div class="check_analyse">
+									<p class="main activity_url main-survey" id="survey---{{ survey_det.survey.id }}">
+										{{ survey_det.survey.survey_name }}
+									</p>
+
+									<p class="pollsDesc">{{ survey_det.survey.description }}</p>
+									<p class="check">
+										<span class="see-more-details see-more-details-p survey-overview-button">Overview</span>
+										{% if survey_det.survey.surveyvoted_set.count < 1 or user.is_superuser %}
+											<span class="see-more-details see-more-details-p edit-u"><a href="{% url 'polls:survey_edit' survey_det.survey.id survey_det.survey.survey_slug %}">Edit Survey</a></span>
+										{% endif %}
+										<span class="see-more-details see-more-details-p clone-u"><a href="{% url 'polls:survey_clone' survey_det.survey.id survey_det.survey.survey_slug %}">Clone Survey</a></span>
+										<span class="see-more-details see-more-details-p share-with-group" id="share-with-group{{ survey_det.survey.id }}">Share with Groups</span>
+										<span class="see-more-details see-more-details-p question-u"><a href="{% url 'polls:survey_vote' survey_det.survey.id survey_det.survey.survey_slug %}">Go To Survey</a></span>
+										<span class="see-more-details see-more-details-p">{{ survey_det.votes }} Response{{ survey_det.votes|pluralize }}</span>
+									</p>
+									<form class="share-with-group-form" id="share-with-group-form{{ survey_det.survey.id }}">
+										<p class="share-g">
+											{% csrf_token %}
+											<input class="shareGroupsInput" id="sharegroups{{ survey_det.survey.id }}" type="text" name="sharegroups" style="border:none;">
+											<input id="shareselectedGroups{{ survey_det.survey.id }}" type="hidden" name="shareselectedGroups" value="">
+											<input type="hidden" name="shareSurveyId" value="{{ survey_det.survey.id }}">
+											<input type="hidden" name="shareSurveySlug" value="{{ survey_det.survey.survey_slug }}">
+											<input type="hidden" name="shareSurveyName" value="{{ survey_det.survey.survey_name }}">
+											<span class="share-button-g" id="share-button-g{{ survey_det.survey.id }}">Share</span>
+										</p>
+									</form>
+								</div>
+							</div>
+							<div class="survey-all-questions">
+								{% for poll in survey_det.polls %}
+									<p class="main activity_url analyse_question_text" id="advanced-analyse---{{ poll.question.id }}">
+										{{ poll.question.question_text }}
+									</p>
+									<p class="pollsDesc">{{ poll.question.description }}
+									</p>
+									<div class="analysis" id="advanced-analyse---{{ poll.question.id }}Div">
+									{% if poll.q_type != "text" %}
+
+											<div class="choices clearfix">
+											{% for choice in poll.question.choice_set.all %}
+											{% if choice.choice_image %}
+												<figure>
+													<img class="choiceImage choiceDetailImage" src="/media/choices/{{ choice.get_file_name }}" alt="{{ choice.choice_text }}">
+													<figcaption class="choiceFigCaption">
+														{% if choice.choice_text %}
+															Choice{{ forloop.counter }} : {{ choice.choice_text }}
+														{% else %}
+															Choice{{ forloop.counter }}
+														{% endif %}
+													</figcaption>
+												</figure>
+											{% else %}
+												Choice{{ forloop.counter }} : "{{ choice.choice_text }}"
+												<br/>
+											{% endif %}
+											{% endfor %}
+											</div>
+											<div class="ana-text" id="text-analyse---{{ poll.question.id }}Div">
+												{% if poll.comments|length > 0 %}
+													<p>Comments :</p>
+												{% endif %}
+												{% for text in poll.comments %}
+													<p class="answer-text">{{ text }}</p>
+												{% endfor %}
+											</div>
+											<div id="advanced-pollsChart---{{ poll.question.id }}" class="pollsChartClass">
+											</div>
+											<p style="margin-bottom:1rem;font-weight:bold;text-align:center"> Comparative Demographic Analysis </p>
+											<div class="advancedAnaCmp" id="advancedAna">
+												<div class="advancedCmpSelect">
+													<select class="advancedanalyseSelect advancedanalyseSelectColumn1" id="advancedanalyse---{{ poll.question.id }}---Gender---1">
+														<option value="nochoice">Gender</option>
+														<option value="f">Female</option>
+														<option value="m">Male</option>
+														<option value="d">Undisclosed</option>
+													</select>
+													<select class="advancedanalyseSelect advancedanalyseSelectColumn1" id="advancedanalyse---{{ poll.question.id }}---Age---1">
+														<option value="nochoice">Age</option>
+														<option value="<19">< 19</option>
+														<option value="20-25">20-25</option>
+														<option value="26-30">26-30</option>
+														<option value="31-35">31-35</option>
+														<option value="36-50">36-50</option>
+														<option value=">50">> 50</option>
+													</select>
+													<select class="advancedanalyseSelect advancedanalyseSelectColumn1" id="advancedanalyse---{{ poll.question.id }}---Profession---1">
+														<option value="nochoice">Profession</option>
+													</select>
+													<select class="advancedanalyseSelect advancedanalyseSelectCountry advancedanalyseSelectColumn1" id="advancedanalyse---{{ poll.question.id }}---Country---1" name="country">
+														<option value="nochoice">Country</option>
+													</select>
+													<select class="advancedanalyseSelect advancedanalyseSelectColumn1" id="advancedanalyse---{{ poll.question.id }}---State---1" name="state">
+														<option value="nochoice">State</option>
+													</select>
+												</div>
+												<div id="advancedanalyse-pollsChart---{{ poll.question.id }}---column1" class="pollsChartClass pollsChartClassColumn">
+											</div>
+											</div>
+											<div class="advancedAnaCmp" id="advancedAna">
+												<div class="advancedCmpSelect">
+													<select class="advancedanalyseSelect advancedanalyseSelectColumn2" id="advancedanalyse---{{ poll.question.id }}---Gender---2">
+														<option value="nochoice">Gender</option>
+														<option value="f">Female</option>
+														<option value="m">Male</option>
+														<option value="d">Undisclosed</option>
+													</select>
+													<select class="advancedanalyseSelect advancedanalyseSelectColumn2" id="advancedanalyse---{{ poll.question.id }}---Age---2">
+														<option value="nochoice">Age</option>
+														<option value="<19">< 19</option>
+														<option value="20-25">20-25</option>
+														<option value="26-30">26-30</option>
+														<option value="31-35">31-35</option>
+														<option value="36-50">36-50</option>
+														<option value=">50">> 50</option>
+													</select>
+													<select class="advancedanalyseSelect advancedanalyseSelectColumn2" id="advancedanalyse---{{ poll.question.id }}---Profession---2">
+														<option value="nochoice">Profession</option>
+													</select>
+													<select class="advancedanalyseSelect advancedanalyseSelectCountry advancedanalyseSelectColumn2" id="advancedanalyse---{{ poll.question.id }}---Country---2" name="country">
+														<option value="nochoice">Country</option>
+													</select>
+													<select class="advancedanalyseSelect advancedanalyseSelectColumn2" id="advancedanalyse---{{ poll.question.id }}---State---2" name="state">
+														<option value="nochoice">State</option>
+													</select>
+												</div>
+												<div id="advancedanalyse-pollsChart---{{ poll.question.id }}---column2" class="pollsChartClass pollsChartClassColumn">
+												</div>
+											</div>
+											<div class="advancedAnaCmp">
+												<p style="margin-bottom:1rem;text-align:center;"> Or</p>
+												<select class="analyseSelect advancedanalyseSelectChoiceCmp" id="advanced-analyse---{{ poll.question.id }}Select---1">
+													<option value="nochoice">Filter by Choice</option>
+													{% for choice in poll.question.choice_set.all %}
+														<option value="choice{{ choice.id }}">Choice {{ forloop.counter }}</option>
+													{% endfor %}
+												</select>
+												<span  class="choice-filter choice---{{ poll.question.id }}---1">No Choice Filter</span>
+												<div class="gender">
+													<div class="graphContainer">
+														<p> Gender </p>
+														<div class="question_analyse_chart question_analyse_chart_cmp1" id="advanced-genderChart---{{ poll.question.id }}---1">
+														</div>
+													</div>
+												</div>
+												<span  class="choice-filter choice---{{ poll.question.id }}---1">No Choice Filter</span>
+												<div class="age">
+													<div class="graphContainer">
+														<p> Age </p>
+														<div class="question_analyse_chart question_analyse_chart_cmp1" id="advanced-ageChart---{{ poll.question.id }}---1">
+														</div>
+													</div>
+												</div>
+												<span  class="choice-filter choice---{{ poll.question.id }}---1">No Choice Filter</span>
+												<div class="location">
+													<div class="graphContainer">
+														<p> Location </p><div id="advanced-mapBackButton---{{ poll.question.id }}" class="back" onClick="back('{{ csrf_token }}','advanced-',{{ poll.question.id }},1)"><i class="fa fa-arrow-left"></i></div>
+														<div class="question_analyse_chart_loc question_analyse_chart_loc_cmp1" id="advanced-locationChart---{{ poll.question.id }}---1">
+														</div>
+													</div>
+												</div>
+												<span  class="choice-filter choice---{{ poll.question.id }}---1">No Choice Filter</span>
+												<div class="others">
+													<div class="graphContainer">
+														<p> Profession </p>
+														<div class="question_analyse_chart question_analyse_chart_cmp1" id="advanced-othersChart---{{ poll.question.id }}---1">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="advancedAnaCmp">
+												<p style="margin-bottom:1rem;text-align:center;"> Or</p>
+												<select class="analyseSelect advancedanalyseSelectChoiceCmp" id="advanced-analyse---{{ poll.question.id }}Select---2">
+													<option value="nochoice">Filter by Choice</option>
+													{% for choice in poll.question.choice_set.all %}
+														<option value="choice{{ choice.id }}">Choice {{ forloop.counter }}</option>
+													{% endfor %}
+												</select>
+												<span  class="choice-filter choice---{{ poll.question.id }}---2">No Choice Filter</span>
+												<div class="gender">
+													<div class="graphContainer">
+														<p> Gender </p>
+														<div class="question_analyse_chart question_analyse_chart_cmp2" id="advanced-genderChart---{{ poll.question.id }}---2">
+														</div>
+													</div>
+												</div>
+												<span  class="choice-filter choice---{{ poll.question.id }}---2">No Choice Filter</span>
+												<div class="age">
+													<div class="graphContainer">
+														<p> Age </p>
+														<div class="question_analyse_chart question_analyse_chart_cmp2" id="advanced-ageChart---{{ poll.question.id }}---2">
+														</div>
+													</div>
+												</div>
+												<span  class="choice-filter choice---{{ poll.question.id }}---2">No Choice Filter</span>
+												<div class="location">
+													<div class="graphContainer">
+														<p> Location </p><div id="advanced-mapBackButton---{{ poll.question.id }}" class="back" onClick="back('{{ csrf_token }}','advanced-',{{ poll.question.id }},2)"><i class="fa fa-arrow-left"></i></div>
+														<div class="question_analyse_chart_loc question_analyse_chart_loc_cmp2" id="advanced-locationChart---{{ poll.question.id }}---2">
+														</div>
+													</div>
+												</div>
+												<span  class="choice-filter choice---{{ poll.question.id }}---2">No Choice Filter</span>
+												<div class="others">
+													<div class="graphContainer">
+														<p> Profession </p>
+														<div class="question_analyse_chart question_analyse_chart_cmp2" id="advanced-othersChart---{{ poll.question.id }}---2">
+														</div>
+													</div>
+												</div>
+											</div>
+
+									{% else %}
+										<div class="ana-text" id="text-analyse---{{ poll.question.id }}Div">
+											{% for text in poll.comments %}
+												<p class="answer-text">{{ text }}</p>
+											{% endfor %}
+										</div>
+									{% endif %}
+									</div>
+								{% endfor %}
+							</div>
+							<div class="survey-overview">
+								<!-- <p> Total Number of polls : {{ survey_det.polls|length }} </p> -->
+								<div class="table-container">
+									<div class="table-component">
+										<table>
+											<thead>
+												<tr>
+													<th>Total Responses</th>
+													<th>Completion Rate</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>{{ survey_det.votes }}</td>
+													<td>{{ survey_det.incompleteResponses }}%</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="table-container">
+									<div class="table-component">
+										<table>
+											<thead>
+												<tr>
+													<th class="question-table">Question ID</th>
+													<th>Type</th>
+													<th>Responses</th>
+													<th>Most Voted</th>
+													<th>Least Voted</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for poll in survey_det.polls %}
+													<tr>
+														<th class="question-table-heading">Question {{ forloop.counter }}</th>
+														<td> {{ poll.q_type }} </td>
+														<td> {{ poll.totalResponses }} votes</td>
+														{% if poll.q_type != "text" %}
+															<td>
+																{% for choice in poll.maxVotes %}
+																	{{ choice }}<br>
+																{% endfor %}
+															</td>
+															<td>
+																{% for choice in poll.minVotes %}
+																	{{ choice }}<br>
+																{% endfor %}
+															</td>
+														{% else %}
+															<td>NA</td>
+															<td>NA</td>
+														{% endif %}
+													</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								</div><!-- /container -->
+							</div>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		<div id="followers-content" class="admin-dash-div clearfix">
+			<div class="dashboard-header">
+				<p>Followers</p>
+			</div>
+			<div class="dashboard-stats clearfix">
+				<ul class="dashboard-recent">
+					{% for act_user in followers %}
+						<li class="followers">
+							<a href="{% url 'login:loggedIn' act_user.id act_user.extendeduser.user_slug %}">
+								<figure>
+									<img class="imgInFeed follow" src="{{ act_user.extendeduser.get_profile_pic_url }}">
+									<figcaption class="activity_url follow_url">
+										{{ act_user.username }}
+									</figcaption>
+								</figure>
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		<div id="groups-content" class="admin-dash-div clearfix">
+			<div class="dashboard-header">
+				Groups
+			</div>
+			<div class="dashboard-stats clearfix">
+				<p id="create-new-group" onclick="createGroup()"> Create New </p>
+				<ul class="dashboard-recent">
+					<li> Groups</li>
+					{% for group in groups %}
+						<li class="li-margin-polls">
+							<p class="main activity_url analyse_question_text" id="groupName---{{ group.groupId }}" onclick="displayGroupMembers('groupMembers---{{ group.groupId }}Div')">
+								{{group.groupName}}
+							</p>
+							<i class="fa fa-trash-o group-action-icons" style="margin-left:2rem;" onclick="deleteGroup('{{ group.groupId}}','{{ group.groupName }}')"></i>
+							<i class="fa fa-pencil-square-o group-action-icons" onclick="editGroup('{{ group.groupId}}')"></i>
+							<div class="analysis group-ana-member" id="groupMembers---{{ group.groupId }}Div">
+								<div class="groupMembers clearfix">
+									{% if group.groupMembers %}
+										{% for member in group.groupMembers %}
+											<a class="group-member-links" href="{% url 'login:loggedIn' member.id member.extendeduser.user_slug %}">
+												<figure class="members-figure">
+												  <img class="groupsMemberProfilePic" src="{{ member.extendeduser.get_profile_pic_url }}" alt="{{ member.first_name }}">
+												  <figcaption class="members-figcaption">{{ member.first_name }} {{ member.last_name }}</figcaption>
+												</figure>
+											</a>
+										{% endfor %}
+									{% endif %}
+									{% if group.groupMembersIncomplete %}
+										<p class="main invites-send">
+											<i class="fa fa-exclamation-triangle" style="color: black;margin-right: 0.5rem;"></i>Incomplete Profile
+										</p>
+										<ul>
+											{% for member in group.groupMembersIncomplete %}
+												<li class="members-future">{{ member.email }}</li>
+											{% endfor %}
+										</ul>
+									{% endif %}
+									{% if group.groupMembersFuture %}
+										<p class="main invites-send">
+											Invites Send
+										</p>
+										<ul>
+											{% for member in group.groupMembersFuture %}
+												<li class="members-future">{{ member }}</li>
+											{% endfor %}
+										</ul>
+									{% endif %}
+								</div>
+							</div>
+							<div class="edit-group" id="edit-group-{{ group.groupId }}" style="display:none;">
+							</div>
+						</li>
+					{% endfor %}
+
+				</ul>
+			</div>
+			<div class="create-group">
+				<form id="create-group-form" class="create-group-content-form" method="POST" action="{% url 'login:create_group' %}"  enctype="multipart/form-data">
+					{% csrf_token %}
+					<input type="hidden" id="isGroupEdit" name="isGroupEdit" value="no">
+					<p class="form-p">
+						<label class="required" for="groupName">Name</label>
+						<input type="text" id ="groupName" name="groupName" placeholder="Group Name" maxlength="64"></input>
+						<span class="errorlist" id="groupNameErrors"></span>
+					</p>
+					<p class="form-p">
+						<label class="required" for="groupMembers">Members</label>
+						<textarea id ="groupMembers" name="groupMembers" placeholder="Provide ; separated email id's"></textarea>
+						<span class="errorlist" id="groupMembersError"></span>
+					</p>
+					<p class="btn">
+				        <label for="csvUpload">Upload your CSV File</label>
+				        <input type="file" name="File Upload" id="csvUpload" accept=".csv" />
+					</p>
+					<input class="submit groupSubmit" type="submit" value="Create" id="createGroupSubmit"/>
+				</form>
+			</div>
+		</div>
+		<div id="messages-content" class="admin-dash-div clearfix">
+			<div class="dashboard-header">
+				<p>Messages</p>
+			</div>
+		</div>
+		<div id="feed-content" class="admin-dash-div clearfix">
+			<div class="dashboard-header">
+				<p>My Feed</p>
+			</div>
+			<div class="dashboard-stats clearfix">
+				<ul class="dashboard-recent">
+					<!-- <li> My Feed</li> -->
+					{% for activity in activities %}
+					<li class="feed-admin">
+						<div class="liDetail">
+							{% if activity.verb == "question" %}
+								<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+								<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>asked {% if user.id != context_user.id and not activity.visible_public %}
+								a private/anonymous poll
+								{% else %}
+								<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a>
+								{% endif %}
+								<span id="activity{{ activity.id }}"> </span>
+							{% elif activity.verb == "questionBet" %}
+								<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+								<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>asked {% if user.id != context_user.id and not activity.visible_public %}
+								a private/anonymous poll
+								{% else %}
+								<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a>
+								{% endif %} putting {{ activity.points }} credits <span id="activity{{ activity.id }}"> </span></span>
+							{% elif activity.verb == "voted" %}
+								<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+								<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>{{ activity.verb}} {% if user.id != context_user.id and not activity.visible_public %}
+								a private/anonymous poll
+								{% else %}
+								<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a>
+								{% endif %}<span id="activity{{ activity.id }}"> </span></span>
+							{% elif activity.verb == "votedBet" %}
+								<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+								<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>voted on {% if user.id != context_user.id and not activity.visible_public %}
+								a private/anonymous poll
+								{% else %}
+								<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a>
+								{% endif %} putting {{ activity.points }} credits<span id="activity{{ activity.id }}"> </span></span>
+							{% elif activity.verb == "follow" or activity.verb == "followed" %}
+								<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+								<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{  user.username|getName:activity.actor_user_name }}</span> </a>followed <a href="{{ activity.target_user_url }}"><span class="activity_url">{{ user.username|getName:activity.target_user_name }}</span></a><span id="activity{{ activity.id }}"> </span></span>
+							{% else %}
+								<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+								<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>{{ activity.verb}} <a href="{{ user.username|getName:activity.target_user_name }}"><span class="activity_url"></a><span id="activity{{ activity.id }}"> </span></span>
+							{% endif %}
+							{% if activity.verb != "credits"  %}
+								</p>
+								{% if activity.visible_public %}
+									<p class="desc">{{ activity.question_desc }}</p>
+								{% endif %}
+								</div>
+							{% endif %}
+						</div>
+						<script>
+							var currentDate = new Date();
+							var offset = currentDate.getTimezoneOffset();
+							var serverActivityDate = new Date({{ activity.time.year }}, {{ activity.time.month }} - 1, {{ activity.time.day }}, {{ activity.time.hour }}, {{ activity.time.minute }}, {{ activity.time.second }});
+							var localActvityDate = new Date({{ activity.time.year }}, {{ activity.time.month }} - 1, {{ activity.time.day }}, {{ activity.time.hour }}, {{ activity.time.minute }}-offset, {{ activity.time.second }});
+							$('#activity{{ activity.id }}').text(' '+jQuery.timeago(localActvityDate).toString());
+						</script>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		<div id="advanced-content" class="admin-dash-div clearfix">
+			<div class="dashboard-header">
+				<p>Polls</p>
+			</div>
+			<div class="dashboard-stats clearfix">
+				<ul class="dashboard-recent">
+					<li> Polls Asked</li>
+					{% for question in polls %}
+					<li class="li-margin-polls">
+						<div class="liDetail">
+							<div class="check_analyse">
+							<p class="main activity_url analyse_question_text" id="advanced-analyse---{{ question.poll.id }}">
+								{{question.poll.question_text}}
+							</p>
+							<p class="pollsDesc">{{ question.poll.description }}</p>
+							<p class="check"><span class="see-more-details see-more-details-p question-u"><a href="{% url 'polls:polls_vote' question.poll.id question.poll.que_slug %}">Go To Question</a></span><span class="see-more-details see-more-details-p" id="advanced-polls-votes-count---{{question.poll.id}}">{{ question.votes }} Vote{{ question.votes|pluralize }}</span></p>
+							</div>
+						</div>
+						<div class="analysis" id="advanced-analyse---{{ question.poll.id }}Div">
+							<div class="choices clearfix">
+								<div class="cta">
+									{% for choice in question.poll.choice_set.all %}
+									{% if choice.choice_image %}
+										<figure>
+											<img class="choiceImage choiceDetailImage" src="/media/choices/{{ choice.get_file_name }}" alt="{{ choice.choice_text }}">
+											<figcaption class="choiceFigCaption">
+												{% if choice.choice_text %}
+													Choice{{ forloop.counter }} : {{ choice.choice_text }}
+												{% else %}
+													Choice{{ forloop.counter }}
+												{% endif %}
+											</figcaption>
+										</figure>
+									{% else %}
+										Choice{{ forloop.counter }} : "{{ choice.choice_text }}"
+										<br/>
+									{% endif %}
+									{% endfor %}
+								</div>
+							</div>
+							<p class="advanced-ana-bar-graph" style="margin-top:2rem" id ="advanced-ana-bar-graph-1---{{ question.poll.id }}">Results With All Responses : {{ question.allvotes }}</p>
+							<div id="advanced-pollsChart---{{ question.poll.id }}---extra" class="pollsChartClass">
+							</div>
+							<p class="advanced-ana-bar-graph" id ="advanced-ana-bar-graph-2---{{ question.poll.id }}">Results Which Have Demographic Data : {{ question.votes }} </p>
+							<div id="advanced-pollsChart---{{ question.poll.id }}" class="pollsChartClass">
+							</div>
+							<p style="margin-bottom:1rem;font-weight:bold;text-align:center"> Comparative Demographic Analysis </p>
+							<div class="advancedAnaCmp" id="advancedAna">
+								<div class="advancedCmpSelect">
+									<select class="advancedanalyseSelect advancedanalyseSelectColumn1" id="advancedanalyse---{{ question.poll.id }}---Gender---1">
+										<option value="nochoice">Gender</option>
+										<option value="f">Female</option>
+										<option value="m">Male</option>
+										<option value="d">Undisclosed</option>
+									</select>
+									<select class="advancedanalyseSelect advancedanalyseSelectColumn1" id="advancedanalyse---{{ question.poll.id }}---Age---1">
+										<option value="nochoice">Age</option>
+										<option value="<19">< 19</option>
+										<option value="20-25">20-25</option>
+										<option value="26-30">26-30</option>
+										<option value="31-35">31-35</option>
+										<option value="36-50">36-50</option>
+										<option value=">50">> 50</option>
+									</select>
+									<select class="advancedanalyseSelect advancedanalyseSelectColumn1" id="advancedanalyse---{{ question.poll.id }}---Profession---1">
+										<option value="nochoice">Profession</option>
+									</select>
+									<select class="advancedanalyseSelect advancedanalyseSelectCountry advancedanalyseSelectColumn1" id="advancedanalyse---{{ question.poll.id }}---Country---1" name="country">
+										<option value="nochoice">Country</option>
+									</select>
+									<select class="advancedanalyseSelect advancedanalyseSelectColumn1" id="advancedanalyse---{{ question.poll.id }}---State---1" name="state">
+										<option value="nochoice">State</option>
+									</select>
+								</div>
+								<div id="advancedanalyse-pollsChart---{{ question.poll.id }}---column1" class="pollsChartClass pollsChartClassColumn">
+							</div>
+							</div>
+							<div class="advancedAnaCmp" id="advancedAna">
+								<div class="advancedCmpSelect">
+									<select class="advancedanalyseSelect advancedanalyseSelectColumn2" id="advancedanalyse---{{ question.poll.id }}---Gender---2">
+										<option value="nochoice">Gender</option>
+										<option value="f">Female</option>
+										<option value="m">Male</option>
+										<option value="d">Undisclosed</option>
+									</select>
+									<select class="advancedanalyseSelect advancedanalyseSelectColumn2" id="advancedanalyse---{{ question.poll.id }}---Age---2">
+										<option value="nochoice">Age</option>
+										<option value="<19">< 19</option>
+										<option value="20-25">20-25</option>
+										<option value="26-30">26-30</option>
+										<option value="31-35">31-35</option>
+										<option value="36-50">36-50</option>
+										<option value=">50">> 50</option>
+									</select>
+									<select class="advancedanalyseSelect advancedanalyseSelectColumn2" id="advancedanalyse---{{ question.poll.id }}---Profession---2">
+										<option value="nochoice">Profession</option>
+									</select>
+									<select class="advancedanalyseSelect advancedanalyseSelectCountry advancedanalyseSelectColumn2" id="advancedanalyse---{{ question.poll.id }}---Country---2" name="country">
+										<option value="nochoice">Country</option>
+									</select>
+									<select class="advancedanalyseSelect advancedanalyseSelectColumn2" id="advancedanalyse---{{ question.poll.id }}---State---2" name="state">
+										<option value="nochoice">State</option>
+									</select>
+								</div>
+								<div id="advancedanalyse-pollsChart---{{ question.poll.id }}---column2" class="pollsChartClass pollsChartClassColumn">
+								</div>
+							</div>
+							<div class="advancedAnaCmp">
+								<p style="margin-bottom:1rem;text-align:center;"> Or</p>
+								<select class="analyseSelect advancedanalyseSelectChoiceCmp" id="advanced-analyse---{{ question.poll.id }}Select---1">
+									<option value="nochoice">Filter by Choice</option>
+									{% for choice in question.poll.choice_set.all %}
+										<option value="choice{{ choice.id }}">Choice {{ forloop.counter }}</option>
+									{% endfor %}
+								</select>
+								<span  class="choice-filter choice---{{ question.poll.id }}---1">No Choice Filter</span>
+								<div class="gender">
+									<div class="graphContainer">
+										<p> Gender </p>
+										<div class="question_analyse_chart question_analyse_chart_cmp1" id="advanced-genderChart---{{ question.poll.id }}---1">
+										</div>
+									</div>
+								</div>
+								<span  class="choice-filter choice---{{ question.poll.id }}---1">No Choice Filter</span>
+								<div class="age">
+									<div class="graphContainer">
+										<p> Age </p>
+										<div class="question_analyse_chart question_analyse_chart_cmp1" id="advanced-ageChart---{{ question.poll.id }}---1">
+										</div>
+									</div>
+								</div>
+								<span  class="choice-filter choice---{{ question.poll.id }}---1">No Choice Filter</span>
+								<div class="location">
+									<div class="graphContainer">
+										<p> Location </p><div id="advanced-mapBackButton---{{ question.poll.id }}" class="back" onClick="back('{{ csrf_token }}','advanced-',{{ question.poll.id }},1)"><i class="fa fa-arrow-left"></i></div>
+										<div class="question_analyse_chart_loc question_analyse_chart_loc_cmp1" id="advanced-locationChart---{{ question.poll.id }}---1">
+										</div>
+									</div>
+								</div>
+								<span  class="choice-filter choice---{{ question.poll.id }}---1">No Choice Filter</span>
+								<div class="others">
+									<div class="graphContainer">
+										<p> Profession </p>
+										<div class="question_analyse_chart question_analyse_chart_cmp1" id="advanced-othersChart---{{ question.poll.id }}---1">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="advancedAnaCmp">
+								<p style="margin-bottom:1rem;text-align:center;"> Or</p>
+								<select class="analyseSelect advancedanalyseSelectChoiceCmp" id="advanced-analyse---{{ question.poll.id }}Select---2">
+									<option value="nochoice">Filter by Choice</option>
+									{% for choice in question.poll.choice_set.all %}
+										<option value="choice{{ choice.id }}">Choice {{ forloop.counter }}</option>
+									{% endfor %}
+								</select>
+								<span  class="choice-filter choice---{{ question.poll.id }}---2">No Choice Filter</span>
+								<div class="gender">
+									<div class="graphContainer">
+										<p> Gender </p>
+										<div class="question_analyse_chart question_analyse_chart_cmp2" id="advanced-genderChart---{{ question.poll.id }}---2">
+										</div>
+									</div>
+								</div>
+								<span  class="choice-filter choice---{{ question.poll.id }}---2">No Choice Filter</span>
+								<div class="age">
+									<div class="graphContainer">
+										<p> Age </p>
+										<div class="question_analyse_chart question_analyse_chart_cmp2" id="advanced-ageChart---{{ question.poll.id }}---2">
+										</div>
+									</div>
+								</div>
+								<span  class="choice-filter choice---{{ question.poll.id }}---2">No Choice Filter</span>
+								<div class="location">
+									<div class="graphContainer">
+										<p> Location </p><div id="advanced-mapBackButton---{{ question.poll.id }}" class="back" onClick="back('{{ csrf_token }}','advanced-',{{ question.poll.id }},2)"><i class="fa fa-arrow-left"></i></div>
+										<div class="question_analyse_chart_loc question_analyse_chart_loc_cmp2" id="advanced-locationChart---{{ question.poll.id }}---2">
+										</div>
+									</div>
+								</div>
+								<span  class="choice-filter choice---{{ question.poll.id }}---2">No Choice Filter</span>
+								<div class="others">
+									<div class="graphContainer">
+										<p> Profession </p>
+										<div class="question_analyse_chart question_analyse_chart_cmp2" id="advanced-othersChart---{{ question.poll.id }}---2">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		<div id="export-content" class="admin-dash-div clearfix">
+			<div class="dashboard-header">
+				Export Reports
+			</div>
+			<div class="dashboard-stats clearfix">
+				<ul class="dashboard-recent">
+					<li> Survey</li>
+					{% for survey_det in surveys %}
+						<li class="li-margin-polls">
+							<div class="liDetail">
+								<div class="check_analyse">
+									<p class="main">
+										{{ survey_det.survey.survey_name }}
+									</p>
+									<p class="pollsDesc">{{ survey_det.survey.description }}</p>
+									<p class="check">
+										<span class="see-more-details see-more-details-p export-excel" id="export-excel{{ survey_det.survey.id }}"><a href="/exportexcel?sid={{ survey_det.survey.id }}"> Export as Excel</a></span>
+										<span class="see-more-details see-more-details-p export-pdf" id="export-pdf{{ survey_det.survey.id }}">Export as PDF</span>
+									</p>
+								</div>
+							</div>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+			<div class="dashboard-stats clearfix">
+				<ul class="dashboard-recent">
+					<li> Polls</li>
+					{% for question in polls %}
+						<li class="li-margin-polls">
+							<div class="liDetail">
+								<div class="check_analyse">
+									<p class="main">
+										{{ question.poll.question_text }}
+									</p>
+									<p class="pollsDesc">{{ question.poll.description }}</p>
+									<p class="check">
+										<span class="see-more-details see-more-details-p export-excel" id="export-excel{{ survey_det.survey.id }}"><a href="/exportexcel?qid={{ question.poll.id }}"> Export as Excel</a></span>
+										<span class="see-more-details see-more-details-p export-pdf" id="export-pdf{{ question.poll.id }}-poll">Export as PDF</span>
+									</p>
+								</div>
+							</div>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		<div id="feedback-content" class="admin-dash-div clearfix">
+			<div class="dashboard-header">
+				Feedback Widget
+			</div>
+			<div class="dashboard-stats clearfix">
+				{% for poll in feedback_polls %}
+					<div class="feedback-half">
+				
+				   		{% if poll.id == 3838 %}
+							{% include "feedback.html" with poll=poll %}
+						{% elif poll.id == 3839 %}
+							{% include "feedback2.html" with poll=poll %}
+						{% endif %}
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+		<script type="text/javascript" src="{% static 'js/jquery.stickyheader.js' %}"></script>
+		<script>
+			google.load('visualization', '1', {packages: ['corechart', 'bar','geochart']});
+			var profList = ["Student","Politics","Education","Information Technology","Public Sector","Social Services","Medical","Finance","Manager","Others"];
+			var i;
+			var currentActiveEditForm = '';
+			var editGroupFlag = false;
+
+			function deleteGroup(groupId, groupName){
+				var x=window.confirm("Are you sure to delete group: "+groupName+" ?");
+				if(x){
+					{% if user.is_authenticated %}
+						$.ajax({
+							url:"/user/deletegroup?groupId="+groupId,
+							type: 'GET',
+							processData: false,
+							contentType: false,
+							success:function(response)
+							{
+								console.log(response);
+								$('#dashboard-groups-tab').trigger("click");
+							}
+						});
+					{% endif %}
+				}
+			}
+
+			function editGroup(groupId){
+				data = {}
+				{% if user.is_authenticated %}
+					$.ajax({
+						url:"/user/editgroup?groupId="+groupId,
+						type: 'GET',
+						processData: false,
+						contentType: false,
+						success:function(response)
+						{
+							var formDivId = '#edit-group-'+groupId;
+							$('#groupMembersError').text('');
+							$('#groupNameErrors').text('');
+							$(currentActiveEditForm).html('');
+							$('.create-group').hide();
+							$(".edit-group").css("display", "none");
+							if(currentActiveEditForm != formDivId)
+							{
+								editGroupFlag = true;
+								currentActiveEditForm = formDivId;
+								$(formDivId).html($('.create-group').html());
+								$(".edit-group").css("display", "block");
+								$(formDivId).css("display", "block")
+								$('#groupName').val(response['groupName']);
+								$('#groupMembers').val(response['mailList']);
+								$('#isGroupEdit').val('yes');
+								$('.groupSubmit').val('Edit')
+								createGroup();
+							} else {
+								$(currentActiveEditForm).html('');
+								$(".edit-group").css("display", "none");
+								currentActiveEditForm = '';
+							}
+						}
+					});
+				{% endif %}
+			}
+
+			function displayGroupMembers(groupId){
+				var elemId = '#'+groupId;
+				$(elemId).toggle('slow');
+			}
+
+			var availableTags = [];
+			{% for category in categories %}
+				availableTags.push("{{ category.category_title }}");
+			{% endfor %}
+
+			var availableGroupTags = []
+			{% for group in groups %}
+				availableGroupTags.push("{{ group.groupName }}");
+			{% endfor %}
+
+			var choice_display = {};
+			// console.log({{ choice_id_text_data|safe }});
+			{% for key,val in choice_id_text_data.items %}
+				// console.log("{{ key }}");
+				choice_display["{{ key }}"] = "{{ val }}";
+			{% endfor %}
+			// console.log(choice_display);
+
+			function validateEmail(field) {
+    			var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,5}$/;
+    			return (regex.test(field)) ? true : false;
+			}
+
+			function validateMultipleEmailsCommaSeparated(emailcntl, seperator) {
+    			var value = emailcntl;
+			    if (value != '') {
+			        var result = value.split(seperator);
+			        for (var i = 0; i < result.length; i++) {
+			            if (result[i] != '') {
+			                if (!validateEmail(result[i])) {
+			                    $("#groupMembersError").text('Invalid mail id');
+			                    $("#createGroupSubmit").attr("disabled",false);
+			                    return false;
+			                }
+			            }
+			        }
+			    } else {
+			    	 $("#groupMembersError").text('Need to provide atleast one group member.');
+			    	 $("#createGroupSubmit").attr("disabled",false);
+			    	return false;
+			    }
+    			return true;
+			}
+
+			 // Method that checks that the browser supports the HTML5 File API
+		    function browserSupportFileUpload() {
+		        var isCompatible = false;
+		        if (window.File && window.FileReader && window.FileList && window.Blob) {
+		        isCompatible = true;
+		        }
+		        return isCompatible;
+		    }
+
+			function createGroup(){
+				if(!editGroupFlag){
+					$(".create-group").toggle("slow");
+					$("#groupMembersError").text('');
+					$("#groupNameErrors").text('');
+					$('.groupSubmit').val('Create');
+					$(currentActiveEditForm).html('');
+				}
+				editGroupFlag = false;
+
+				// Method that reads and processes the selected file
+				$("#csvUpload").change(function(evt){
+					if (!browserSupportFileUpload()) {
+				        alert('The File APIs are not fully supported in this browser!');
+				        } else {
+				            var data = null;
+				            var file = evt.target.files[0];
+				            var reader = new FileReader();
+				            reader.readAsText(file);
+				            reader.onload = function(event) {
+				                var csvData = event.target.result;
+				                data = $.csv.toArrays(csvData);
+				                if (data && data.length > 0) {
+				                	var tempEmail="";
+				                  	data.forEach(function(entry) {
+									   tempEmail += entry+";";
+									});
+									$("#groupMembers").val(tempEmail);
+				                } else {
+				                    alert('No data to import!');
+				                }
+				            };
+				            reader.onerror = function() {
+				                alert('Unable to read ' + file.fileName);
+				            };
+				        }
+
+				});
+
+				$('.groupSubmit').bind('click', function(event)
+				{
+					event.preventDefault();
+					var elemid = "#create-group-form";
+					var form_data = new FormData($(elemid)[0]);
+					var emailIdList = $('#groupMembers').val()
+					$('#groupNameErrors').text("");
+					if(validateMultipleEmailsCommaSeparated(emailIdList,';'))
+					{
+						$("#createGroupSubmit").attr("disabled","disabled");
+						{% if user.is_authenticated %}
+							$.ajax(
+							{
+								type: 'POST',
+								url:"/user/creategroup",
+								data:form_data,
+								processData: false,
+								contentType: false,
+								success:function(response)
+								{
+									if(typeof response.error === 'undefined'){
+										$('.create-group').html('');
+										$('#dashboard-groups-tab').trigger("click");
+									} else {
+										$("#groupMembersError").text('');
+										$('#groupNameErrors').text(response.error);
+									}
+									$("#createGroupSubmit").removeAttr("disabled");
+								}
+							});
+						{% else %}
+							$(location).attr('href',create_url);
+						{% endif %}
+					}
+				});
+			}
+
+			var display_question_count = 1;
+			var featureImageWrapped = false;
+			var question_count = 1;
+			var question_list = [];
+			var choice_count = {};
+			var choice_list = {};
+			var protectedResultSurvey = false;
+			var mandatorySurvey = false;
+			var addCommentSurvey = false;
+			var uploaded_mails_from_csv = {};
+			function createSurvey(){
+				$(".create-survey").toggle("slow");
+
+				$( "#categories" ).autocomplete({
+					source: availableTags,
+					multiselect: true,
+					maxselection: 5,
+					elemId: "selectedCategories"
+				});
+
+				$( "#groups" ).autocomplete({
+					source: availableGroupTags,
+					multiselect: true,
+					maxselection: 5,
+					elemId: "selectedGroups"
+				});
+
+				$('#id_categories').hide();
+				$('#id_categories').prev().append("<span id='cats'>Please Click here to expand and select your categories</span>");
+				$('#id_categories').prev().on('click', '#cats', function() {
+			    	$('#id_categories').toggle();
+			  	});
+
+			  	$("#category_tooltip_fa").hover(function(e){
+			  		// console.log($(this));
+			  		var elem_pos = $(this).offset();
+			  		// console.log(elem_pos.top,elem_pos.left);
+			  		$("#category_tooltip").css({
+			  			"top":elem_pos.top-100,
+			  			"left":elem_pos.left-60,
+			  		});
+			  		$("#category_tooltip").toggle();
+			  	});
+
+			  	$("#featuredimage_tooltip_fa").hover(function(e){
+			  		// console.log($(this));
+			  		var elem_pos = $(this).offset();
+			  		// console.log(elem_pos.top,elem_pos.left);
+			  		$("#featuredimage_tooltip").css({
+			  			"top":elem_pos.top-100,
+			  			"left":elem_pos.left-60,
+			  		});
+			  		$("#featuredimage_tooltip").toggle();
+			  	});
+
+
+			  	if(!featureImageWrapped){
+			  		featureImageWrapped = true;
+				  	/*For file browse */
+					var invisible = $('<div/>').css({height:0,width:0,'overflow':'hidden','display':'inline-block'});
+					var label = $('<div class="fileLabel btn"><img class="upImg" style="display:none;"><span id="upImgText">Upload Image</span></div>');
+					// var upImg = $('<img id="upImg" width=>')
+					var fileInput = $("#shareImage").after(label).wrap(invisible);
+					// $("#"+choice_file_id).hide();
+
+					fileInput.change(function(){
+						// $('#upImgText').hide();
+					    $this = $(this);
+					    var fileVal = $this.val();
+				    	var fileNameIndex = fileVal.lastIndexOf("\\") + 1;
+				    	var fileName = fileVal.substr(fileNameIndex);
+				    	if (this.files && this.files[0]) {
+				            var reader = new FileReader();
+
+				            reader.onload = function (e) {
+				                imgSrc = e.target.result;
+								console.log($this.parent().children().first());
+								// $(".upImg").attr('src', e.target.result);
+								$this.parent().next().children().first().attr('src', e.target.result);
+								// $(".upImg").show();
+								$this.parent().next().children().first().show();
+				            }
+
+				            reader.readAsDataURL(this.files[0]);
+				        }
+						// $("#upImgText").text(fileName);
+						$this.parent().next().children().first().next().hide();
+				    	$this.parent().parent().children().first().next().attr("placeholder", "Describe your image");
+					})
+					/* End of file browse*/
+				}
+
+			}
+
+			function add_another_choice(question_count_select,selectedType){
+			if(choice_list[question_count_select].length < {{ user.extendeduser.company.num_of_choices }} + 1){
+				var question_choice_count = choice_count[question_count_select];
+	  			choice_list[question_count_select].push(question_choice_count);
+	  			var choice_elem_div = "question"+question_count_select+"choiceDiv";
+	  			var question_div = "questionDiv"+question_count_select;
+				var choice_elem_id = question_div+'choice'+question_choice_count;
+				var choice_file_id = question_div+'choice'+question_choice_count+'file';
+				// console.log(question_count_select,selectedType,question_div);
+				var font_awesome_str = "";
+				var choice_elem = "";
+				if(selectedType === "radio"){
+					font_awesome_str = "";
+				} else if(selectedType === "checkbox"){
+					font_awesome_str = "";
+				}
+				if(selectedType != "text"){
+					choice_elem += '<div id="'+choice_elem_id+'Div"><p class"form-p">'+ font_awesome_str;
+					choice_elem += '<label for="'+choice_elem_id+'"></label><input id="'+choice_elem_id;
+					choice_elem += '" class="createPollText" type="text" name="'+choice_elem_id+'" placeholder="Enter Choice" maxlength="200">';
+					choice_elem += '<input id="'+choice_file_id+'" class="fileButtonClass" type="file" name="'+choice_elem_id+'" accept="image/*">';
+					choice_elem += '<i id="' +question_count_select+'---'+ question_choice_count+'---'+selectedType+ '" class="fa fa-times-circle remove-choice"> Remove</i></p></div>';
+					// console.log($("#"+choice_elem_div),choice_elem);
+					$("#"+choice_elem_div).append(choice_elem);
+				}
+				choice_count[question_count_select]+=1;
+
+				/*For file browse */
+					var invisible = $('<div/>').css({height:0,width:0,'overflow':'hidden','display':'inline-block'});
+					var label = $('<div class="fileLabel"><img class="upImg" style="display:none;"><span id="upImgText">Upload Image</span></div>');
+					// var upImg = $('<img id="upImg" width=>')
+					var fileInput = $("#"+choice_file_id).after(label).wrap(invisible);
+					// $("#"+choice_file_id).hide();
+
+					fileInput.change(function(){
+						// $('#upImgText').hide();
+					    $this = $(this);
+					    var fileVal = $this.val();
+				    	var fileNameIndex = fileVal.lastIndexOf("\\") + 1;
+				    	var fileName = fileVal.substr(fileNameIndex);
+				    	if (this.files && this.files[0]) {
+				            var reader = new FileReader();
+
+				            reader.onload = function (e) {
+				                imgSrc = e.target.result;
+								console.log($this.parent().children().first());
+								// $(".upImg").attr('src', e.target.result);
+								$this.parent().next().children().first().attr('src', e.target.result);
+								// $(".upImg").show();
+								$this.parent().next().children().first().show();
+				            }
+
+				            reader.readAsDataURL(this.files[0]);
+				        }
+						// $("#upImgText").text(fileName);
+						$this.parent().next().children().first().next().hide();
+				    	$this.parent().parent().children().first().next().attr("placeholder", "Describe your image");
+					})
+				/* End of file browse*/
+			}
+			}
+
+			$(document).ready(function(){
+
+				$(".dashboard-menu-li").click(function(){
+					$(".dashboard-menu-li").removeClass("selectedLi");
+					$(this).addClass("selectedLi");
+					// console.log($(this)[0].innerHTML);
+					var elem_id = $(this)[0].innerHTML.toLowerCase() + "-content";
+					 // console.log(elem_id);
+					var new_elem_html = "";
+					if(elem_id == "messages-content"){
+						$("#messages-content").append('<object id="inboxObject" data="/messages/inbox/" style="height:25rem; width:100%;"/>');
+						$(".admin-dash-div").hide();
+					    $("#"+elem_id).show();
+			        }
+					else if(elem_id == "dashboard-content"){
+						location.reload();
+			        }
+					else
+						$.ajax({
+					        url: "{{ request.path }}",
+					        type: 'GET',
+					        async: false,
+					        cache: false,
+					        timeout: 30000,
+					        error: function(){
+					            return true;
+					        },
+					        success: function(msg){
+					        	var new_html = document.createElement('html');
+					        	new_html.innerHTML = msg;
+					        	// console.log(new_html);
+					        	// console.log(typeof(new_html));
+					        	// console.log(new_html.getElementsByTagName("div"));
+					        	var new_divs = new_html.getElementsByTagName("div");
+					        	for (var i = 0, len = new_divs.length; i < len; i++) {
+								    if (new_divs[i].id === elem_id) {
+								        var result = new_divs[i];
+								        // console.log(result)
+								        new_elem_html = result.innerHTML;
+								        break;
+								    }
+								}
+								// console.log($("#"+elem_id));
+					            $("#"+elem_id)[0].innerHTML = new_elem_html;
+					            // console.log($("#"+elem_id));
+					            $(".admin-dash-div").hide();
+					            $("#"+elem_id).show();
+					            if(elem_id == "dashboard-content"){
+					            	drawChart();
+					            }
+					            if(elem_id == "advanced-content"){
+					            	{% for question in polls %}
+							            for (i = 0; i < profList.length; ++i) {
+										    var tempOption = '<option value="'+profList[i]+'">'+profList[i]+'</option>';
+										    // console.log(tempOption);
+										    $("#advancedanalyse---{{ question.poll.id }}---Profession---1").append(tempOption);
+										    $("#advancedanalyse---{{ question.poll.id }}---Profession---2").append(tempOption);
+										}
+										populateCountry("#advancedanalyse---{{ question.poll.id }}---Country---1");
+										populateCountry("#advancedanalyse---{{ question.poll.id }}---Country---2");
+									{% endfor %}
+								}
+								if(elem_id == "polls-content"){
+					            	{% for question in polls %}
+							            for (i = 0; i < profList.length; ++i) {
+										    var tempOption = '<option value="'+profList[i]+'">'+profList[i]+'</option>';
+										    // console.log(tempOption);
+										    $("#askbypoll-group-filter-profession---{{ question.poll.id }}").append(tempOption);
+										}
+										populateCountry("#askbypoll-group-filter-country---{{ question.poll.id }}");
+									{% endfor %}
+								}
+								$(".share-with-group").click(function(){
+									var surveyId=$(this)[0].id.replace("share-with-group","");
+									$(this).parent().next().toggle("slow");
+									$("#sharegroups"+surveyId ).autocomplete({
+										source: availableGroupTags,
+										multiselect: true,
+										maxselection: 5,
+										elemId: "shareselectedGroups"+surveyId
+									});
+									$(".share-button-g").click(function(){
+										var elemid = "#share-with-group-form"+surveyId;
+										var divelemid = "#shareselectedGroups"+surveyId + "Div";
+										var inputelemid = "#shareselectedGroups"+surveyId
+										var form_data = new FormData($(elemid)[0]);
+										$.ajax(
+										{
+											type: 'POST',
+											url:"/survey_mail",
+											data:form_data,
+											processData: false,
+											contentType: false,
+											success:function(obj)
+											{
+												// $("#sharegroups"+surveyId).autocomplete("destroy");
+												// $("#sharegroups"+surveyId).removeData('autocomplete');
+												// $(divelemid).replaceWith(function() {
+												// 	return $("#sharegroups"+surveyId, this);
+												// });
+												// children().not(".shareGroupsInput").remove();
+												// $(inputelemid).val("");
+												// $(elemid).hide();
+												$('#dashboard-surveys-tab').trigger("click");
+											}
+										});
+									});
+								});
+						 //    if(elem_id == "dashboard-content"){
+							// google.setOnLoadCallback(drawChart);
+					  //           	drawChart();
+					  //           }
+					        }
+					    });
+				});
+
+				$('#surveys-content').on("click",'.fileLabel',function(){
+					$(this).prev().children().first().click();
+				});
+
+
+				$('#polls-content').on("click",'.embed-poll-code',function(){
+					var embedCodePollId = $(this).attr('id').split('---')[1];
+					var embedCodeDiv = "embed-code---"+embedCodePollId+"Div";
+					$('#'+embedCodeDiv).toggle('slow');
+				});
+
+				$('#polls-content').on("click",'.mail-poll', function(){
+					var mailPollId = $(this).attr('id').split('---')[1];
+					var mailPollDivId = "mail-Poll---"+mailPollId+"Div";
+					$('#'+mailPollDivId).toggle('slow');
+					var selectedWidgetType = $("#mail-poll-widget-type---"+mailPollId).val();
+					form_data = { questionId: mailPollId, gethtml: true, widgetType: selectedWidgetType, csrfmiddlewaretoken: "{{ csrf_token }}" };
+					// console.log(form_data);
+					{% if user.is_authenticated %}
+						$.ajax(
+						{
+							type: 'POST',
+							url:"/sharepoll",
+							data:form_data,
+							async: false,
+					        cache: false,
+					        timeout: 30000,
+							success:function(response)
+							{
+								// console.log(response);
+								// console.log($("#askbypoll-email-preview---"+mailPollId));
+								$("#askbypoll-email-preview---"+mailPollId)[0].innerHTML = '<p class="askbypoll-email-preview-sub" id="askbypoll-email-preview-sub---'+mailPollId+'"></p>';
+								$("#askbypoll-email-preview---"+mailPollId).append(response.success);
+								$("#askbypoll-email-preview-sub---"+mailPollId)[0].innerHTML = 'Subject : <p class="askbypoll-email-preview-sub">' + response.mail_subject + "</p>";
+								$("#askbypoll-email-form---"+mailPollId)[0].innerHTML = '<p class="askbypoll-email-preview-sub" id="askbypoll-email-preview-sub-form---'+mailPollId+'">Subject : <p class="askbypoll-email-preview-sub"><textarea class="askbypoll-email-preview-sub-form-text" id="askbypoll-email-preview-sub-form-text---'+mailPollId+'"></textarea></p></p>';
+								$("#askbypoll-email-form---"+mailPollId).append(response.success_form);
+								$("#askbypoll-email-preview-sub-form-text---"+mailPollId)[0].innerHTML = response.mail_subject;
+							}
+						});
+					{% else %}
+						$(location).attr('href',"/");
+					{% endif %}
+				});
+
+				$('#polls-content').on("click",'.email-preview', function(){
+					var mailPollId = $(this).attr('id').split('---')[1];
+					var selectedWidgetType = $("#mail-poll-widget-type---"+mailPollId).val();
+					// console.log($("#askbypoll-email-preview-sub---"+mailPollId),$("#askbypoll-email-preview-sub---"+mailPollId)[0].innerHTML);
+					var subject = $("#askbypoll-email-preview-sub-form-text---"+mailPollId).val();
+					var body1 = $("#email-body1-textarea---"+mailPollId).val();
+					var body2 = $("#email-body2-textarea---"+mailPollId).val();
+					var salutation = $("#email-salutation-textarea---"+mailPollId).val();
+					form_data = { questionId: mailPollId, gethtml: true, widgetType: selectedWidgetType, subject: subject, body1: body1, body2: body2, salutation: salutation, csrfmiddlewaretoken: "{{ csrf_token }}" };
+					// console.log(form_data);
+					{% if user.is_authenticated %}
+						$.ajax(
+						{
+							type: 'POST',
+							url:"/sharepoll",
+							data:form_data,
+							async: false,
+					        cache: false,
+					        timeout: 30000,
+							success:function(response)
+							{
+								// console.log(response);
+								// console.log($("#askbypoll-email-preview---"+mailPollId));
+								$("#askbypoll-email-preview---"+mailPollId)[0].innerHTML = '<p class="askbypoll-email-preview-sub" id="askbypoll-email-preview-sub---'+mailPollId+'"></p>';
+								$("#askbypoll-email-preview---"+mailPollId).append(response.success);
+								$("#askbypoll-email-preview-sub---"+mailPollId)[0].innerHTML = 'Subject : <p class="askbypoll-email-preview-sub">' + response.mail_subject + "</p>";
+							}
+						});
+					{% else %}
+						$(location).attr('href',"/");
+					{% endif %}
+				});
+
+				$('#polls-content').on("change",".csv-upload-email", function(evt){
+					if (!browserSupportFileUpload()) {
+				        alert('The File APIs are not fully supported in this browser!');
+				        } else {
+				        	var mailPollId = $(this).attr('id').split('---')[1];
+				        	uploaded_mails_from_csv[mailPollId] = "";
+				        	// console.log(mailPollId);
+				        	var fileelem = $(this);
+				        	$(".upload-msg").remove();
+				        	var data = null;
+				            var file = evt.target.files[0];
+				            if(file){
+				            	fileelem.parent().append('<span class="upload-msg">Please Wait while we are processing the file</span>');
+				            	var reader = new FileReader();
+					            reader.readAsText(file);
+					            reader.onload = function(event) {
+					            	// console.log(mailPollId,"loaded");
+					                var csvData = event.target.result;
+					                data = $.csv.toArrays(csvData);
+					                $(".upload-msg").remove();
+					                fileelem.parent().append('<span class="upload-msg">'+data.length+' Records loaded</span>');
+					                var tempEmail = "";
+					                // console.log(uploaded_mails_from_csv);
+					                if (data && data.length > 0) {
+					                	data.forEach(function(entry) {
+										   tempEmail += entry+";";
+										});
+					                }
+					                uploaded_mails_from_csv[mailPollId] = tempEmail;
+					            };
+					            reader.onerror = function() {
+					                alert('Unable to read ' + file.fileName);
+					            };
+					        }
+				        }
+
+				});
+
+				$('#polls-content').on("change",'.mail-poll-widget-type', function(){
+					var saveElem = $(this);
+					var mailPollId = $(this).attr('id').split('---')[1];
+					var selectedWidgetType = $("#mail-poll-widget-type---"+mailPollId).val();
+					form_data = { questionId: mailPollId, gethtml: false, widgetType: selectedWidgetType, savehtml: false, gettemplate: true, csrfmiddlewaretoken: "{{ csrf_token }}" };
+					// console.log(form_data);
+					{% if user.is_authenticated %}
+						$.ajax(
+						{
+							type: 'POST',
+							url:"/sharepoll",
+							data:form_data,
+							async: false,
+					        cache: false,
+					        timeout: 30000,
+							success:function(response)
+							{
+								// console.log(response);
+								$("#askbypoll-email-preview-sub-form-text---"+mailPollId).val(response.mail_subject);
+								$("#email-body1-textarea---"+mailPollId).val(response.body1);
+								$("#email-body2-textarea---"+mailPollId).val(response.body2);
+								$("#email-salutation-textarea---"+mailPollId).val(response.salutation);
+							}
+						});
+					{% else %}
+						$(location).attr('href',"/");
+					{% endif %}
+				});
+
+				$('#polls-content').on("click",'.email-save', function(){
+					var saveElem = $(this);
+					saveElem.attr("disabled","disabled");
+					var mailPollId = $(this).attr('id').split('---')[1];
+					var selectedWidgetType = $("#mail-poll-widget-type---"+mailPollId).val();
+					var templateName = $("#email-template-name---"+mailPollId).val();
+					var subject = $("#askbypoll-email-preview-sub---"+mailPollId)[0].innerHTML.replace('Subject : <p class="askbypoll-email-preview-sub">',"").replace("</p>","");
+					var body1 = $("#email-body1---"+mailPollId)[0].innerHTML;
+					var body2 = $("#email-body2---"+mailPollId)[0].innerHTML;
+					body1 = body1.replace(/<\/?p?>/g,"\n");
+					body1 = body1.replace(/<p?>/g,"\n");
+					body1 = body1.replace(/<br?>/g,"\n");
+					body2 = body2.replace(/<\/?p?>/g,"\n");
+					body2 = body2.replace(/<p?>/g,"\n");
+					body2 = body2.replace(/<br?>/g,"\n");
+					var salutation = $("#email-salutation---"+mailPollId)[0].innerHTML;
+					form_data = { questionId: mailPollId, gethtml: false, widgetType: selectedWidgetType, subject: subject, body1: body1, body2: body2, salutation: salutation, templateName: templateName, savehtml: true, csrfmiddlewaretoken: "{{ csrf_token }}" };
+					$(".errorlist").remove();
+					// console.log(form_data);
+					{% if user.is_authenticated %}
+						$.ajax(
+						{
+							type: 'POST',
+							url:"/sharepoll",
+							data:form_data,
+							async: false,
+					        cache: false,
+					        timeout: 30000,
+							success:function(response)
+							{
+								console.log(response);
+								if("error" in response){
+									saveElem.parent().append('<span class="errorlist">'+response.error+'</span>');
+								}else{
+									$("#mail-poll-widget-type---"+mailPollId).append('<option value="'+response.name+'" selected>'+response.display_name+'</option>');
+								}
+								saveElem.removeAttr("disabled");
+							}
+						});
+					{% else %}
+						$(location).attr('href',"/");
+					{% endif %}
+				});
+
+				$('#polls-content').on("click",'.send-mail-using-widget', function(){
+					var saveElem = $(this);
+					saveElem.attr("disabled","disabled");
+					$(".errorlist").remove();
+					var mailPollId = $(this).attr('id').split('---')[1];
+					var selectedWidgetType = $("#mail-poll-widget-type---"+mailPollId).val();
+					var emailList = $("#mailPoll---"+mailPollId).val();
+					var emailListFromFile = uploaded_mails_from_csv[mailPollId];
+					// console.log(uploaded_mails_from_csv);
+					var subject = $("#askbypoll-email-preview-sub---"+mailPollId)[0].innerHTML.replace('Subject : <p class="askbypoll-email-preview-sub">',"").replace("</p>","");
+					var body1 = $("#email-body1---"+mailPollId)[0].innerHTML;
+					var body2 = $("#email-body2---"+mailPollId)[0].innerHTML;
+					body1 = body1.replace(/<\/?p?>/g,"\n");
+					body1 = body1.replace(/<p?>/g,"\n");
+					body1 = body1.replace(/<br?>/g,"\n");
+					body2 = body2.replace(/<\/?p?>/g,"\n");
+					body2 = body2.replace(/<p?>/g,"\n");
+					body2 = body2.replace(/<br?>/g,"\n");
+					var salutation = $("#email-salutation---"+mailPollId)[0].innerHTML;
+					form_data = { questionId: mailPollId, gethtml: false, widgetType: selectedWidgetType, subject: subject, body1: body1, body2: body2, salutation: salutation, savehtml: false, emailList: emailList, emailListFromFile: emailListFromFile, csrfmiddlewaretoken: "{{ csrf_token }}" };
+					// console.log(form_data);
+					{% if user.is_authenticated %}
+						$.ajax(
+						{
+							type: 'POST',
+							url:"/sharepoll",
+							data:form_data,
+							async: true,
+					        cache: false,
+					        timeout: 30000,
+							success:function(response)
+							{
+								console.log(response);
+								if("error" in response){
+									saveElem.parent().append('<span class="errorlist errorListEmailTemplate">'+response.error+'</span>');
+								}else{
+									uploaded_mails_from_csv[mailPollId] = "";
+									 $(".upload-msg").remove();
+									// $("#mail-poll-widget-type---"+mailPollId).append('<option value="'+response.name+'" selected>'+response.display_name+'</option>');
+								}
+								saveElem.removeAttr("disabled");
+							}
+						});
+					{% else %}
+						$(location).attr('href',"/");
+					{% endif %}
+				});
+
+				$("#polls-content").on("change","select.askbypoll-group-filter-country",function(){
+			    	var elemId = $(this)[0].id;
+					var pollId = elemId.split("---")[1];
+					var common_elem_id_str = "#askbypoll-group-filter-country---"+pollId;
+					var selectedChoice_country= $(common_elem_id_str).val();
+					populateState("#askbypoll-group-filter-state---"+pollId,selectedChoice_country);
+				});
+
+				$('#polls-content,#advanced-content,#surveys-content').on("click","p.analyse_question_text",function(){
+					var elemId = $(this)[0].id;
+					var pollId = elemId.split("---")[1];
+					var analysisDivId = '#'+elemId+"Div";
+					var isMatch = /^advanced-*/.test(elemId);
+					var analyse_type = "";
+					if(isMatch)
+						analyse_type = "advanced-";
+			      	$(analysisDivId).toggle("slow");
+				  	var delay=1000; //1 seconds
+					setTimeout(function(){
+					$("#text-analyse---"+pollId+"Div").toggle("slow");
+					if($(analysisDivId).is(':visible')){
+					  drawPollsChart("{{ csrf_token }}",analyse_type,parseInt(pollId))
+					  drawGenderChart("{{ csrf_token }}",analyse_type,parseInt(pollId));
+					  drawAgeChart("{{ csrf_token }}",analyse_type,parseInt(pollId));
+					  drawOthersChart("{{ csrf_token }}",analyse_type,parseInt(pollId));
+					  drawLocationChart("{{ csrf_token }}",analyse_type,parseInt(pollId));
+					  drawPollsChart("{{ csrf_token }}","advancedanalyse-",parseInt(pollId),null,null,null,null,null,"column1");
+					  drawPollsChart("{{ csrf_token }}","advancedanalyse-",parseInt(pollId),null,null,null,null,null,"column2");
+					  drawGenderChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,"1");
+					  drawAgeChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,"1");
+					  drawOthersChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,"1");
+					  drawLocationChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,'1');
+					  drawGenderChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,"2");
+					  drawAgeChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,"2");
+					  drawOthersChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,"2");
+					  drawLocationChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,'2');
+					  $(window).resize(function() {
+						    if(this.resizeTO) clearTimeout(this.resizeTO);
+						    this.resizeTO = setTimeout(function() {
+								drawPollsChart("{{ csrf_token }}",analyse_type,parseInt(pollId))
+								drawGenderChart("{{ csrf_token }}",analyse_type,parseInt(pollId));
+								drawAgeChart("{{ csrf_token }}",analyse_type,parseInt(pollId));
+								drawOthersChart("{{ csrf_token }}",analyse_type,parseInt(pollId));
+								drawLocationChart("{{ csrf_token }}",analyse_type,parseInt(pollId));
+								drawPollsChart("{{ csrf_token }}","advancedanalyse-",parseInt(pollId),null,null,null,null,null,"column1");
+								drawPollsChart("{{ csrf_token }}","advancedanalyse-",parseInt(pollId),null,null,null,null,null,"column2");
+								drawGenderChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,"1");
+								drawAgeChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,"1");
+								drawOthersChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,"1");
+								drawLocationChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,'1');
+								drawGenderChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,"2");
+								drawAgeChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,"2");
+								drawOthersChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,"2");
+								drawLocationChart("{{ csrf_token }}",analyse_type,parseInt(pollId),null,'2');
+						    }, 500);
+						});
+					}
+					else{
+						// $("#text-analyse---"+pollId+"Div").toggle("slow");
+					}
+					}, delay);
+			    });
+
+				$("#surveys-content").on("click",".main-survey",function(){
+					$(this).parent().parent().next().toggle("slow");
+				});
+
+				$("#surveys-content").on("click",".survey-overview-button",function(){
+			     $(this).parent().parent().parent().first().next().next().toggle("slow");
+			    });
+
+			    $("#polls-content, #advanced-content,#surveys-content").on("change","select.analyseSelect",function(){
+			    	var elemId = $(this)[0].id;
+					var pollId = elemId.split("---")[1].replace("Select","");
+					var graphId = elemId.split("---")[2];
+					var choice_text_para = "choice---"+pollId+"---"+graphId;
+					console.log(choice_text_para);
+					// console.log(pollId);
+					var isMatch = /^advanced-*/.test(elemId);
+					// console.log(isMatch);
+					var analyse_type = "";
+					if(isMatch)
+						analyse_type = "advanced-";
+					var analysisDivId = '#'+analyse_type+'analyse---'+pollId+"Div";
+					// console.log(analysisDivId);
+					var selectedChoice = $("#"+elemId).val();
+					// console.log(selectedChoice);
+					if(selectedChoice != "nochoice"){
+						var selectedChoiceId = parseInt(selectedChoice.replace("choice",""));
+						console.log(pollId+"---"+selectedChoiceId,choice_display);
+						$("."+choice_text_para).html(choice_display[pollId+"---"+selectedChoiceId]);
+						// $(analysisDivId).hide();
+						// $(analysisDivId).toggle("slow");
+						// console.log(selectedChoiceId);
+						var delay=2000; //1 seconds
+						// setTimeout(function(){
+						//your code to be executed after 1 seconds
+						if($(analysisDivId).is(':visible')){
+						  drawGenderChart("{{ csrf_token }}",analyse_type,parseInt(pollId),selectedChoiceId,graphId);
+						  drawAgeChart("{{ csrf_token }}",analyse_type,parseInt(pollId),selectedChoiceId,graphId);
+						  drawOthersChart("{{ csrf_token }}",analyse_type,parseInt(pollId),selectedChoiceId,graphId);
+						  drawLocationChart("{{ csrf_token }}",analyse_type,parseInt(pollId),selectedChoiceId,graphId);
+						  $(window).resize(function() {
+						    if(this.resizeTO) clearTimeout(this.resizeTO);
+						    this.resizeTO = setTimeout(function() {
+								drawGenderChart("{{ csrf_token }}",analyse_type,parseInt(pollId),selectedChoiceId,graphId);
+								drawAgeChart("{{ csrf_token }}",analyse_type,parseInt(pollId),selectedChoiceId,graphId);
+								drawOthersChart("{{ csrf_token }}",analyse_type,parseInt(pollId),selectedChoiceId,graphId);
+								drawLocationChart("{{ csrf_token }}",analyse_type,parseInt(pollId),selectedChoiceId,graphId);
+						    }, 500);
+						  });
+						}
+						// }, delay);
+					}else{
+						$("."+choice_text_para).html("No Choice Filter");
+						if($(analysisDivId).is(':visible')){
+						  drawGenderChart("{{ csrf_token }}",analyse_type,parseInt(pollId),graphId);
+						  drawAgeChart("{{ csrf_token }}",analyse_type,parseInt(pollId),graphId);
+						  drawOthersChart("{{ csrf_token }}",analyse_type,parseInt(pollId),graphId);
+						  drawLocationChart("{{ csrf_token }}",analyse_type,parseInt(pollId),graphId);
+						  $(window).resize(function() {
+						    if(this.resizeTO) clearTimeout(this.resizeTO);
+						    this.resizeTO = setTimeout(function() {
+								drawGenderChart("{{ csrf_token }}",analyse_type,parseInt(pollId),graphId);
+								drawAgeChart("{{ csrf_token }}",analyse_type,parseInt(pollId),graphId);
+								drawOthersChart("{{ csrf_token }}",analyse_type,parseInt(pollId),graphId);
+								drawLocationChart("{{ csrf_token }}",analyse_type,parseInt(pollId),graphId);
+						    }, 500);
+						  });
+						}
+					}
+				});
+
+				$("#advanced-content,#surveys-content").on("change","select.advancedanalyseSelect",function(){
+			    	var elemId = $(this)[0].id;
+					var pollId = elemId.split("---")[1];
+					var graphId = elemId.split("---")[3];
+					// console.log(elemId);
+					// console.log(pollId);
+					var isMatch = /^advancedanalyse-*/.test(elemId);
+					// console.log(isMatch);
+					var analyse_type = "advanced-";
+					if(isMatch)
+						analyse_type = "advancedanalyse-";
+					var analysisDivId = '#'+analyse_type+'analyse---'+pollId+"Div";
+					// console.log(analysisDivId);
+					var common_elem_id_str = "#advancedanalyse---"+pollId+"---";
+					var selectedChoice_age = $(common_elem_id_str+"Age---"+graphId).val();
+					var selectedChoice_gender = $(common_elem_id_str+"Gender---"+graphId).val();
+					var selectedChoice_prof = $(common_elem_id_str+"Profession---"+graphId).val();
+					var selectedChoice_country = $(common_elem_id_str+"Country---"+graphId).val();
+					var selectedChoice_state = $(common_elem_id_str+"State---"+graphId).val();
+					// console.log(selectedChoice_age,selectedChoice_gender,selectedChoice_prof,selectedChoice_country,selectedChoice_state);
+					drawPollsChart("{{ csrf_token }}",analyse_type,parseInt(pollId),selectedChoice_age,selectedChoice_gender,selectedChoice_prof,selectedChoice_country,selectedChoice_state,"column"+graphId);
+					$(window).resize(function() {
+					    if(this.resizeTO) clearTimeout(this.resizeTO);
+					    this.resizeTO = setTimeout(function() {
+							drawPollsChart("{{ csrf_token }}",analyse_type,parseInt(pollId),selectedChoice_age,selectedChoice_gender,selectedChoice_prof,selectedChoice_country,selectedChoice_state,"column"+graphId);
+					    }, 500);
+					});
+				});
+
+				$("#advanced-content,#surveys-content").on("change","select.advancedanalyseSelectCountry",function(){
+			    	var elemId = $(this)[0].id;
+					var pollId = elemId.split("---")[1];
+					var graphId = elemId.split("---")[3];
+					// console.log(elemId);
+					// console.log(pollId);
+					var common_elem_id_str = "#advancedanalyse---"+pollId+"---";
+					var selectedChoice_country= $(common_elem_id_str+"Country---"+graphId).val();
+					populateState(common_elem_id_str+"State---"+graphId,selectedChoice_country);
+				});
+
+				$("#surveys-content").on("click",".add-q",function(){
+			  		choice_count[question_count] = 1;
+			  		choice_list[question_count] = [];
+			  		var question_count_str = question_count.toString();
+			  		question_list.push(question_count_str);
+			  		var question_elem = '<div class="survey-question-div" id="questionDiv'+question_count_str+'">';
+			  		question_elem += '<i id="remove-question' +question_count_str+ '"class="fa fa-times-circle remove-question"> Remove</i><p class="form-p"> Question <span class="display_question_count">'+display_question_count+'</span>:</p><p class="form-p"><label class=" required" for="qText';
+			  		question_elem += question_count_str;
+			  		question_elem += '">Question</label><textarea id ="qText';
+			  		question_elem += question_count_str;
+			  		question_elem += '" name="qText';
+			  		question_elem += question_count_str;
+			  		question_elem += '" placeholder="Ask the people" maxlength="200"></textarea></p><p class="form-p"><label for="qDesc';
+			  		question_elem += question_count_str;
+			  		question_elem += '">Description</label><textarea id ="qDesc';
+			  		question_elem += question_count_str;
+			  		question_elem += '" name="qDesc';
+			  		question_elem += question_count_str;
+			  		question_elem += '" placeholder="Description" maxlength="400"></textarea></p>';
+			  		if(mandatorySurvey)
+			  			question_elem += '<p class="anonymous"><input id="mandatory' +question_count_str+ '" name="mandatory' +question_count_str+ '" type="checkbox" checked><label for="mandatory' +question_count_str+ '">Mandatory </label></p>';
+			  		else
+			  			question_elem += '<p class="anonymous"><input id="mandatory' +question_count_str+ '" name="mandatory' +question_count_str+ '" type="checkbox"><label for="mandatory' +question_count_str+ '">Mandatory </label></p>';
+			  		if(protectedResultSurvey)
+			  			question_elem += '<p class="anonymous" style="margin-top:1rem"><input id="protectResult' +question_count_str+ '" name="protectResult' +question_count_str+ '" type="checkbox" checked><label for="protectResult' +question_count_str+ '">Protect Result </label></p>';
+			  		else
+			  			question_elem += '<p class="anonymous" style="margin-top:1rem"><input id="protectResult' +question_count_str+ '" name="protectResult' +question_count_str+ '" type="checkbox"><label for="protectResult' +question_count_str+ '">Protect Result </label></p>';
+			  		if(addCommentSurvey)
+			  			question_elem += '<p id="addComment' +question_count_str+ 'p" class="anonymous" style="display:none;margin-top:1rem"><input id="addComment' +question_count_str+ '" name="addComment' +question_count_str+ '" type="checkbox" checked><label for="addComment' +question_count_str+ '">Require Feedback </label></p>';
+			  		else
+			  			question_elem += '<p id="addComment' +question_count_str+ 'p" class="anonymous" style="display:none;margin-top:1rem"><input id="addComment' +question_count_str+ '" name="addComment' +question_count_str+ '" type="checkbox"><label for="addComment' +question_count_str+ '">Require Feedback </label></p>';
+			  		question_elem += '<p class="form-p"><label for="qType';
+			  		question_elem += question_count_str;
+			  		// change for radio default start
+			  		question_elem += '">Question Type</label><select class="question-type-select" id="question-type-select'+question_count_str+'" name="qType'+question_count_str+'"><option value="radio">Single Select</option><option value="checkbox">Multi Select</option><option value="text">Text</option></select></p>';
+			  		question_elem += '<div id="question'+question_count_str+'choiceDiv"><i id="' +question_count_str+'---radio" class="fa fa-plus-circle add-choice"> Add Another</i></div>'
+			  		// change for radio default end
+			  		question_elem += '</div>';
+			  		// console.log(question_elem);
+			  		$(".survey-questions").append(question_elem);
+			  		// change for radio default start
+			  		add_another_choice(question_count,"radio");
+			  		$("#addComment"+question_count_str+"p").show();
+			  		// change for radio default end
+			  		question_count += 1;
+			  		display_question_count += 1;
+			  	});
+
+				$("#surveys-content").on("click",".remove-choice",function(){
+					var elemId = $(this)[0].id;
+					var question_count_select2 = elemId.split("---")[0];
+					var question_choice_count2 = elemId.split("---")[1];
+					var selectedType2 = elemId.split("---")[2];
+					$("#questionDiv"+question_count_select2+"choice"+question_choice_count2+"Div").remove();
+					choice_list[question_count_select2] = jQuery.grep(choice_list[question_count_select2], function(value) {
+					  return value != question_choice_count2;
+					})
+					if(choice_list[question_count_select2].length < {{ user.extendeduser.company.num_of_choices }} + 1){
+						if ($("#"+question_count_select2+'---'+selectedType2).length > 0) {
+						    $("#"+question_count_select2+'---'+selectedType2).show();
+						}
+					}
+					// choice_list[question_count_select2].remove(question_choice_count2);
+				});
+
+				$("#surveys-content").on("change",".question-type-select",function(){
+		  			var select_elem_id = $(this)[0].id;
+		  			var question_count_select = select_elem_id.replace("question-type-select","");
+		  			choice_count[question_count_select] = 1;
+		  			choice_list[question_count_select] = [];
+		  			var question_choice_count = choice_count[question_count_select];
+		  			var choice_elem_div = "question"+question_count_select+"choiceDiv";
+		  			var question_div = "questionDiv"+question_count_select;
+					$("#"+choice_elem_div).remove();
+		  			// console.log($("#"+choice_elem_div));
+		  			var selectedType = $("#"+select_elem_id+" option:selected").val();
+					if(selectedType != "text"){
+						var add_another_choice_elem = '<div id="'+choice_elem_div+'"></div>';
+						$("#"+question_div).append(add_another_choice_elem);
+						$("#"+choice_elem_div).append('<i id="' +question_count_select+'---'+selectedType + '" class="fa fa-plus-circle add-choice"> Add Another</i>');
+						add_another_choice(question_count_select,selectedType);
+					}
+					if(selectedType == "radio"){
+						$("#addComment"+question_count_select+"p").show();
+					} else {
+						$("#addComment"+question_count_select+"p").hide();
+					}
+				});
+
+				$("#surveys-content").on("click",".add-choice",function(){
+					var elemId = $(this)[0].id;
+					var question_count_select1 = elemId.split("---")[0];
+					var selectedType1 = elemId.split("---")[1];
+					add_another_choice(question_count_select1,selectedType1);
+					if(choice_list[question_count_select1].length >= {{ user.extendeduser.company.num_of_choices }} + 1){
+						$("#"+question_count_select1+'---'+selectedType1).hide();
+					}
+				});
+
+				$("#surveys-content").on("click",".remove-question",function(){
+					var elemId = $(this)[0].id;
+					var question_count_select3 = elemId.replace("remove-question","");
+					$("#questionDiv"+question_count_select3).remove();
+					question_list = jQuery.grep(question_list, function(value) {
+					  return value != question_count_select3;
+					})
+					delete choice_list[question_count_select3];
+					var refresh_display_count = 1;
+					$(".display_question_count").each(function(i){
+						$(this)[0].innerHTML = refresh_display_count;
+						refresh_display_count += 1;
+					});
+					display_question_count = refresh_display_count;
+				});
+
+				$("#surveys-content").on("click","#protectResult",function(){
+					protectedResultSurvey = !protectedResultSurvey;
+					var checked = false;
+					if($("#protectResult").is(':checked'))
+						checked = true;
+					for(var i=0; i<question_list.length; i++){
+						$("#protectResult"+question_list[i]).prop( "checked", checked );
+					}
+				});
+
+				$("#surveys-content").on("click","#mandatory",function(){
+					mandatorySurvey = !mandatorySurvey;
+					var checked = false;
+					if($("#mandatory").is(':checked'))
+						checked = true;
+					for(var i=0; i<question_list.length; i++){
+						$("#mandatory"+question_list[i]).prop( "checked", checked );
+					}
+				});
+
+				$("#surveys-content").on("click","#addComment",function(){
+					addCommentSurvey = !addCommentSurvey;
+					var checked = false;
+					if($("#addComment").is(':checked'))
+						checked = true;
+					for(var i=0; i<question_list.length; i++){
+						$("#addComment"+question_list[i]).prop( "checked", checked );
+					}
+				});
+
+				$("#surveys-content").on("click",".surveySubmit",function(event){
+					event.preventDefault();
+					var elemid = "#create-survey-form";
+					var form_data = new FormData($(elemid)[0]);
+					form_data.append('question_count', JSON.stringify(question_list));
+					form_data.append('choice_count', JSON.stringify(choice_list));
+					$("#createSurveySubmit").attr("disabled","disabled");
+					{% if user.is_authenticated %}
+						$.ajax(
+						{
+							type: 'POST',
+							url:"/create_survey",
+							data:form_data,
+							processData: false,
+							contentType: false,
+							success:function(obj)
+							{
+								$(".errorlist").remove();
+								console.log(obj);
+								if(obj.hasOwnProperty("success")){
+									$('#dashboard-surveys-tab').trigger("click");
+									display_question_count = 1;
+									featureImageWrapped = false;
+									question_count = 1;
+									question_list = [];
+									choice_count = {};
+									choice_list = {};
+									protectedResultSurvey = false;
+									addCommentSurvey = false;
+									mandatorySurvey = false;
+								}
+								else{
+									for(var key in obj){
+									    if (obj.hasOwnProperty(key)){
+									    	if(key === "surveyError")
+										        $(".create-survey").children().first().prepend('<span class="errorlist errorlistSurvey error-survey"><br>'+obj[key]+'</span>');
+										   	else{
+										   		$("#"+key).parent().append('<span class="errorlist errorlistSurvey"><br>'+obj[key]+'</span>');
+										   	}
+									    }
+									}
+									$("#createSurveySubmit").removeAttr("disabled");
+								}
+							}
+						});
+					{% else %}
+						$(location).attr('href',create_url);
+					{% endif %}
+				});
+
+				$("#export-content").on("click",".export-pdf",function(){
+					var survey_id = $(this)[0].id.replace("export-pdf","");
+					var export_url = "/exportpdf/"+survey_id;
+					var file_name = 'Survey-'+survey_id+'-pdf.pdf';
+					if( survey_id.indexOf("poll") != -1){
+						survey_id = survey_id.replace("-poll","");
+						export_url = "/exportpdfpoll/"+survey_id
+						file_name = 'Poll-'+survey_id+'-pdf.pdf';
+					}
+					$("#export-content").html('<p class="coming-soon">Please wait for some time.. We are making some sense of the data for you..</p>');
+					$("#dashboard-menu").hide();
+					{% if user.is_authenticated %}
+						$.ajax(
+						{
+							type: 'GET',
+							url:export_url,
+							statusCode: {
+								404: function() {
+									$('#overlay-inAbox').children().children().first().text("No Survey Selected");
+									openOverlay("#overlay-inAbox");
+									$(this).css({"color":"red"});
+								}
+							},
+							success:function(response)
+							{
+								// console.log(response);
+								var new_html = document.createElement('div');
+								// $(new_html).id = "pdf-html";
+					        	new_html.innerHTML = response;
+					        	$('body').append('<div id="pdf-body">'+response+'</div>');
+
+					  			setTimeout(function(){
+					  				var pageLenth = $('.pdf-pages').length;
+					  				var pageRendered = 0;
+					  				var a4  =[ 595.28,  841.89];
+						  			var doc = new jsPDF('p', 'pt', 'a4', false);
+						  			doc.setProperties({
+										title: 'Survey Analysis',
+										subject: 'Survey Analysis',
+										author: 'AskByPoll',
+										creator: 'AskByPoll'
+									});
+									// var dataimgs = [];
+						  			var targets = []
+						  			var bgimg = new Image();
+						            bgimg.src = "/static/login/images/analytics-raw.jpg";
+						            bgimg.onload = function(){
+									    var bgimgloaded = getBase64Image(bgimg, a4);
+									    // return dataURI;
+									    html2canvas($("#pdf-survey-footer"), {
+								        onrendered: function (canvas) {
+								            //Set hidden field's value to image data (base-64 string
+								            var	footerimg = (canvas.toDataURL("image/png"));
+								            for(var j=0; j<pageLenth; j++){
+								  				// dataimgs.push("");
+								  				targets.push("");
+								  				if(j == 0){
+													doc.addImage(bgimgloaded,'JPEG',0,0,a4[0],a4[1],'mybgimg');
+									            	doc.addImage(footerimg, 'JPEG',0,790,a4[0],55,'myfooterimg');
+												}
+												else{
+													doc.addImage('mybgimg','JPEG',0,0,a4[0],a4[1]);
+									            	doc.addImage('myfooterimg', 'JPEG',0,790,a4[0],55);
+												}
+												if(j != pageLenth-1)
+													doc.addPage();
+								  			}
+								  			$(".pdf-pages").each(function(i){
+								  				// console.log($(this));
+								  				var target = $(this);//$("#"+$(this)[i].id);
+								  				targets[i] = $(this)[0].id;
+								  				//target.width((a4[0]*1.33333) -80).css('max-width','none');
+								  				html2canvas(target, {
+											        onrendered: function (canvas) {
+											            //Set hidden field's value to image data (base-64 string
+											            var pageIndex = targets.indexOf(target[0].id);
+														console.log("rendered",target);
+														console.log(pageIndex);
+														console.log(target[0].id);
+											            pageRendered += 1
+											            var	dataimg = (canvas.toDataURL("image/png"));
+											            // dataimgs[pageIndex] = dataimg;
+											            doc.setPage(pageIndex+1);
+											            doc.addImage(dataimg, 'JPEG',20,20);
+											            // sleep(1000);
+											            console.log(pageLenth,pageRendered);
+														if(pageLenth == pageRendered){
+												            console.log("saving");
+												  			doc.save(file_name);
+															$('body').find($("#pdf-body")).remove();
+															$("#dashboard-menu").show();
+															$('#dashboard-export-tab').click();
+														}
+												    },
+												});
+											});
+									    },
+									});
+									}
+									// bgimg.onload();
+								}, 5000);
+							}
+						});
+					{% else %}
+						$("#export-content").click();
+					{% endif %}
+				});
+			});
+		</script>
+
+	</section>
+{% endblock %}

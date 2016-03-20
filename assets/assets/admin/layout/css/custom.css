@@ -1,0 +1,10 @@
+.btn{
+  font-size: 10px;
+}
+
+@media only screen and (max-width: 480px){
+  input::-webkit-input-placeholder { font-size: 8pt;}
+  input::-moz-placeholder { font-size: 8pt;}
+  input:-ms-input-placeholder { font-size: 8pt;}
+  input:-moz-placeholder { font-size: 8pt;}
+}

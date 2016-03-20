@@ -1,0 +1,92 @@
+{% extends "polls/common.html" %}
+{% load static %}
+{% block extra_css %}
+	<style>
+		.cta{
+			margin-top:32rem !important;
+			margin-bottom:0rem !important;
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="{% static 'login/css/redeem.css' %}" />
+{% endblock %}
+{% block content %}
+<section id="content">
+	<div class="categoriesList clearfix">
+		<div id="coinCreditDetails">
+				<!-- <p>
+					100 pCoins = <i class="fa fa-inr"></i> 10
+				</p> -->
+				<p id="userCreditsRemaining">
+					pCoins redeemable :: {{ user.extendeduser.credits }} <i class="fa fa-coins"></i> 
+				</p>
+				<p style="padding-top:1rem;">
+					100 <i class="fa fa-coins"></i> = <i class="fa fa-inr"></i> 10 
+				</p>
+		</div>
+		<div id="redemptionSchemesMessage" style="padding-bottom:1rem;">
+			<p> Choose Your Coupons </p>
+		</div>
+		<div class="messagesDiv clearfix">
+		</div>
+
+		<form class="redemptionForm" method="POST" action="{% url 'login:redeem' user.id user.extendeduser.user_slug %}" style="margin-rigth:-5rem;">
+			{% csrf_token %}
+			{% for scheme in schemes %}
+				<div class="couponContainer">
+					<label for = "{{ scheme.schemeName }}">
+						<figure class="category_figure">
+							<img class="category_imagethumbnails" src="{{ scheme.schemeImageUrl }}" alt="{{ scheme.schemeName }}">
+							<figcaption class="category_figurecaption">{{ scheme.schemeDisplayName }} (<i class="fa fa-inr"></i> {{scheme.schemeCostInRupees }} coupon) : {{ scheme.schemeCostInPCoins }} <i class="fa fa-coins"></i><br><label for = "text---{{ scheme.schemeName }}">Quantity</label>
+					<input name="{{ scheme.schemeName }}" class="qtyText" type="text" id="text---{{ scheme.schemeName }}" value="0" placeholder="0"></figcaption>
+						</figure>
+					</label>
+					<!-- <input class="redemptionCheckbox" type="checkbox" id="check---{{ scheme.schemeName }}" value="check---{{ scheme.id }}"> -->
+					
+				</div>
+			{% endfor %}
+			<br><br>
+			<div class="cta">
+				<input value="Redeem" class="submit btn" id="submit" type="submit"/>
+			</div>
+		</form>
+		<script>
+			$(document).ready(function()
+			{
+				$('.submit').bind('click', function(event)
+				{
+					event.preventDefault();
+					$("#submit").attr("disabled","disabled");
+					var form_data = new FormData($(".redemptionForm")[0]);
+					$.ajax({
+						type: 'POST',
+						url:"",
+						data:form_data,
+						processData: false,
+						contentType: false,
+						csrfmiddlewaretoken: '{{ csrf_token }}',
+						success:function(response)
+						{
+							var resp = response;
+							var insufficientpCoinsError = response.insufficientpCoins;
+							var successMessage = response.successMessage;
+							var validationPassed = response.validationPassed
+							var remainingCredits = response.remainingCredits
+							if(typeof insufficientpCoinsError === 'undefined' || validationPassed === 'All Coupons are valid')
+							{
+								$(".messagesDiv").empty();
+								$(".messagesDiv").append('<span style="color:green;">'+successMessage+'</span>');
+								$("#userCreditsRemaining").text("User Credits Remaining "+remainingCredits.toString());
+							} else {
+								$(".messagesDiv").empty();
+								$(".messagesDiv").append('<span style="color:red;">'+insufficientpCoinsError+'</span>');
+							}
+							$("#submit").removeAttr("disabled");
+						}
+					});
+					return false;
+					});
+				});
+			</script>
+	</div>
+</section>
+{% endblock %}

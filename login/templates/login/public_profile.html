@@ -1,0 +1,485 @@
+{% extends "polls/common.html" %}
+{% load static %}
+{% load activity_tags %}
+{% load get_name %}
+		{% block extra_css %}
+			<link rel="stylesheet" type="text/css" href="{% static 'login/css/public_profile.css' %}" />
+			<!-- <link rel="stylesheet" type="text/css" href="{% static 'login/css/easy-responsive-tabs.css' %}" /> -->
+		{% endblock %}
+		{% block extra_js %}
+			<script src="{% static 'login/js/countryStateCityLoader.js' %}" ></script>
+			<script type="text/javascript" src="{% static 'login/js/easy-responsive-tabs.js' %}"></script>
+		{% endblock %}
+		{% block content %}
+		<section id="content">
+		{% if context_user %}
+			<div class="profileHeader clearfix">
+				<div class="profilePicDiv clearfix">
+					<img class="profilePic" src="{{ context_user.extendeduser.get_profile_pic_url }}" alt="User {{ context_user.first_name }}">
+				</div>
+				<div class="profileBrief clearfix">
+					<ul class="profileBriefUl">
+						<li>{{ context_user.first_name }} {{ context_user.last_name }}</li>
+						<li>{{ context_user.extendeduser.profession }}</li>
+						<li>{{ context_user.extendeduser.state }},{{ context_user.extendeduser.country }}</li>
+						<li><form method="POST" id="follow_user_form" action="{% url 'login:follow' context_user.id context_user.extendeduser.user_slug %}" class="create-destroy" style="display:inline">
+					            {% csrf_token %}
+					            {% if followed %}
+					                <input name="remove" type="hidden" value="1">
+					                <i class="fa fa-rss" style="color:green;cursor:pointer" title="Unfollow"></i>
+					            {% else %}
+					            	<i class="fa fa-rss" style="cursor:pointer" title="Follow"></i>
+					            {% endif %}
+					            <input name="target" type="hidden" value="{{ context_user.id }}">
+					            <input name="next" type="hidden" value="{{ request.path }}">
+					        </form>
+					    </li>
+					    <li><i class="fa fa-envelope" style="cursor:pointer"></i></li>
+						<li><i class="fa fa-comment"></i></li>
+						<li><i class="fa fa-flag"></i></li>
+						{% if context_user == user %}
+							<li><span title="Edit Profile"><a href="{% url 'login:editprofile' user.id user.extendeduser.user_slug %}"><i class="fa fa-pencil-square-o"></i></a></span></li>
+							<li><span title="Redeem"><a href="{% url 'login:redeem' user.id user.extendeduser.user_slug %}"><i class="fa fa-money"></i></a></span></li>
+						{% endif %}
+					</ul>
+				</div>
+				<div class="detailHeader">
+						<h1>Recent Activity</h1><i class="fa fa-arrow-left"></i>
+				</div>
+			</div>
+			<div class="profileBody clearfix">
+				<div class="profileStats clearfix">
+					<ul class="profileStatsUl clearfix">
+						{% if context_user == user %}
+							<li class="myProfileTabs" id="myActivity"><img style="margin-right:0.5rem" src="/static/login/images/goyal.png"/><span class="iCaption"> My Activity</span></li>
+							<li class="myProfileTabs" id="notifications"><i class="fa fa-bell"></i><span class="iCaption"> Notifications</span></li>
+							<li class="myProfileTabs" id="newsFeed"><i class="fa fa-newspaper-o"></i><span class="iCaption"> My Feed</span></li>
+						{% else %}
+							<li class="myProfileTabs" id="myActivity"><img style="margin-right:0.5rem" src="/static/login/images/goyal.png"/><span class="iCaption"> {{ context_user }}'s Activity</span></li>
+							<li class="myProfileTabs" id="newsFeed"><i class="fa fa-newspaper-o"></i><span class="iCaption"> {{ context_user }}'s Feed</span></li>
+						{% endif %}
+						<li class="myProfileTabs" id="myCredits"><i class="fa fa-coins"></i><span class="iCaption">{{ credits }} Credits</span></li>
+						<li class="myProfileTabs" id="myConnections"><i class="fa fa-users"></i><span class="iCaption"> {{ connection_count }} Connections</span></li>
+						{% if context_user == user %}
+							<li class="myProfileTabs" id="myABPInbox"><i class="fa fa-inbox"></i><span class="iCaption">{{ messageCount }} Messages</span></li>
+						{% endif %}
+						<li class="myProfileTabs" id="myPolls"><i class="fa fa-question-circle"></i><span class="iCaption"> {{ questions_count }} Polls</span></li>
+						<li class="myProfileTabs" id="myVotes"><i class="fa fa-check-circle"></i><span class="iCaption"> {{ voted_count }} Votes</span></li>
+						<li class="myProfileTabs" id="myComments"><i class="fa fa-comments"></i><span id="numComments" class="iCaption"> 0 Comments</span></li>
+						<li class="myProfileTabs" id="myCategories"><i class="fa fa-th-large"></i><span class="iCaption"> {{ categories|length }} Categories</span></li>
+						<!-- <li class="myProfileTabs" id="myBets"><i class="fa fa-coin-bag"></i><span class="iCaption"> Stakes</span></li> -->
+					</ul>
+				</div>
+				<div class="displayDiv">
+					<div class="profileDetail" id="notificationsDiv">
+						<ul class="profileDetailUl">
+							{% for activity in notification_activities %}
+							<li>
+								<div class="liDetail">
+									{% if activity.verb == "question" %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>asked <a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> <span id="activity{{ activity.id }}"> </span></span>
+									{% elif activity.verb == "voted" %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>{{ activity.verb}} <a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> <span id="activity{{ activity.id }}"> </span></span>
+									{% elif activity.verb == "follow" or activity.verb == "followed" %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{  user.username|getName:activity.actor_user_name }}</span> </a>followed <a href="{{ activity.target_user_url }}"><span class="activity_url"> {{ user.username|getName:activity.target_user_name }}</span></a> <span id="activity{{ activity.id }}"> </span></span>
+									{% elif activity.verb == "votedBet" %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>voted on {% if user.id != context_user.id and not activity.visible_public %}
+										a private/anonymous poll 
+										{% else %}
+										<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> 
+										{% endif %} putting {{ activity.points }} credits<span id="activity{{ activity.id }}"> </span></span>
+									{% elif activity.verb == "credits" %}
+									{% else %}
+										{{ activity.verb }}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url"> {{ user.username|getName:activity.actor_user_name }}</span> </a>{{ activity.verb}} <a href="{{ user.username|getName:activity.actor_user_name }}"><span class="activity_url">{{ activity.question_text }}</span></a> <span id="activity{{ activity.id }}"> </span></span>
+									{% endif %}
+	    							{% if activity.verb != "credits"  %}
+	    								</p>
+										<p class="desc">{{ activity.question_desc }}</p>
+										</div>
+									{% endif %}
+								</div> 
+								<script>
+									var currentDate = new Date();
+									var offset = currentDate.getTimezoneOffset();
+									var serverActivityDate = new Date({{ activity.time.year }}, {{ activity.time.month }} - 1, {{ activity.time.day }}, {{ activity.time.hour }}, {{ activity.time.minute }}, {{ activity.time.second }});
+									var localActvityDate = new Date({{ activity.time.year }}, {{ activity.time.month }} - 1, {{ activity.time.day }}, {{ activity.time.hour }}, {{ activity.time.minute }}-offset, {{ activity.time.second }});
+									$('#activity{{ activity.id }}').text(' '+jQuery.timeago(localActvityDate).toString());
+								</script>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+					<div class="profileDetail" id="myActivityDiv">
+						<ul class="profileDetailUl">
+							{% for activity in activities %}
+							{% if activity.actor_user_name == context_user.username %}
+							<li>
+								<div class="liDetail">
+									{% if activity.verb == "question" %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>asked {% if user.id != context_user.id and not activity.visible_public %}
+										a private/anonymous poll 
+										{% else %}
+										<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> 
+										{% endif %}
+										<span id="activity{{ activity.id }}"> </span>
+									{% elif activity.verb == "questionBet" %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>asked {% if user.id != context_user.id and not activity.visible_public %}
+										a private/anonymous poll 
+										{% else %}
+										<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> 
+										{% endif %} putting {{ activity.points }} credits <span id="activity{{ activity.id }}"> </span></span>
+									{% elif activity.verb == "voted" %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>{{ activity.verb}} {% if user.id != context_user.id and not activity.visible_public %}
+										a private/anonymous poll 
+										{% else %}
+										<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> 
+										{% endif %}<span id="activity{{ activity.id }}"> </span></span>
+									{% elif activity.verb == "votedBet" %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>voted on {% if user.id != context_user.id and not activity.visible_public %}
+										a private/anonymous poll 
+										{% else %}
+										<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> 
+										{% endif %} putting {{ activity.points }} credits<span id="activity{{ activity.id }}"> </span></span>
+									{% elif activity.verb == "follow" or activity.verb == "followed" %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{  user.username|getName:activity.actor_user_name }}</span> </a>followed <a href="{{ activity.target_user_url }}"><span class="activity_url">{{ user.username|getName:activity.target_user_name }}</span></a><span id="activity{{ activity.id }}"> </span></span>
+									{% else %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>{{ activity.verb}} <a href="{{ user.username|getName:activity.target_user_name }}"><span class="activity_url"></a><span id="activity{{ activity.id }}"> </span></span>
+									{% endif %}
+									{% if activity.verb != "credits"  %}
+										</p>
+										<p class="desc">{{ activity.question_desc }}</p>
+										</div>
+									{% endif %}
+								</div>
+								<script>
+									var currentDate = new Date();
+									var offset = currentDate.getTimezoneOffset();
+									var serverActivityDate = new Date({{ activity.time.year }}, {{ activity.time.month }} - 1, {{ activity.time.day }}, {{ activity.time.hour }}, {{ activity.time.minute }}, {{ activity.time.second }});
+									var localActvityDate = new Date({{ activity.time.year }}, {{ activity.time.month }} - 1, {{ activity.time.day }}, {{ activity.time.hour }}, {{ activity.time.minute }}-offset, {{ activity.time.second }});
+									$('#activity{{ activity.id }}').text(' '+jQuery.timeago(localActvityDate).toString());
+								</script>
+							</li>
+							{% endif %}
+							{% endfor %}
+						</ul>
+					</div>
+					<div class="profileDetail" id="newsFeedDiv">
+						<ul class="profileDetailUl">
+							{% for activity in flat_feed_activities %}
+							<li>
+								<div class="liDetail">
+									{% if activity.verb == "question" %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>asked 
+										{% if user.id != context_user.id and not activity.visible_public %}
+										a private/anonymous poll 
+										{% else %}
+										<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> 
+										{% endif %}
+										<span id="activity{{ activity.id }}"> </span></span>
+									{% elif activity.verb == "voted" %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>voted on {% if user.id != context_user.id and not activity.visible_public %}
+										a private poll 
+										{% else %}
+										<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> 
+										{% endif %} <span id="activity{{ activity.id }}"> </span></span>
+									{% elif activity.verb == "votedBet" %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>voted on {% if user.id != context_user.id and not activity.visible_public %}
+										a private poll 
+										{% else %}
+										<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> 
+										{% endif %} putting {{ activity.points }} credits <span id="activity{{ activity.id }}"> </span></span>
+									{% elif activity.verb == "follow" or activity.verb == "followed" %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>followed <a href="{{ activity.target_user_url }}"><span class="activity_url">{{ user.username|getName:activity.target_user_name }}</span></a> <span id="activity{{ activity.id }}"> </span></span>
+									{% else %}
+										<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+										<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>{{ activity.verb}} <a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> <span id="activity{{ activity.id }}"> </span></span>
+									{% endif %}
+									{% if activity.verb != "credits"  %}
+										</p>
+										<p class="desc">{{ activity.question_desc }}</p>
+										</div>
+									{% endif %}
+								</div>
+								<script>
+									var currentDate = new Date();
+									var offset = currentDate.getTimezoneOffset();
+									var serverActivityDate = new Date({{ activity.time.year }}, {{ activity.time.month }} - 1, {{ activity.time.day }}, {{ activity.time.hour }}, {{ activity.time.minute }}, {{ activity.time.second }});
+									var localActvityDate = new Date({{ activity.time.year }}, {{ activity.time.month }} - 1, {{ activity.time.day }}, {{ activity.time.hour }}, {{ activity.time.minute }}-offset, {{ activity.time.second }});
+									$('#activity{{ activity.id }}').text(' '+jQuery.timeago(localActvityDate).toString());
+								</script>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+					<div class="profileDetail" id="myPollsDiv">
+						<ul class="profileDetailUl">
+							{% for question in questions %}
+							<li>
+								<div class="liDetail">
+									<div>
+									<p class="main">
+										<a class="activity_url" id="qTextDesc{{ question.id }}" href="{% url 'polls:polls_vote' question.id question.que_slug %}">{{question.question_text}}</a>
+									</p>
+									<p class="pollsDesc">{{ question.description }}</p>
+									</div>
+								</div>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+					<div class="profileDetail" id="myVotesDiv">
+						<ul class="profileDetailUl">
+							{% for question in voted %}
+							<li>
+								<div class="liDetail">
+									<div>
+									<p class="main">
+										<a class="activity_url" id="qTextDesc{{ question.id }}" href="{% url 'polls:polls_vote' question.id question.que_slug %}">{{question.question_text}}</a>
+									</p>
+	    						<!--  render_activity activity -->
+									<p class="pollsDesc">{{ question.description }}</p>
+									</div>
+								</div>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+					<div class="profileDetail" id="myCategoriesDiv">
+						{% for category in categories %}
+				    		<a href="{% url 'polls:polls_category' %}?category={{ category.category_title }}">
+				    		<figure class="category_figure">
+								<img class="category_imagethumbnails" src="https://{{ request.META.HTTP_HOST }}/{{ category.category_image }}" alt="{{ category.category_title }}">
+								<figcaption class="category_figurecaption">{{ category.category_title }}</figcaption>
+							</figure>
+							</a>
+				    	{% endfor %}
+					</div>
+					<div class="profileDetail" id="myCommentsDiv">
+						<ul class="profileDetailUl commentList">
+						</ul>
+					</div>
+					<div class="profileDetail" id="myCreditsDiv">
+						<ul class="profileDetailUl">
+							{% for activity in notification_activities %}
+							<li>
+								<div class="liDetail">
+									{% if activity.verb == "credits" %}
+										{% if activity.action == "up_down_vote" %}
+											<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+											<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>earned {{ activity.points }} credits by rating <a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> <span id="activity{{ activity.id }}"> </span></span>
+										{% elif activity.action == "upvote" %}
+											<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+											<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>earned {{ activity.points }} credits as <a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> was upvoted</span><span id="activity{{ activity.id }}"> </span>
+										{% elif activity.action == "downvote" %}
+											<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+											<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>lost {{ activity.points }} credits as <a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> was downvoted</span><span id="activity{{ activity.id }}"> </span> 
+										{% elif activity.action == "dowvote" %}
+											<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+											<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>lost {{ activity.points }} credits as <a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> was downvoted</span><span id="activity{{ activity.id }}"> </span> 
+										{% elif activity.action == "follow_user" %}
+											<a href="{{ activity.target_user_url }}"><img class="imgInFeed" src="{{ activity.target_user_pic }}"> </a>
+											<div><p class="main"><span class="activity_text"><a href="{{ activity.target_user_url }}"><span class="activity_url">{{ user.username|getName:activity.target_user_name }}</span> </a>earned {{ activity.points }} credits as <a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ activity.actor_user_name }}</span></a> followed you</span><span id="activity{{ activity.id }}"> </span> 
+										{% elif activity.action == "unfollow_user" %}
+											<a href="{{ activity.target_user_url }}"><img class="imgInFeed" src="{{ activity.target_user_pic }}"> </a>
+											<div><p class="main"><span class="activity_text"><a href="{{ activity.target_user_url }}"><span class="activity_url">{{ user.username|getName:activity.target_user_name }}</span> </a>lost {{ activity.points }} credits as you were unfollowed</span><span id="activity{{ activity.id }}"> </span>
+										{% elif activity.action == "comment" %}
+											<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+											<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>earned {{ activity.points }} credits by commenting on <a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> <span id="activity{{ activity.id }}"> </span></span>
+										{% elif activity.action == "vote" %}
+											<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+											<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>earned {{ activity.points }} credits by voting on 
+											{% if user.id != context_user.id and not activity.visible_public %}
+											a private poll
+											{% else %}
+											<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a>
+											{% endif %}
+											<span id="activity{{ activity.id }}"> </span></span>
+										{% elif activity.action == "voteBet" %}
+											<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+											<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>put {{ activity.points }} credits by voting on 
+											{% if user.id != context_user.id and not activity.visible_public %}
+											a private bet poll
+											{% else %}
+											<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a>
+											{% endif %}
+											<span id="activity{{ activity.id }}"> </span></span>
+										{% elif activity.action == "wonBet" %}
+											<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+											<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>earned {{ activity.points }} credits by predicting on
+											<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> 
+											<span id="activity{{ activity.id }}"> </span></span>
+										{% elif activity.action == "lostBet" %}
+											<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+											<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>lost {{ activity.points }} credits by predicting on
+											<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a> 
+											<span id="activity{{ activity.id }}"> </span></span>
+										{% elif activity.action == "questionBet" %}
+											<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+											<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>put {{ activity.points }} credits by asking and predicting on 
+											{% if user.id != context_user.id and not activity.visible_public %}
+											a private bet poll
+											{% else %}
+											<a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a>
+											{% endif %}
+											<span id="activity{{ activity.id }}"> </span></span>
+										{% elif activity.action == "asked" %}
+											<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+											<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>earned {{ activity.points }} credits by asking the prediction poll <a href="{{ activity.question_url }}"><span class="activity_url">{{ activity.question_text }}</span></a>
+											<span id="activity{{ activity.id }}"> </span></span>
+										{% else %}
+											<a href="{{ activity.actor_user_url }}"><img class="imgInFeed" src="{{ activity.actor_user_pic }}"> </a>
+											<div><p class="main"><span class="activity_text"><a href="{{ activity.actor_user_url }}"><span class="activity_url">{{ user.username|getName:activity.actor_user_name }}</span> </a>earned {{ activity.points }} credits by {{ activity.action }} <span id="activity{{ activity.id }}"> </span></span>
+										{% endif %}
+										</p>
+									</div>
+									{% endif %}
+	    						</div>
+								<script>
+									var currentDate = new Date();
+									var offset = currentDate.getTimezoneOffset();
+									var serverActivityDate = new Date({{ activity.time.year }}, {{ activity.time.month }} - 1, {{ activity.time.day }}, {{ activity.time.hour }}, {{ activity.time.minute }}, {{ activity.time.second }});
+									var localActvityDate = new Date({{ activity.time.year }}, {{ activity.time.month }} - 1, {{ activity.time.day }}, {{ activity.time.hour }}, {{ activity.time.minute }}-offset, {{ activity.time.second }});
+									$('#activity{{ activity.id }}').text(' '+jQuery.timeago(localActvityDate).toString());
+								</script>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+					<div class="profileDetail" id="myABPInboxDiv">
+						<ul class="profileDetailUl">
+						</ul>
+					</div>
+					<div class="profileDetail" id="myConnectionsDiv">
+						<ul class="profileDetailUl followers">
+							<p>Followers</p>
+							{% for act_user in followers %}
+								<a href="{% url 'login:loggedIn' act_user.id act_user.extendeduser.user_slug %}"><li>
+									<figure>
+										<img class="imgInFeed follow" src="{{ act_user.extendeduser.get_profile_pic_url }}">
+										<figcaption class="activity_url follow_url">
+											{{ act_user.username }}
+										</figcaption>
+									</figure>
+								</li></a>
+							{% endfor %}
+						</ul>
+						<ul class="profileDetailUl followers following">
+							<p>Following</p>
+							{% for act_user in following %}
+							<a href="{% url 'login:loggedIn' act_user.id act_user.extendeduser.user_slug %}"><li>
+									<figure>
+										<img class="imgInFeed follow" src="{{ act_user.extendeduser.get_profile_pic_url }}">
+										<figcaption class="activity_url follow_url">
+											{{ act_user.username }}
+										</figcaption>
+									</figure>
+								</li></a>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+			</div>
+			<script type="text/javascript">
+				$(document).ready(function(){
+					// alert(getCookie("public_profile"));
+					var divElemLi = getCookie("public_profile");
+					if(typeof divElemLi === "undefined" || divElemLi === ""){
+						$("li#myActivity").click();
+					}
+					else{
+						$("#"+divElemLi).click();
+						document.cookie = "public_profile=; path=/";
+					}
+					var disqusPublicKey = "{{ DISQUS_API_KEY }}";
+					var disqusShortname = "{{ DISQUS_WEBSITE_SHORTNAME }}";
+					$.ajax({
+					    type: 'GET',
+					    url: 'https://disqus.com/api/3.0/users/details.json',
+					    data: { api_key: disqusPublicKey, remote_auth:"{{ ssoData.message }} {{ ssoData.sig }} {{ ssoData.timestamp }}"},
+					    cache: false,
+					    dataType: 'jsonp',
+					    success: function(response) {
+					        $('#numComments').text(response['response'].numPosts.toString()+' Comments');
+					    }
+					});
+					
+					var messages = [];
+					var link = [];
+					var displayed = 0;
+					$.ajax({
+					    type: 'GET',
+					    url: 'https://disqus.com/api/3.0/users/listPosts.json',
+					    data: { api_key: disqusPublicKey, remote_auth:"{{ ssoData.message }} {{ ssoData.sig }} {{ ssoData.timestamp }}"},
+					    cache: false,
+					    dataType: 'jsonp',
+					    success: function(response) {
+					    	findComments(response);
+					    }
+					});
+
+					function findComments(response){
+						for(var i=0; i<response['response'].length; i++){
+				       		var threadId = response['response'][i]['thread'];
+				       		var message = response['response'][i]['message'];
+				       		messages[i] = response['response'][i]['message'];
+				        		$.ajax({
+								    type: 'GET',
+								    url: 'https://disqus.com/api/3.0/threads/details.json',
+								    data: { api_key: disqusPublicKey, thread:threadId},
+								    cache: false,
+								    dataType: 'jsonp',
+								    success: function(threadDetails) {
+								    	link.push(threadDetails['response']['link']);
+								       if(link.length == response['response'].length && displayed == 0){
+								       		disp();
+								       }
+								   	}
+								});
+					    }
+					}
+
+					function disp(){
+						displayed = 1;
+						for(var i=0; i<link.length; i++){
+							$(".commentList").append("<li> <a class='activity_url' href="+link[i]+">"+messages[i]+"</a></li><br>");
+						}
+					}
+					$(".fa-rss").click(function(){
+						$("#follow_user_form").submit();
+					});
+					$("#myComments").click(function(){
+						disp();
+					});
+					if($(window).width() < 960){
+						$(".fa-arrow-left").click(function(){
+							$(".profileStats").slideToggle("slow");
+							$(".profileDetail").hide();
+							$(this).hide();
+						});
+					}
+				});
+			</script>
+		{% endif %}
+		</section>
+		<div id="overlay-inAbox4" class="sendMessageOverlay overlay">
+			<div class="wrapper">
+				<object id="sendMessageOverlay" data="/messages/write/?recipients={{ context_user.username }}" style="height:25rem; width:50rem;"></object>
+			</div>
+		</div>
+		{% endblock %}

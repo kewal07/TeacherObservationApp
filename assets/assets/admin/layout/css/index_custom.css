@@ -1,0 +1,40 @@
+.sidebar-list-background{
+	background:black !important;
+}
+@media only screen and (max-width: 480px){
+	.page-header.navbar .menu-toggler .responsive-toggler {
+    	/*display: none;*/
+	}
+	#area{
+		padding:0.5rem 0 !important;
+	}
+	.page-container{
+		margin-top:17px !important;
+	}
+	.book-functions{
+    	left:20%;
+    	transform:none;
+    	top:initial;
+  	}
+  	.f button.green-meadow{
+    	padding:7px 10px;
+  	}
+}
+@media only screen and (max-width: 800px){
+	.book-functions{
+		top:50px !important;
+	}
+	.page-container{
+		margin-top:35px !important;
+	}
+	.page-header.navbar .menu-toggler .responsive-toggler {
+    	/*display: none;*/
+    	background-color: #1BBC9B;
+	}
+}
+
+@media only screen and (max-width: 990px){
+	#menu-items-text{
+		display:none;
+	}
+}

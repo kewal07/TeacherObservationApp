@@ -1,0 +1,35 @@
+{% extends "polls/common.html" %}
+{% load static %}
+
+{% load i18n %}
+{% block extra_css %}
+	<link rel="stylesheet" type="text/css" href="{% static 'login/css/signup.css' %}" />
+{% endblock %}
+{% block extra_js %}
+	<script src="{% static 'login/js/countryStateCityLoader.js' %}" ></script>
+{% endblock %}
+{% block content %}
+<section id="signup">
+	<div class="signup">
+		<div class="signupContent" style="text-align:center;margin:1rem">
+			There is already an account registered using this email-id. Please <a href="{% url 'account_login' %}"><span class="anchorSpan">Sign in</span></a>.
+
+			<!-- <h1>{% trans "Sign Up" %}</h1>
+
+			<p>{% blocktrans %}Already have an account ? Then please <a href="{{ login_url }}"><span class="anchorSpan">Sign in</span></a>.{% endblocktrans %}</p>
+
+			<form class="signupContentForm" id="signup_form" method="post" action="{% url 'account_signup' %}" enctype="multipart/form-data">
+			  {% csrf_token %}
+			  {{ form.as_p }}
+			  {% if redirect_field_value %}
+			  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+			  {% endif %}
+			  <button type="submit" id="submit">Sign Up</button>
+			</form> -->
+		</div>
+	</div>
+</section>
+
+{% endblock %}
+
+

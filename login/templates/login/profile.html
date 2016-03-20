@@ -1,0 +1,96 @@
+{% extends "polls/common.html" %}
+{% load static %}
+
+		{% block extra_css %}
+			<link rel="stylesheet" type="text/css" href="{% static 'login/css/profile.css' %}" />
+			<!-- <link rel="stylesheet" type="text/css" href="{% static 'login/css/easy-responsive-tabs.css' %}" /> -->
+		{% endblock %}
+		{% block extra_js %}
+			<script src="{% static 'login/js/countryStateCityLoader.js' %}" ></script>
+			<script type="text/javascript" src="{% static 'login/js/easy-responsive-tabs.js' %}"></script>
+		{% endblock %}
+		{% block content %}
+		{% if context_user %}
+		<section id="content">
+				<div class="profilePic">
+					<img src="{{ context_user.extendeduser.get_profile_pic_url }}" alt="User {{ context_user.first_name }}"	>
+				</div>
+				<div class="profileContent clearfix">
+					<ul class="tabs clearfix">
+						<ul class="insideTabs clearfix">
+							<li class="firstChild">
+								<input type="radio" name="tabs" id="tab1" checked />
+								<label class="tabsLabel" for="tab1">About</label>
+								<div id="tabContent1" class="tabContent clearfix">
+									<form class="profileForm" method="POST" action="{% url 'login:edit_profile' %}" enctype="multipart/form-data">
+										{% csrf_token %}
+										{{ loggedInForm.as_p }}
+										<div class="cta">
+											<input class="submit btn" id="submit" type="submit" value="Save Changes" />
+										</div>
+									</form>
+								</div>
+							</li>
+							<li class="thirdChild">
+								<input type="radio" name="tabs" id="tab3" unchecked />
+								<label class="tabsLabel" for="tab3">Settings</label>
+								<div id="tabContent3" class="tabContent clearfix">
+									<div id="changePassword">
+												<p>Change Password</p>
+												<form action="{% url 'account_login' %}" method="get" class="password_change" id="password_change_form">
+										    		{% csrf_token %}
+										    		{{ form.as_p }}
+										    		<div class="cta">
+										    			<button class="submit btn" type="submit" name="action">Change Password</button>
+										    		</div>
+										    		<!-- <input type="submit" value="Submit" /> -->
+												</form>
+									</div>
+								</div>
+							</li>
+					    </ul>
+					</ul>
+				</div>
+		</section>
+		<script type="text/javascript">
+			$(document).ready(function()
+		    {
+		    	$('#verticalTab').easyResponsiveTabs({
+					type: 'vertical',
+					width: 'auto',
+					fit: true
+				});
+		  		$('#password_change_form').bind('submit', function()
+	            {     
+
+	                // e.preventDefault();
+	                $.ajax(
+	                    {
+	                    type: 'POST',
+	                    url:'/user/changepassword',
+	                    data:$('#password_change_form').serialize(),
+	                    success:function(response)
+	                    {
+	                    	var form_errors = response.form_errors;
+	                    	if(typeof form_errors === 'undefined'){
+	                        	 $('#password_change_form').unbind('submit').submit();
+	                        }else{
+		                    	if(typeof form_errors.oldpassword === 'undefined')
+	                        	 	form_errors.oldpassword = "";
+	                        	 if(typeof form_errors.password1 === 'undefined')
+	                        	 	form_errors.password1 = "";
+	                        	 if(typeof form_errors.password2 === 'undefined')
+	                        	 	form_errors.password2 = "";
+		                    	$(".password_form_errors").remove();
+		                        $("#id_oldpassword").parent().append('<span class="password_form_errors"><br>'+form_errors.oldpassword+'</span>');
+		                        $("#id_password1").parent().append('<span class="password_form_errors"><br>'+form_errors.password1+'</span>');
+		                        $("#id_password2").parent().append('<span class="password_form_errors"><br>'+form_errors.password2+'</span>');
+	                    	}
+	                    }
+	                });     
+				return false;
+	            });
+		    });
+		</script>
+	{% endif %}
+	{% endblock %}

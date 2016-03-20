@@ -1,0 +1,24 @@
+{% extends "polls/common.html" %}
+{% load static %}
+
+{% load i18n %}
+{% load account %}
+{% block content %}
+<section id="display_message_section">
+	<div class="display_message">
+		<div class="display_message_content">
+			{% block head_title %}{% trans "Confirm E-mail Address" %}{% endblock %}
+
+
+
+
+			<h1>{% trans "Confirm E-mail Address" %}</h1>
+
+			{% user_display confirmation.email_address.user as user_display %}
+			        
+			<p>{% blocktrans with confirmation.email_address.email as email %}You have confirmed that <a href="mailto:{{email}}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
+
+		</div>
+	</div>
+</section>
+{% endblock %}

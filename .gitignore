@@ -1,0 +1,8 @@
+eduzen/settings.py
+db.sqlite3
+*.pyc
+media*
+*migrations*
+*pycache*
+static*
+*.log
