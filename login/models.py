@@ -1,6 +1,8 @@
 from django.db import models
 from datetime import date
 from django.conf import settings
+from django.template.defaultfilters import slugify
+import hashlib, hmac, os
 
 # Create your models here.
 
@@ -26,7 +28,7 @@ class ExtendedUser(models.Model):
 	bio = models.CharField(max_length=1024,blank=True,null=True)
 	profession = models.CharField(max_length=512,blank=True,null=True)
 	user_slug = models.SlugField(null=True,blank=True)
-	
+
 	def __str__(self):
 		return self.user.username
 
@@ -67,7 +69,7 @@ class ExtendedUser(models.Model):
 		except:
 			pass
 		return folder_day
-		
+
 	def get_profile_pic_url(self):
 		default_pic_url = "/static/login/images/defaultAvatar.png"
 		# if self.user.socialaccount_set.all():
@@ -88,13 +90,13 @@ class ExtendedUser(models.Model):
 		# else:
 		# 	if self.imageUrl:
 		# 		return "/media/profile/"+self.get_folder_day()+os.sep+self.get_profile_pic_name()
-		return default_pic_url	
+		return default_pic_url
 
 	def calculate_age(self):
 		try:
 			today = date.today()
 			born = self.birthDay
-			try: 
+			try:
 				birthday = born.replace(year=today.year)
 			except ValueError: # raised when birth date is February 29 and the current year is not a leap year
 				birthday = born.replace(year=today.year, month=born.month+1, day=1)
