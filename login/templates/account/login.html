@@ -199,8 +199,8 @@ License: You must have a valid license purchased only from themeforest(the above
 
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<script>
-		$('label').addClass('control-label visible-ie8 visible-ie9');
-		$('input').addClass('form-control placeholder-no-fix');
+	$('label').addClass('control-label visible-ie8 visible-ie9');
+	$('input').addClass('form-control placeholder-no-fix');
 		jQuery(document).ready(function() {
 			Metronic.init(); // init metronic core components
 			Layout.init(); // init current layout
@@ -209,7 +209,6 @@ License: You must have a valid license purchased only from themeforest(the above
 			$(document).keydown(function(e) {
 				if (e.which == 13) {
 					e.preventDefault();
-					console.log("yes here");
 					$("#login-login").click();
 				}
 			});
@@ -251,222 +250,25 @@ License: You must have a valid license purchased only from themeforest(the above
 				duration: 8000
 			});
 
-			// Parse.initialize("Ffw4i7SDu6e3koGLzXqcBVWXVFTimvMj9jnrBdzf", "hjRk6pqv5wmXKPqnw5RHI9GBwxTMKKU9vRzmGBW1");
-			// Parse.initialize("J7vtX8g1h40K0wJmIeOj2nxEwhMvr8fY9W2P2K0o", "I5BnTjoOijVG6vaZDVMchU9IsDe7fZ1EuqKsqc2B");
-			Parse.initialize("3lXaKuiy7u5fHQIp9syydggudckbGA94MaxiInbr", "82Z6d5nGiP6dwRU1vadlQ4YXf7T416ZpBpP4WQDS");
-
-			window.fbAsyncInit = function() {
-				Parse.FacebookUtils.init({ // this line replaces FB.init({
-					appId: '1806264196273899', // Facebook App ID
-					status: true, // check Facebook Login status
-					cookie: true, // enable cookies to allow Parse to access the session
-					xfbml: true, // initialize Facebook social plugins on the page
-					version: 'v2.3' // point to the latest Facebook Graph API version
-				});
-				// console.log("FB");
-				$(".facebook").click(function() {
-					// console.log("India");
-					Parse.FacebookUtils.logIn("public_profile,email", {
-						success: function(user) {
-							FB.api("/me/picture?width=180&height=180", function(response) {
-								// console.log(response.data.url);
-								user.set("socialProfileUrl", response.data.url);
-								user.save();
-
-							});
-							if (!user.existed()) {
-								FB.api('/me', {
-									fields: 'id,name,gender,email'
-								}, function(response) {
-									user.set("fullName", response.name);
-									// user.set("username",username);
-									// user.set("password",password);
-									// user.set("fullName",fullName);
-									user.set("email", response.email);
-									user.set("address", "Address");
-									user.set("city", "City");
-									user.set("country", "Country");
-									// user.set("profilePic",parseFile);
-									user.set("issuedBooks", []);
-									user.save();
-									// console.log(JSON.stringify(response));
-								});
-								window.location = "index.html";
-							} else {
-								window.location = "index.html";
-							}
-						},
-						error: function(user, error) {
-							bootbox.alert("User cancelled the Facebook login or did not fully authorize.");
-						}
-					});
-				});
-
-			};
-
-			(function(d, s, id) {
-				var js, fjs = d.getElementsByTagName(s)[0];
-				if (d.getElementById(id)) {
-					return;
-				}
-				js = d.createElement(s);
-				js.id = id;
-				js.src = "https://connect.facebook.net/en_US/sdk.js";
-				fjs.parentNode.insertBefore(js, fjs);
-			}(document, 'script', 'facebook-jssdk'));
-
 			$('#login-password').bind("cut copy paste", function(e) {
 				e.preventDefault();
 			});
-			$('#forgetPasswordSubmitButton').click(function(e) {
-				e.preventDefault();
-				console.log("forget password page loaded");
-				var email = $('#forgetPasswordEmail').val();
-				console.log(email);
 
-				Parse.User.requestPasswordReset(email, {
-					success: function() {
-						console.log("password reset successful");
-						window.alert("Password reset link has been sent to " + email);
-						return true;
-					},
-					error: function(error) {
-						window.alert(error.message);
-						return false;
-					}
-				});
-			});
-			//   function forgetPassword(event){
-			// console.log("forget password page loaded");
-			//    var email = $('#forgetPasswordEmail').val();
-			// 	console.log(email);
+			// $("#login-login").click(function(event) {
+			// 	event.preventDefault();
+			//
+			// });
 
-			// 	Parse.User.requestPasswordReset(email, {
-			// 	    success:function() {
-			// 	    	console.log("password reset successful");
-			// 	        window.alert("Password reset link has been sent to "+ email);
-			// 	        return true;
-			// 	    },
-			// 	    error:function(error) {
-			// 	        window.alert(error.message);
-			// 	        return false;
-			// 	    }
-			// 	});
-			// }
-
-			//Parse.User.logOut();
-			var parseFile;
-			$('input:file').change(function() {
-				var fileUploadControl = $("#profilePhotoFileUpload")[0];
-				if (fileUploadControl.files.length > 0) {
-					var file = fileUploadControl.files[0];
-					var name = fileUploadControl.files[0].name;
-					parseFile = new Parse.File(name, file);
-					parseFile.save().then(function() {
-						// The file has been saved to Parse.
-					}, function(error) {
-						// The file either could not be read, or could not be saved to Parse.
-					});
-				}
-			});
-
-			$("#register-submit-btn").click(function(event) {
-				event.preventDefault();
-				var verified = 1;
-				var fullName = $("#signup-full-name").val();
-				if (fullName === "") {
-					$("#invalid-full-name").css("display", "block");
-					verified = 0;
-				}
-				var email = $("#signup-email").val();
-				if (email === "") {
-					$("#invalid-email").css("display", "block");
-					verified = 0;
-				}
-				var address = $("#signup-address").val();
-				if (address === "") {
-					$("#invalid-address").css("display", "block");
-					verified = 0;
-				}
-				var city = $("#signup-city").val();
-				if (city === "") {
-					$("#invalid-city").css("display", "block");
-					verified = 0;
-				}
-				var country = $("#select2_sample4").val();
-				if (country === "") {
-					$("#invalid-country").css("display", "block");
-					verified = 0;
-				}
-				var username = $("#signup-username").val();
-				if (username === "") {
-					$("#invalid-username").css("display", "block");
-					verified = 0;
-				}
-				var password = $("#signup-password").val();
-				if (password === "") {
-					$("#invalid-password").css("display", "block");
-					verified = 0;
-				}
-				if (!$('#tnc').is(":checked")) {
-					$("#invalid-tnc").css("display", "block");
-					verified = 0;
-				}
-				if (verified === 1) {
-					var user = new Parse.User();
-					user.set("username", username);
-					user.set("password", password);
-					user.set("fullName", fullName);
-					user.set("email", email);
-					user.set("address", address);
-					user.set("city", city);
-					user.set("country", country);
-					user.set("profilePic", parseFile);
-					user.set("issuedBooks", []);
-					user.signUp(null, {
-						success: function(user) {
-							Parse.User.logOut();
-							bootbox.alert("Signup Successful. Please verify your email.", function() {
-								window.location = "login_soft.html";
-							});
-						},
-						error: function(user, error) {
-							bootbox.alert(error.message);
-						}
-					});
-				} else {
-					bootbox.alert("Please check the Sign-up form. Unable to proceed.");
-				}
-			});
-
-			$("#login-login").click(function(event) {
-				event.preventDefault();
-
-				var username = $("#login-username").val();
-				var password = $("#login-password").val();
+			$("#login-login").bind('click',function(event) {
 				localStorage.usrname = $('#login-username').val();
 				localStorage.pass = $('#login-password').val();
 				localStorage.chkbx = $('#remember_me').val();
-				Parse.User.logIn(username, password, {
-					success: function() {
-						var parseUser = arguments[0];
-						if (parseUser.attributes.emailVerified) {
-							console.log("Log In Success");
-							window.location = "index.html";
-						} else {
-							bootbox.alert("Please Verify your email address");
-						}
-					},
-					error: function(user, error) {
-						$("#invalid-usr-pwd").css("display", "block");
-					}
-				});
+				$("#register-submit-btn").unbind('click').click();
+				$("#register-submit-btn").attr("disabled","disabled");
 			});
-
 		});
 	</script>
 	<!-- END JAVASCRIPTS -->
 </body>
 <!-- END BODY -->
-
 </html>

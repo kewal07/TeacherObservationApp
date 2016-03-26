@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<!--
+Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.4
+Version: 4.0.2
+Author: KeenThemes
+Website: http://www.keenthemes.com/
+Contact: support@keenthemes.com
+Follow: www.twitter.com/keenthemes
+Like: www.facebook.com/keenthemes
+Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
+License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
+-->
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+{% load static %}
+{% load i18n %}
+<html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+
+<head>
+	<meta charset="utf-8" />
+	<title>Eduzen | Your Library</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+	<!-- BEGIN GLOBAL MANDATORY STYLES -->
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/simple-line-icons/simple-line-icons.min.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/uniform/css/uniform.default.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css' %}" rel="stylesheet" type="text/css" />
+	<!-- END GLOBAL MANDATORY STYLES -->
+	<!-- BEGIN THEME STYLES -->
+	<link href="{% static 'assets/global/css/components.css' %}" id="style_components" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/css/plugins.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/admin/layout/css/layout.css' %}" rel="stylesheet" type="text/css" />
+	<link id="style_color" href="{% static 'assets/admin/layout/css/themes/darkblue.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/admin/layout/css/custom.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/admin/layout/css/central_custom.css' %}" rel="stylesheet" type="text/css" />
+	<!-- END THEME STYLES -->
+	<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->
+<!-- DOC: Apply "page-sidebar-closed" class to the body and "page-sidebar-menu-closed" class to the sidebar menu element to hide the sidebar by default -->
+<!-- DOC: Apply "page-sidebar-hide" class to the body to make the sidebar completely hidden on toggle -->
+<!-- DOC: Apply "page-sidebar-closed-hide-logo" class to the body element to make the logo hidden on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-hide" class to body element to completely hide the sidebar on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-fixed" class to have fixed sidebar -->
+<!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
+<!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
+<!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
+
+<body class="page-header-fixed page-quick-sidebar-over-content page-full-width">
+	<!-- BEGIN HEADER -->
+	<div class="page-header navbar navbar-fixed-top">
+		<!-- BEGIN HEADER INNER -->
+		<div class="page-header-inner">
+			<!-- BEGIN LOGO -->
+			<div class="page-logo">
+				<a href="index.html">
+					<img class="logo-header" src="{% static 'assets/admin/layout/img/logo-big.png' %}" alt="logo" class="logo-default" />
+				</a>
+				<div class="menu-toggler sidebar-toggler hide">
+					<!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
+				</div>
+			</div>
+			<!-- END LOGO -->
+			<!-- BEGIN RESPONSIVE MENU TOGGLER -->
+
+			<!-- END RESPONSIVE MENU TOGGLER -->
+			<!-- BEGIN TOP NAVIGATION MENU -->
+			<div class="top-menu">
+				<ul class="nav navbar-nav pull-right">
+					<li class="active open">
+						<a href="central_library.html">
+							<i class="fa fa-university"></i>
+							<span class="title">Central Library</span>
+						</a>
+					</li>
+					<li class="">
+						<a href="index.html">
+							<i class="fa fa-book"></i>
+							<span class="title">My Library</span>
+						</a>
+					</li>
+					<li>
+						<a href="profile.html">
+							<i class="icon-user"></i>
+							<span class="title">Profile</span>
+						</a>
+					</li>
+					<!-- BEGIN USER LOGIN DROPDOWN -->
+					<!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
+					<li class="dropdown dropdown-user">
+						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+							<img alt="" class="img-circle" src="" />
+							<span class="username username-hide-on-mobile"></span>
+							<i class="fa fa-angle-down"></i>
+						</a>
+						<ul class="dropdown-menu dropdown-menu-default">
+							<li class="my-logout">
+								<i class="icon-key"></i> Log Out </a>
+							</li>
+						</ul>
+					</li>
+					<!-- END USER LOGIN DROPDOWN -->
+				</ul>
+			</div>
+			<!-- END TOP NAVIGATION MENU -->
+		</div>
+		<!-- END HEADER INNER -->
+	</div>
+	<!-- END HEADER -->
+	<div class="clearfix">
+	</div>
+
+	<!-- BEGIN CONTAINER -->
+	<div class="page-container">
+		<div class="page-sidebar-wrapper">
+			<div class="page-sidebar navbar-collapse collapse">
+			</div>
+	  </div>
+
+		<!-- END STYLE CUSTOMIZER -->
+		<!-- BEGIN CONTENT -->
+		<div class="page-content-wrapper">
+			<div class="page-content">
+				<!-- BEGIN PAGE HEADER-->
+				<div class="actions" id="search-box">
+					<div class="portlet-input input-inline">
+						<div class="input-icon right">
+							<i class="icon-magnifier"></i>
+							<input type="text" class="form-control input-circle" id="eduzen-search" placeholder="Find Book by Name, Author or ISBN" onkeydown="searchOnEnter(this, event)">
+						</div>
+					</div>
+				</div>
+				<h3 id="central-library-title" class="page-title">
+				Central Library
+			</h3>
+
+				<h4 class="sub-h4">Click on any of the books to issue to your personal library</h4>
+				<h4 class="search-results"> Search Results </h4>
+				<!-- END PAGE HEADER-->
+				<!-- BEGIN PAGE CONTENT-->
+				<div class="row">
+					<div class="col-md-12">
+						<ul class="central-library-book-list">
+						</ul>
+						<ul class="central-library-book-list-search">
+						</ul>
+					</div>
+				</div>
+				<!-- END PAGE CONTENT-->
+			</div>
+		</div>
+		<!-- END CONTENT -->
+		<!-- BEGIN QUICK SIDEBAR -->
+		<a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
+		<div class="page-quick-sidebar-wrapper">
+		</div>
+		<!-- END QUICK SIDEBAR -->
+	</div>
+	<!-- END CONTAINER -->
+	<!-- BEGIN FOOTER -->
+	<div class="page-footer">
+		<div class="page-footer-inner">
+			2015 &copy; Eduzen. <a href="http://educationzen.com/" title="Eduzen" target="_blank">Eduzen Private Limited</a>
+		</div>
+		<div class="scroll-to-top">
+			<i class="icon-arrow-up"></i>
+		</div>
+		<a style="visibility:hidden;" class="btn default" id="demo_1">
+			<a style="visibility:hidden;" class="btn default" id="demo_2">
+	</div>
+	<!-- END FOOTER -->
+	<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+	<!-- BEGIN CORE PLUGINS -->
+	<!--[if lt IE 9]>
+<script src="assets/global/plugins/respond.min.js"></script>
+<script src="assets/global/plugins/excanvas.min.js"></script>
+<![endif]-->
+	<script src="{% static 'assets/global/plugins/jquery.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/global/plugins/jquery-migrate.min.js' %}" type="text/javascript"></script>
+	<!-- IMPORTANT! Load jquery-ui.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
+	<script src="{% static 'assets/global/plugins/jquery-ui/jquery-ui.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/global/plugins/bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/global/plugins/jquery.blockui.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/global/plugins/jquery.cokie.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/global/plugins/uniform/jquery.uniform.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}" type="text/javascript"></script>
+	<!-- END CORE PLUGINS -->
+	<script src="{% static 'assets/global/scripts/metronic.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/admin/layout/scripts/layout.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/admin/layout/scripts/quick-sidebar.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/admin/layout/scripts/demo.js' %}" type="text/javascript"></script>
+	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-latest.js"></script>
+	<script src="{% static 'assets/admin/layout/scripts/zip.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/admin/layout/scripts/epub.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/admin/layout/scripts/rangy-core.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/admin/layout/scripts/rangy-serializer.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/global/plugins/bootbox/bootbox.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'assets/admin/pages/scripts/ui-alert-dialog-api.js' %}"></script>
+
+	<script>
+		function searchOnEnter(obj, event) {
+			if (event.keyCode === 13) {
+				$(".icon-magnifier").click();
+			}
+		}
+		window.onresize = function() {
+			location.reload();
+		}
+		jQuery(document).ready(function() {
+			Metronic.init(); // init metronic core components
+			Layout.init(); // init current layout
+			QuickSidebar.init(); // init quick sidebar
+			Demo.init(); // init demo features
+			UIAlertDialogApi.init(); //for alert box
+			// Parse.initialize("Ffw4i7SDu6e3koGLzXqcBVWXVFTimvMj9jnrBdzf", "hjRk6pqv5wmXKPqnw5RHI9GBwxTMKKU9vRzmGBW1");
+
+			var flag = 0;
+			var element =
+				'<div class="my-popover popover confirmation fade top in" id="confirmation644182" style="top: 54px; left: 258.938px; display: block;"><div class="arrow" style="left: 50%;"></div><h3 class="popover-title">Issue Book?</h3><div class="popover-content text-center"><div class="btn-group"><a class="btn btn-xs btn-success" data-apply="confirmation"><i class="glyphicon glyphicon-ok"></i> Yes</a><a class="btn btn-xs btn-danger" data-dismiss="confirmation"><i class="glyphicon glyphicon-remove"></i> No</a></div></div></div>';
+			var tickElement = '<i class="fa fa-check-circle"></i>';
+
+			function checkLogIn() {
+				var currentUser = Parse.User.current();
+				currentUser.fetch({
+					success: function(myObject) {
+						currentUser = myObject;
+						if (Parse.User.current()) {
+							$(".username").text(currentUser.get("fullName"));
+							$("#user-name-profile").text(currentUser.get("username"));
+							var profilePhoto = currentUser.get("profilePic");
+							var socialProfilePic = currentUser.get("socialProfileUrl");
+							if (socialProfilePic == null) {
+								if (profilePhoto) {
+									$(".img-circle").attr("src", profilePhoto.url());
+									$("#user-profile-pic").attr("src", profilePhoto.url());
+								}
+							} else {
+								$(".img-circle").attr("src", socialProfilePic);
+								$("#user-profile-pic").attr("src", socialProfilePic);
+							}
+							var books = Parse.Object.extend("Book");
+							var query = new Parse.Query(books);
+							// query.limit(10);
+							query.find({
+								success: function(results) {
+									var checkBooks = Parse.User.current().get("issuedBooks");
+									// Do something with the returned Parse.Object values
+									for (var i = 0; i < results.length; i++) {
+										var object = results[i];
+										$('.central-library-book-list').append("<li id ='" + object.id + "' class='central-cover-image-li'><img class='central-cover-image' src='" + object.get('coverImage').url() + "'>" + "<span class='central-book-info'>" + object.get(
+											'bookName') + "<br>" + object.get('Author') + "</span>" + "</li>");
+										$('.cover-image').css('width', $('.library-book-list').width() / 3.5);
+										if (jQuery.inArray(object.id, checkBooks) !== -1) {
+											$("#" + object.id).append(tickElement);
+										}
+									}
+									$(".central-cover-image-li").on('click', function() {
+										if (flag == 0) {
+											flag = 1;
+											var that = $(this);
+											$(this).append(element);
+											$(".btn-success").click(function(e) {
+												e.stopPropagation();
+												flag = 0;
+												$(".my-popover").remove();
+												var issuedBooks = Parse.User.current().get("issuedBooks");
+												if (typeof issuedBooks == "undefined") {
+													issuedBooks = [];
+												}
+
+												if (issuedBooks.length >= 3) {
+													bootbox.alert("You already have 3 books")
+												} else {
+													if (jQuery.inArray(that.attr('id'), issuedBooks) !== -1) {
+														$("#demo_1").trigger("click");
+													} else {
+														issuedBooks.push(that.attr('id'));
+														currentUser.set("issuedBooks", issuedBooks);
+														currentUser.save({
+															success: function() {
+																$("#demo_2").trigger("click");
+																that.append(tickElement);
+															},
+															error: function(error) {
+																//To be Filled
+															}
+														});
+													}
+												}
+											});
+
+											$(".btn-danger").click(function(e) {
+												e.stopPropagation();
+												$(".my-popover").remove();
+												flag = 0;
+											});
+										}
+									});
+								},
+								error: function(error) {
+									alert("Error: " + error.code + " " + error.message);
+								}
+							});
+							$(".icon-magnifier").click(function() {
+								var sValue = $("#eduzen-search").val();
+								if (sValue === "") {
+									bootbox.alert("Search box is empty!");
+								} else {
+									var bookSearch = Parse.Object.extend("Book");
+									var authorQuery = new Parse.Query(bookSearch);
+									authorQuery.matches("Author", sValue, "i");
+									//query.whereMatches("name", "("+searchData+")", "i");
+									var bookQuery = new Parse.Query(bookSearch);
+									bookQuery.matches("bookName", sValue, "i");
+									var isbnQuery = new Parse.Query(bookSearch);
+									isbnQuery.matches("ISBN", sValue, "i");
+									var mainBookQuery = Parse.Query.or(authorQuery, bookQuery, isbnQuery);
+									mainBookQuery.find({
+										success: function(results) {
+											$(".sub-h4").css("display", "none");
+											$('.central-library-book-list').css("display", "none");
+											$(".search-results").css("display", "block");
+											$(".central-library-book-list-search").css("display", "block");
+											var checkBooksUser = Parse.User.current().get("issuedBooks");
+											// Do something with the returned Parse.Object values
+											$('.central-library-book-list-search').empty();
+											if (results.length == 0) {
+												$('.central-library-book-list-search').append("<p>No Books Found </p>");
+											}
+											for (var i = 0; i < results.length; i++) {
+												var object = results[i];
+												$('.central-library-book-list-search').append("<li id ='" + object.id + "' class='central-cover-image-li'><img class='central-cover-image' src='" + object.get('coverImage').url() + "'>" + "<span class='central-book-info'>" +
+													object.get('bookName') + "<br>" + object.get('Author') + "</span>" + "</li>");
+												$('.cover-image').css('width', $('.library-book-list').width() / 3.5);
+												if (jQuery.inArray(object.id, checkBooksUser) !== -1) {
+													$("#" + object.id).append(tickElement);
+												}
+											}
+											$(".central-cover-image-li").on('click', function() {
+												if (flag == 0) {
+													flag = 1;
+													var that = $(this);
+													$(this).append(element);
+													$(".btn-success").click(function(e) {
+														e.stopPropagation();
+														flag = 0;
+														$(".my-popover").remove();
+														var issuedBooks = Parse.User.current().get("issuedBooks");
+														if (typeof issuedBooks == "undefined") {
+															issuedBooks = [];
+														}
+
+														if (issuedBooks.length >= 3) {
+															bootbox.alert("You already have 3 books")
+														} else {
+															if (jQuery.inArray(that.attr('id'), issuedBooks) !== -1) {
+																$("#demo_1").trigger("click");
+															} else {
+																issuedBooks.push(that.attr('id'));
+																currentUser.set("issuedBooks", issuedBooks);
+																currentUser.save({
+																	success: function() {
+																		$("#demo_2").trigger("click");
+																		that.append(tickElement);
+																	},
+																	error: function(error) {
+																		//To be Filled
+																	}
+																});
+															}
+														}
+													});
+
+													$(".btn-danger").click(function(e) {
+														e.stopPropagation();
+														$(".my-popover").remove();
+														flag = 0;
+													});
+												}
+											});
+										},
+										error: function(error) {
+											alert("Error: " + error.code + " " + error.message);
+										}
+									});
+								}
+							});
+						} else {
+							$(".username").html("");
+						}
+					},
+					error: function(myObject, error) {
+						// The object was not refreshed successfully.
+						// error is a Parse.Error with an error code and message.
+					}
+				});
+			}
+			$("#central-library-title").click(function() {
+				window.location = "central_library.html";
+			});
+			$("span.central-library").click(function() {
+				window.location = "central_library.html";
+			});
+			checkLogIn();
+			$(".my-logout").click(function() {
+				Parse.User.logOut();
+
+				window.location = "login_soft.html";
+			});
+		});
+	</script>
+	<!-- END JAVASCRIPTS -->
+
+</body>
+<!-- END BODY -->
+
+</html>

@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<!--
+Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.4
+Version: 4.0.2
+Author: KeenThemes
+Website: http://www.keenthemes.com/
+Contact: support@keenthemes.com
+Follow: www.twitter.com/keenthemes
+Like: www.facebook.com/keenthemes
+Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
+License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
+-->
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+{% load static %}
+{% load i18n %}
+<html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+  <meta charset="utf-8" />
+  <title>Eduzen | Your Library</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <meta content="" name="description" />
+  <meta content="" name="author" />
+  <!-- BEGIN GLOBAL MANDATORY STYLES -->
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+  <link href="{% static 'assets/global/plugins/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'assets/global/plugins/simple-line-icons/simple-line-icons.min.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'assets/global/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'assets/global/plugins/uniform/css/uniform.default.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'assets/global/plugins/bootstrap-toastr/toastr.min.css' %}" rel="stylesheet" type="text/css" />
+  <!-- END GLOBAL MANDATORY STYLES -->
+  <!-- BEGIN THEME STYLES -->
+  <link href="{% static 'assets/global/css/components.css' %}" id="style_components" rel="stylesheet" type="text/css" />
+  <link href="{% static 'assets/global/css/plugins.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'assets/admin/layout/css/layout.css' %}" rel="stylesheet" type="text/css" />
+  <link id="style_color" href="{% static 'assets/admin/layout/css/themes/darkblue.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'assets/admin/layout/css/custom.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'assets/admin/layout/css/central_custom.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'assets/admin/layout/css/index_custom.css' %}" rel="stylesheet" type="text/css" />
+  <style>
+    *.searchResult {
+      font-weight: bold;
+      background-color: yellow;
+    }
+
+    *.redItalic {
+      font-style: italic;
+      color: red;
+    }
+
+    .highlight {
+      background-color: yellow;
+    }
+
+    .note {
+      background-color: limegreen;
+    }
+
+    #summary {
+      border: dotted orange 1px;
+    }
+  </style>
+
+  <!-- END THEME STYLES -->
+  <link rel="shortcut icon" href="favicon.ico" />
+</head>
+
+<body class="page-header-fixed page-sidebar-closed page-quick-sidebar-over-content page-full-width">
+  <!-- BEGIN HEADER -->
+  <div class="page-header navbar navbar-fixed-top">
+    <!-- BEGIN HEADER INNER -->
+    <div class="page-header-inner">
+      <!-- BEGIN LOGO -->
+      <div class="page-logo">
+        <a href="index.html">
+          <img class="logo-header" src="{% static 'assets/admin/layout/img/logo-big.png' %}" alt="logo" class="logo-default" />
+        </a>
+        <div class="menu-toggler sidebar-toggler hide">
+          <!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
+        </div>
+      </div>
+      <!-- END LOGO -->
+      <div class="book-functions">
+        <div class="f">
+          <p>
+            <!-- <i class="fa fa-search-plus" id="addNote"></i> -->
+            <button class="btn green-meadow tooltips" data-placement="bottom" id="addNote" data-original-title="Add Notes"><i class="fa fa-pencil-square-o"></i></button>
+          </p>
+          <p class="on-add-note-click">
+            <input id="noteText" type="text" onkeydown="saveNoteEnter(this, event)" />
+            <button id="saveNote" class="btn default my-btn-default">Save Note</button>
+          </p>
+          <p>
+            <button class="btn green-meadow zoom tooltips" data-placement="bottom" id="zoomIn" data-original-title="Zoom In"><i class="fa fa-search-plus"></i></button>
+          </p>
+          <p>
+            <button class="btn green-meadow zoom tooltips" data-placement="bottom" id="zoomOut" data-original-title="Zoom Out"><i class="fa fa-search-minus"></i></button>
+          </p>
+          <p>
+            <button class="btn green-meadow zoom tooltips" data-placement="bottom" id="defaultZoom" data-original-title="Default Font Size"><i class="fa fa-search"></i></button>
+          </p>
+          <p>
+            <button class="btn green-meadow tooltips" data-placement="bottom" id="highlights" data-original-title="Highlight Text"><i class="fa fa-text-height"></i></button>
+          </p>
+          <p>
+            <button class="btn green-meadow tooltips" data-placement="bottom" id="addBookmark" data-original-title="Bookmark"><i class="fa fa-bookmark"></i></button>
+          </p>
+          <p class="on-add-bookmark-click">
+            <input id="bookmarkText" type="text" onkeydown="saveBookMarkEnter(this, event)" />
+            <button id="saveBookMark" class="btn default my-btn-default">Save</button>
+          </p>
+          <p>
+            <button class="btn green-meadow tooltips" data-placement="bottom" id="findText" data-original-title="Search"><i class="fa fa-binoculars"></i></button>
+          </p>
+          <p class="on-find-text-click">
+            <input id="searchText" type="text" onkeydown="searchOnEnter(this, event)" />
+            <button id="searchTextButton" class="btn default my-btn-default">Search</button>
+          </p>
+        </div>
+      </div>
+      <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+      <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+      </a>
+      <!-- END RESPONSIVE MENU TOGGLER -->
+      <!-- BEGIN TOP NAVIGATION MENU -->
+      <div class="top-menu">
+
+        <ul class="nav navbar-nav pull-right">
+
+          <!-- END TODO DROPDOWN -->
+          <!-- BEGIN USER LOGIN DROPDOWN -->
+          <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
+          <li>
+            <a href="central_library.html">
+              <i class="fa fa-university tooltips" data-placement="bottom" data-original-title="Central Library"></i>
+              <span id="menu-items-text" class="title tooltips">Central Library</span>
+            </a>
+          </li>
+          <li class="active open">
+            <a href="index.html">
+              <i class="fa fa-book tooltips" data-placement="bottom" data-original-title="My Library"></i>
+              <span id="menu-items-text" class="title tooltips">My Library</span>
+            </a>
+          </li>
+          <li>
+            <a href="profile.html">
+              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Profile"></i>
+              <span id="menu-items-text" class="title tooltips">Profile</span>
+            </a>
+          </li>
+          <li class="dropdown dropdown-user">
+            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+              <img alt="" class="img-circle" src="" />
+              <span class="username username-hide-on-mobile"></span>
+              <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-default">
+              <li class="my-index-logout">
+                <i class="icon-key"></i> Log Out </a>
+              </li>
+            </ul>
+          </li>
+          <!-- END USER LOGIN DROPDOWN -->
+        </ul>
+      </div>
+      <!-- END TOP NAVIGATION MENU -->
+    </div>
+    <!-- END HEADER INNER -->
+  </div>
+  <!-- END HEADER -->
+  <div class="clearfix">
+  </div>
+
+  <!-- BEGIN CONTAINER -->
+  <div class="page-container">
+    <div class="page-sidebar-wrapper">
+      <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+      <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+      <div class="page-sidebar navbar-collapse collapse">
+        <!-- BEGIN SIDEBAR MENU -->
+        <ul class="page-sidebar-menu page-sidebar-menu-closed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+          <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+          <li class="sidebar-toggler-wrapper">
+            <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+            <div class="sidebar-toggler">
+            </div>
+            <!-- END SIDEBAR TOGGLER BUTTON -->
+          </li>
+        </ul>
+        <!-- END SIDEBAR MENU -->
+      </div>
+    </div>
+    <!-- BEGIN STYLE CUSTOMIZER -->
+    <!-- END STYLE CUSTOMIZER -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+      <div class="page-content" id="my-page-content">
+        <!-- BEGIN PAGE HEADER-->
+        <h3 id="my-library-title" class="page-title">
+				My Library
+			</h3>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="container-epub">
+          <div id="area"></div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <ul class="library-book-list">
+            </ul>
+          </div>
+        </div>
+        <div class="meter">
+          <span class="page-number-display"></span>
+          <span class="meter-span" style="width: 0%;" id="progress"></span>
+        </div>
+        <!-- END PAGE CONTENT-->
+      </div>
+    </div>
+    <!-- END CONTENT -->
+  </div>
+  <!-- END CONTAINER -->
+
+  <!-- BEGIN FOOTER -->
+  <div class="page-footer">
+    <div class="page-footer-inner">
+      2015 &copy; Eduzen. <a href="http://educationzen.com/" title="Eduzen" target="_blank">Eduzen Private Limited</a>
+    </div>
+    <div class="scroll-to-top">
+      <i class="icon-arrow-up"></i>
+    </div>
+  </div>
+  <!-- END FOOTER -->
+
+  <script src="{% static 'assets/global/plugins/jquery.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/global/plugins/jquery-migrate.min.js' %}" type="text/javascript"></script>
+  <!-- IMPORTANT! Load jquery-ui.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
+  <script src="{% static 'assets/global/plugins/jquery-ui/jquery-ui.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/global/plugins/bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/global/plugins/jquery.blockui.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/global/plugins/jquery.cokie.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/global/plugins/uniform/jquery.uniform.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/global/scripts/metronic.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/admin/layout/scripts/layout.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/admin/layout/scripts/quick-sidebar.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/admin/layout/scripts/demo.js' %}" type="text/javascript"></script>
+  <script type="text/javascript" src="http://www.parsecdn.com/js/parse-latest.js"></script>
+  <script src="{% static 'assets/admin/layout/scripts/zip.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/admin/layout/scripts/epub.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/admin/layout/scripts/rangy-core.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/admin/layout/scripts/rangy-highlighter.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/admin/layout/scripts/rangy-classapplier.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/admin/layout/scripts/rangy-serializer.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/admin/layout/scripts/rangy-textrange.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/global/plugins/bootstrap-toastr/toastr.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/admin/pages/scripts/ui-toastr.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/global/plugins/bootbox/bootbox.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/admin/pages/scripts/ui-alert-dialog-api.js' %}"></script>
+
+  <script>
+    function saveNoteEnter(obj, event) {
+      if (event.keyCode === 13) {
+        $("#saveNote").click();
+      }
+    }
+
+    function saveBookMarkEnter(obj, event) {
+      if (event.keyCode === 13) {
+        $("#saveBookMark").click();
+      }
+    }
+
+    function searchOnEnter(obj, event) {
+      if (event.keyCode === 13) {
+        $("#searchTextButton").click();
+      }
+    }
+
+    jQuery(document).ready(function() {
+
+      Metronic.init(); // init metronic core components
+      Layout.init(); // init current layout
+      QuickSidebar.init(); // init quick sidebar
+      Demo.init(); // init demo features
+      UIAlertDialogApi.init(); //for alert box
+      rangy.init();
+      var metronicHeight = Metronic.getViewPort().height;
+      var pageHeaderHeight = $('.page-header').height();
+      var pageFooterHeight = $('.page-footer').height();
+      var height = metronicHeight - pageHeaderHeight - pageFooterHeight;
+      height = height - 20;
+      var bookAlreadyOpened = 0;
+      var rendered;
+      var iframe;
+      var myrange;
+      var fontSize = 1;
+      var originalFontsize = 1;
+      var Note;
+      var Highlight;
+      var epub;
+      var serializedHighlights = decodeURIComponent(window.location.search.slice(window.location.search.indexOf("=") + 1));
+      var initialDoc;
+      var crossElement = '<i class="fa fa-times-circle"></i>';
+
+      window.highlighter;
+      window.highlights = [];
+      window.notes = [];
+      window.bookmarks = [];
+      window.epubBook;
+      window.mybook;
+      window.currentNote = null;
+
+      $("#noteText").css('display', 'hidden');
+      $("#saveNote").css('display', 'hidden');
+
+      function goToBook() {
+        alert("hello");
+      }
+
+      function checkLogIn() {
+        var currentUser = Parse.User.current();
+        currentUser.fetch({
+          success: function(myObject) {
+            currentUser = myObject;
+            if (currentUser) {
+              $(".username").text(currentUser.get("fullName"));
+              $("#user-name-profile").text(currentUser.get("username"));
+              var profilePhoto = currentUser.get("profilePic");
+              var socialProfilePic = currentUser.get("socialProfileUrl");
+              if (socialProfilePic == null) {
+                if (profilePhoto) {
+                  $(".img-circle").attr("src", profilePhoto.url());
+                  $("#user-profile-pic").attr("src", profilePhoto.url());
+                }
+              } else {
+                $(".img-circle").attr("src", socialProfilePic);
+                $("#user-profile-pic").attr("src", socialProfilePic);
+              }
+              var books = Parse.Object.extend("Book");
+              var userIssuedBooks = currentUser.get("issuedBooks");
+              var query = new Parse.Query(books);
+              query.containedIn("objectId", userIssuedBooks);
+              query.find({
+                success: function(results) {
+                  console.log("Successfully retrieved " + results.length + " scores.");
+                  // Do something with the returned Parse.Object values
+                  if (results.length == 0) {
+                    $('.library-book-list').append("<p class='no-books'>You do not have any books issued. Go ahead and issue one at the <a href='central_library.html' class='no-books-a'>Central Library</a></p>");
+                  } else {
+                    for (var i = 0; i < results.length; i++) {
+                      var object = results[i];
+                      $('.library-book-list').append("<li id ='" + object.id + "' class='cover-image-li'><img class='cover-image' src='" + object.get('coverImage').url() + "'>" + "<span class='book-info'>" + object.get('bookName') +
+                        "<br>" + object.get('Author') + "</span>" + "</li>");
+                      $("#" + object.id).append(crossElement);
+                      //$('.cover-image').css('width',$('.library-book-list').width()/4);
+                      $('.cover-image').css('height', $('.page-content').height() / 2);
+                    }
+                  }
+                  $(".fa-times-circle").on('click', function(e) {
+                    var that = $(this);
+                    e.stopPropagation();
+                    bootbox.confirm("Do you want to return the book? You would have to issue it again from Central Library to read.", function(result) {
+                      if (result) {
+                        var bId = that.parent().attr("id");
+                        var index = userIssuedBooks.indexOf(bId);
+                        if (index > -1) {
+                          userIssuedBooks.splice(index, 1);
+                          Parse.User.current().set("issuedBooks", userIssuedBooks);
+                          Parse.User.current().save({
+                            success: function() {
+                              $("#" + bId).remove();
+                            },
+                            error: function(error) {
+                              //To be Filled
+                            }
+                          });
+                        }
+                      } else {
+
+                      }
+                    });
+                  });
+
+
+                  $(".cover-image-li").on('click', function(event) {
+                    $(".cover-image-li").unbind("click");
+                    bookAlreadyOpened = 1;
+                    var bookId = $(this)[0].id;
+                    var book = new books();
+                    book.id = bookId;
+                    var queryBook = new Parse.Query(books);
+                    queryBook.equalTo("bookRet", book);
+                    queryBook.first({
+                      success: function(object) {
+                        book = object;
+                      },
+                      error: function(error) {
+                        alert("Error: " + error.code + " " + error.message);
+                      }
+                    });
+                    epubBook = ePub(book.get("bookUrl"));
+                    mybook = book;
+                    $(".col-md-12").toggle("slow");
+                    $(".container-epub").toggle("slow");
+                    $("body").removeClass("page-full-width");
+                    rendered = epubBook.renderTo("area");
+                    // epubBook.renderTo("area");
+                    $("#my-library-title").remove();
+
+                    $('.page-sidebar-menu').on('click', '.slider-options', function(event) {
+                      var id = '#' + this.id;
+                      id = id.toString();
+                      var sliderElements = $('.slider-options');
+
+                      for (var i = 0; i < sliderElements.length; i++) {
+                        var elemId = '#' + sliderElements[i].id;
+                        $(elemId).parent().removeClass('active');
+                        $(elemId).parent().removeClass('open');
+                      }
+                      $(id).parent().addClass('active open');
+                    });
+                    $(".meter").toggle("slow");
+                    //$(".page-header.navbar .menu-toggler.responsive-toggler").toggle("slow");
+                    // $(".book-functions").show();
+                    $('.page-sidebar-menu').html("<li class='active open'><a class='slider-options' id='chapter-slider' href='javascript:;'><i class='icon-rocket'></i><span class='title'>" + book.get('bookName') +
+                      "</span><span class='selected'></span><span class='arrow open'></span></a><ul class='sub-menu scroll-smenu' id='contents'></ul></li>");
+                    $(".book-functions").toggle("slow");
+                    $("<div id='prev' class='arrow'><i class='fa fa-arrow-left'></i></div><div id='next' class='arrow'><i class='fa fa-arrow-right'></i></div>").insertAfter("#area");
+                    $("#next").on('click', function() {
+                      epubBook.nextPage();
+                    });
+                    $("#prev").on('click', function() {
+                      epubBook.prevPage();
+                    });
+                    $('#area').css('height', height);
+
+                    //Functionalities for Notes/Highlight
+
+                    epubBook.ready.all.then(function() {
+                      iframe = $("iframe")[0];
+                      highlighter = rangy.createHighlighter(iframe.contentWindow);
+
+                      highlighter.addClassApplier(rangy.createClassApplier("highlight", {
+                        ignoreWhiteSpace: true,
+                        tagNames: ["span", "a"]
+                      }));
+
+                      highlighter.addClassApplier(rangy.createClassApplier("note", {
+                        ignoreWhiteSpace: true,
+                        elementTagName: "a",
+                        elementProperties: {
+                          href: "#",
+                          onclick: function() {
+                            var highlight = highlighter.getHighlightForElement(this);
+                            if (window.confirm("Delete this note (ID " + highlight.id + ")?")) {
+                              highlighter.removeHighlights([highlight]);
+                            }
+                            return false;
+                          }
+                        }
+                      }));
+
+                      Bookmark = Parse.Object.extend("Bookmark");
+                      var bookmarkQuery = new Parse.Query("Bookmark");
+
+                      bookmarkQuery.equalTo("userId", Parse.User.current());
+                      bookmarkQuery.equalTo('Book', mybook);
+                      bookmarkQuery.find({
+                        success: function(bookmarkResults) {
+                          $('.page-sidebar-menu').append(
+                            "<li><a class='slider-options' id='bookmark-slider' href='javascript:;'><i class='fa fa-bookmark'></i><span class='title'>My Bookmarks</span></span><span class='arrow open'></span></a><ul class='sub-menu scroll-smenu' id='myBookmarks'></ul></li>"
+                          );
+                          if (bookmarkResults.length !== 0) {
+                            //$('.page-sidebar-menu').append("<li><a class='slider-options' id='bookmark-slider' href='javascript:;'><i class='fa fa-bookmark'></i><span class='title'>My Bookmarks</span></span><span class='arrow open'></span></a><ul class='sub-menu scroll-smenu' id='myBookmarks'></ul></li>");
+                            bookmarkResults.forEach(function(bookmarkItem) {
+                              bookmarks.push({
+                                chapterHref: bookmarkItem.get('chapterHref'),
+                                pageCfi: bookmarkItem.get('pageCfi')
+                              });
+                              // $('#myBookmarks').append("<li><a id='"+bookmarkItem.get('pageCfi')+"'>"+bookmarkItem.get('chapterHref').split('.')[0]+"</a></li>");
+                              $('#myBookmarks').append("<li><a id='" + bookmarkItem.get('pageCfi') + "'>" + bookmarkItem.get('bookmarkName') + "</a></li>");
+                            })
+                          }
+                        },
+                        error: function(error) {
+                          alert('Error: ' + error.code + ' ' + error.message);
+                        }
+                      });
+
+                      Note = Parse.Object.extend("Note");
+                      var noteQuery = new Parse.Query(Note);
+                      noteQuery.equalTo("userId", Parse.User.current());
+                      noteQuery.equalTo("Book", mybook);
+
+                      //var noteQuery = Parse.Query.and(userQuery, bookQuery);
+                      noteQuery.find({
+                        success: function(noteResults) {
+                          $('.page-sidebar-menu').append(
+                            "<li><a class='slider-options' id='notes-slider' href='javascript:;'><i class='fa fa-pencil-square-o'></i><span class='title'>My Notes</span></span><span class='arrow open'></span></a><ul class='sub-menu scroll-smenu' id='myNotes'></ul></li>"
+                          );
+                          if (noteResults.length !== 0) {
+                            //$('.page-sidebar-menu').append("<li><a class='slider-options' id='notes-slider' href='javascript:;'><i class='fa fa-pencil-square-o'></i><span class='title'>My Notes</span></span><span class='arrow open'></span></a><ul class='sub-menu scroll-smenu' id='myNotes'></ul></li>");
+                            noteResults.forEach(function(noteItem, index) {
+                              notes.push({
+                                chapterHref: noteItem.get('chapterHref'),
+                                wordRange: noteItem.get('wordRange'),
+                                noteText: noteItem.get('noteText'),
+                                pageCfi: noteItem.get('pageCfi'),
+                                index: index
+                              });
+                              $('#myNotes').append("<li><a data-note=" + index + " id='" + noteItem.get('pageCfi') + "'>" + noteItem.get('noteText') + "</a></li>");
+                            })
+                          }
+                        },
+                        error: function(error) {
+                          alert('Error: ' + error.code + ' ' + error.message);
+                        }
+                      });
+
+                      Highlight = Parse.Object.extend("Highlight");
+                      var highlightQuery = new Parse.Query(Highlight);
+
+                      highlightQuery.equalTo("userId", Parse.User.current());
+                      highlightQuery.equalTo("Book", mybook);
+                      highlightQuery.find({
+                        success: function(highlightResults) {
+                          if (highlightResults.length !== 0) {
+                            $('.page-sidebar-menu').append(
+                              "<li><a class='slider-options' id='highlights-slider' href='javascript:;'><i class='fa fa-text-height'></i><span class='title'>My Highlights</span></span><span class='arrow open'></span></a><ul class='sub-menu scroll-smenu' id='myHighlights'></ul></li>"
+                            );
+                            highlightResults.forEach(function(highlightItem) {
+                              highlights.push({
+                                chapterHref: highlightItem.get('chapterHref'),
+                                wordRange: highlightItem.get('wordRange'),
+                                text: highlightItem.get('text'),
+                                pageCfi: highlightItem.get('pageCfi')
+                              });
+                              $('#myHighlights').append("<li><a id='" + highlightItem.get('pageCfi') + "'>" + highlightItem.get('text') + "</a></li>");
+                            })
+                          }
+                        },
+                        error: function(error) {
+                          alert('Error: ' + error.code + ' ' + error.message);
+                        }
+                      });
+                    });
+
+                    epubBook.pageListReady.then(function(pageList) {
+                      rendered.then(function() {
+                        var currentLocation = epubBook.getCurrentLocationCfi();
+                        var currentPage = epubBook.pagination.pageFromCfi(currentLocation);
+                        currentPage.value = currentPage;
+                      });
+                      currentPage.addEventListener("change", function() {
+                        epubBook.gotoPage(currentPage.value);
+                      }, false);
+                    });
+
+                    epubBook.on('book:pageChanged', function(location) {
+                      $(".page-number-display").text(location.anchorPage);
+                      $("#progress").width(location.percentage * 100 + '%');
+                    });
+
+                    epubBook.on('renderer:chapterDisplayed', function(locationCfi) {
+                      if ($('.sidebar-list-background')) {
+                        $('.sidebar-list-background').removeClass('sidebar-list-background');
+                      }
+
+                      locationCfi = locationCfi || epubBook.currentChapter;
+                      $('#' + locationCfi.href.split('.')[0]).addClass('sidebar-list-background');
+
+                      if (bookmarks.length !== 0) {
+                        bookmarks.forEach(function(bookmarkItem) {
+                          if (bookmarkItem.chapterHref === epubBook.currentChapter.href) {
+                            //MArk page as bookmarked
+                          }
+                        });
+                      }
+
+                      if (notes.length !== 0) {
+                        notes.forEach(function(noteItem) {
+                          if (noteItem.chapterHref === epubBook.currentChapter.href && JSON.stringify(currentNote) !== JSON.stringify(noteItem)) {
+                            var iframe = $("iframe")[0];
+                            var x = noteItem.wordRange;
+                            var el = document.createElement("span");
+
+                            el.style.backgroundColor = "limegreen";
+                            el.id = "r";
+                            y = rangy.getSelection(iframe).removeAllRanges();
+                            myrange = rangy.getSelection(iframe).restoreCharacterRanges(iframe.contentWindow.document.childNodes[1], x);
+
+                            if (myrange.toHtml().match(/green/)) {
+                              el.textContent = myrange.toString();
+                              myrange.extractContents();
+                              myrange.insertNode(el);
+                              return;
+                            }
+                            if (myrange.canSurroundContents(el)) {
+                              myrange.surroundContents(el);
+                            }
+                          } else if (currentNote && currentNote.chapterHref === epubBook.currentChapter.href && JSON.stringify(currentNote) === JSON.stringify(noteItem)) {
+                            var x = currentNote.wordRange;
+                            var iframe = $("iframe")[0];
+                            var el = document.createElement("span");
+
+                            el.id = "r";
+                            el.style.backgroundColor = "green";
+                            myrange = rangy.getSelection(iframe).restoreCharacterRanges(iframe.contentWindow.document.childNodes[1], x);
+                            el.textContent = myrange.toString();
+                            myrange.extractContents();
+
+                            if (myrange.canSurroundContents(el)) {
+                              myrange.insertNode(el);
+                            }
+                            currentNote = null;
+                          }
+                        });
+                      }
+
+                      if (highlights.length !== 0) {
+                        highlights.forEach(function(highlightItem) {
+                          if (highlightItem.chapterHref === epubBook.currentChapter.href) {
+                            var classApplierModule = rangy.modules.ClassApplier;
+                            if (rangy.supported && classApplierModule && classApplierModule.supported) {
+                              highlightResultApplier = rangy.createClassApplier("highlight");
+                            }
+                            var el = document.createElement("span");
+                            el.style.backgroundColor = "yellow";
+                            var iframe = $("iframe")[0];
+                            var x = highlightItem.wordRange;
+                            myrange = rangy.getSelection(iframe).restoreCharacterRanges(iframe.contentWindow.document.childNodes[1], x);
+                            highlightResultApplier.applyToRange(myrange);
+                            highlightedElements = iframe.contentDocument.body.getElementsByClassName('highlight');
+
+                            for (var i = 0; i < highlightedElements.length; i++) {
+                              highlightedElements[i].style.backgroundColor = 'yellow';
+                            }
+                          }
+                        });
+                      }
+                    });
+
+                    // new code
+                    if (serializedHighlights) {
+                      highlighter.deserialize(serializedHighlights);
+                    }
+
+                    function highlightSelectedText() {
+                      highlighter.highlightSelection("highlight", {
+                        selection: rangy.getSelection(iframe.contentDocument)
+                      });
+                    }
+
+                    function noteSelectedText() {
+                      highlighter.highlightSelection("note", {
+                        selection: rangy.getSelection(iframe.contentDocument)
+                      });
+                    }
+
+                    function removeHighlightFromSelectedText() {
+                      highlighter.unhighlightSelection();
+                    }
+
+                    function highlightScopedSelectedText() {
+                      highlighter.highlightSelection("highlight", {
+                        containerElementId: "summary"
+                      });
+                    }
+
+                    function noteScopedSelectedText() {
+                      highlighter.highlightSelection("note", {
+                        containerElementId: "summary"
+                      });
+                    }
+
+                    function reloadPage(button) {
+                      button.form.elements["serializedHighlights"].value = highlighter.serialize();
+                      button.form.submit();
+                    }
+
+                    $("body").on('click', '#findText', function() {
+                      $(".on-find-text-click").toggle("slow");
+                    });
+
+                    $("body").on('click', '#addBookmark', function() {
+                      $(".on-add-bookmark-click").toggle("slow");
+                    });
+
+                    $("body").on('click', '#addNote', function() {
+                      $(".on-add-note-click").toggle("slow");
+                    });
+
+                    $("body").on('click', '#searchTextButton', function() {
+                      var classApplierModule = rangy.modules.ClassApplier;
+                      if (rangy.supported && classApplierModule && classApplierModule.supported) {
+                        searchResultApplier = rangy.createClassApplier("searchResult");
+                        console.log(searchResultApplier);
+                        var searchTerm = $('#searchText').val();
+                        if (!searchTerm.toString()) {
+                          $(".on-add-note-click").toggle("slow");
+                          bootbox.alert('Please give a appropriate text to search');
+                          return;
+                        }
+                        var range = rangy.createRange();
+                        var caseSensitive = false;
+                        var searchScopeRange = rangy.createRange();
+                        searchScopeRange.selectNodeContents(iframe.contentDocument.body);
+
+                        var options = {
+                          caseSensitive: caseSensitive,
+                          wholeWordsOnly: false,
+                          withinRange: searchScopeRange,
+                          direction: "forward" // This is redundant because "forward" is the default
+                        };
+
+                        range.selectNodeContents(iframe.contentDocument.body);
+                        var searchResultElements = iframe.contentDocument.body.getElementsByClassName('searchResult');
+                        for (var i = 0; i < searchResultElements.length; i++) {
+                          searchResultElements[i].style.backgroundColor = 'none';
+                        }
+
+                        if (searchTerm !== "") {
+                          var i = 0;
+                          while (range.findText(searchTerm, options)) {
+                            searchResultApplier.applyToRange(range);
+                            range.collapse(false);
+                          }
+                        }
+                        searchResultElements = iframe.contentDocument.body.getElementsByClassName('searchResult');
+                        for (var i = 0; i < searchResultElements.length; i++) {
+                          searchResultElements[i].style.backgroundColor = 'red';
+                        }
+                      }
+                    });
+
+                    $("body").on('click', '#saveNote', function() {
+
+                      var selection = rangy.getSelection(iframe);
+
+                      if (!selection.toString()) {
+                        bootbox.alert('Select a range to add note');
+                        $(".on-add-note-click").toggle("slow");
+                        return;
+                      }
+
+                      if ($("#noteText").val() === "") {
+                        bootbox.alert('Notes can\'t be blank');
+                        $(".on-add-note-click").toggle("slow");
+                        return;
+                      }
+
+                      var Note = Parse.Object.extend('Note');
+                      var note = new Note();
+                      note.set('wordRange', rangy.getSelection(iframe).saveCharacterRanges(iframe.contentWindow.document.childNodes[1]));
+                      note.set('chapterHref', epubBook.currentChapter.href);
+                      note.set('userId', Parse.User.current());
+                      note.set('noteText', $("#noteText").val());
+                      note.set('pageCfi', epubBook.getCurrentLocationCfi());
+                      note.set('Book', mybook);
+                      note.save({
+                        success: function() {
+                          $("#noteText").val('');
+                          $(".on-add-note-click").css('display', 'none');
+                          bootbox.alert("Note Added Successfully");
+                        },
+                        error: function(error) {
+                          bootbox.alert("Error : " + error);
+                        }
+                      });
+                      notes.push({
+                        wordRange: rangy.getSelection(iframe).saveCharacterRanges(iframe.contentWindow.document.childNodes[1]),
+                        chapterHref: epubBook.currentChapter.href,
+                        userId: Parse.User.current(),
+                        pageCfi: epubBook.getCurrentLocationCfi(),
+                        noteText: $("#noteText").val()
+                      });
+                      $('#myNotes').append("<li><a id='" + epubBook.getCurrentLocationCfi() + "'>" + $("#noteText").val() + "</a></li>");
+
+                      highlightSelectedText();
+                      highlightedElements = iframe.contentDocument.body.getElementsByClassName('highlight');
+
+                      for (var i = 0; i < highlightedElements.length; i++) {
+                        highlightedElements[i].style.backgroundColor = 'green';
+                      }
+                    });
+
+                    $("body").on('click', '#saveBookMark', function() {
+                      var chapterHrefBookmark = epubBook.currentChapter.href;
+                      var pageCfiBookmark = epubBook.getCurrentLocationCfi();
+                      var alreadyBookmarked = false;
+
+                      bookmarks.forEach(function(bookmark) {
+                        if (bookmark.pageCfi === pageCfiBookmark) {
+                          alreadyBookmarked = true;
+                        }
+                      })
+
+                      if (alreadyBookmarked) {
+                        bootbox.alert("This page is already bookmarked");
+                        $(".on-add-bookmark-click").toggle("slow");
+                        return;
+                      }
+
+                      if ($('#bookmarkText').val() === '') {
+                        bootbox.alert("Please provide a bookmark name");
+                        $(".on-add-bookmark-click").toggle("slow");
+                        return;
+                      }
+
+                      var Bookmark = Parse.Object.extend('Bookmark');
+                      var bookmark = new Bookmark();
+                      bookmark.set('bookmarkName', $('#bookmarkText').val())
+                      bookmark.set('Book', mybook);
+                      bookmark.set('chapterHref', chapterHrefBookmark);
+                      bookmark.set('pageCfi', pageCfiBookmark);
+                      bookmark.set('userId', Parse.User.current());
+                      bookmark.save({
+                        success: function() {
+                          $("#bookmarkText").val('');
+                          $(".on-add-bookmark-click").css('display', 'none');
+                          bootbox.alert("Bookmarked Successfully");
+                        },
+                        error: function(error) {
+                          bootbox.alert("Error : " + error);
+                        }
+                      });
+                      bookmarks.push({
+                        chapterHref: chapterHrefBookmark,
+                        userId: Parse.User.current(),
+                        pageCfi: epubBook.getCurrentLocationCfi()
+                      });
+                      $('#myBookmarks').append("<li><a id='" + epubBook.getCurrentLocationCfi() + "'>" + $('#bookmarkText').val() + "</a></li>");
+                    });
+
+                    $("body").on('click', '#highlights', function() {
+                      var selection = rangy.getSelection(iframe);
+                      console.log(selection);
+                      if (selection.toString() === "") {
+                        bootbox.alert("Select a phrase to highlight");
+                        return;
+                      }
+                      var Highlight = Parse.Object.extend('Highlight');
+                      var highlight = new Highlight();
+
+                      highlight.set('wordRange', rangy.getSelection(iframe).saveCharacterRanges(iframe.contentWindow.document.childNodes[1]));
+                      highlight.set('chapterHref', epubBook.currentChapter.href);
+                      highlight.set('userId', Parse.User.current());
+                      highlight.set('pageCfi', epubBook.getCurrentLocationCfi());
+                      highlight.set('text', selection.toString());
+                      highlight.set('Book', mybook);
+
+                      highlight.save({
+                        success: function() {
+                          bootbox.alert("Highlighted Successfully");
+                        },
+                        error: function(error) {
+                          bootbox.alert("Error : " + error);
+                        }
+                      });
+
+                      highlights.push({
+                        wordRange: rangy.getSelection(iframe).saveCharacterRanges(iframe.contentWindow.document.childNodes[1]),
+                        chapterHref: epubBook.currentChapter.href,
+                        userId: Parse.User.current(),
+                        pageCfi: epubBook.getCurrentLocationCfi(),
+                        text: selection.toString()
+                      });
+
+                      $('#myHighlights').append("<li><a id='" + epubBook.getCurrentLocationCfi() + "'>" + selection.toString() + "</a></li>");
+
+                      highlightSelectedText();
+                      highlightedElements = iframe.contentDocument.body.getElementsByClassName('highlight');
+
+                      for (var i = 0; i < highlightedElements.length; i++) {
+                        highlightedElements[i].style.backgroundColor = 'yellow';
+                      }
+                    });
+
+                    epubBook.getToc().then(function(toc) {
+                      toc.forEach(function(chapter) {
+                        console.log(chapter.href.split('.')[0]);
+                        $('#contents').append("<li id=" + chapter.href.split('.')[0] + "><a  href='" + chapter.href + "'>" + chapter.label + "</a></li>");
+                      });
+                      $('#contents li').on('click', function(e) {
+                        e.preventDefault();
+                        if ($('.sidebar-list-background')) {
+                          $('.sidebar-list-background').removeClass('sidebar-list-background');
+                        }
+                        var chapterurl = $(this)[0].firstChild;
+                        var chapterhref = chapterurl.href.split('/');
+                        var url = chapterhref[chapterhref.length - 1];
+                        epubBook.goto(url);
+                        $(this).addClass("sidebar-list-background");
+                      });
+
+                      $(document).on('click', '#myNotes li', function(e) {
+                        e.preventDefault();
+                        var pageUrl = $(this)[0].firstChild.id;
+                        var index = $(this)[0].firstChild.getAttribute('data-note');
+                        currentNote = notes[index];
+                        if (pageUrl === epubBook.getCurrentLocationCfi() && notes.length !== 0) {
+                          epubBook.trigger('renderer:chapterDisplayed');
+                          epubBook.goto(pageUrl);
+                        }
+                        epubBook.goto(pageUrl);
+                      });
+
+                      $(document).on('click', '#myBookmarks li', function(e) {
+                        e.preventDefault();
+                        var pageUrl = $(this)[0].firstChild.id;
+                        epubBook.goto(pageUrl);
+                      });
+
+                      $(document).on('click', '#myHighlights li', function(e) {
+                        e.preventDefault();
+                        var pageUrl = $(this)[0].firstChild.id;
+                        epubBook.goto(pageUrl);
+                      });
+                    });
+                  });
+                },
+                error: function(error) {
+                  alert("Error: " + error.code + " " + error.message);
+                }
+              });
+            } else {
+              $(".username").html("");
+            }
+          },
+          error: function(myObject, error) {
+            // The object was not refreshed successfully.
+            // error is a Parse.Error with an error code and message.
+            console.log("error");
+          }
+        });
+
+      }
+      $("#my-library-title").click(function() {
+        window.location = "index.html";
+      });
+      $("body").on('click', '.zoom', function(e) {
+        e.preventDefault();
+        var id = $(this).attr('id');
+        toastr.options = {
+          "closeButton": true,
+          "debug": false,
+          "positionClass": "toast-center",
+          "onclick": null,
+          "showDuration": "500",
+          "hideDuration": "500",
+          "timeOut": "2000",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+        }
+        switch (id.toString()) {
+          case 'zoomIn':
+            var zoomPercent = Math.round(((fontSize + 0.2) / (originalFontsize)) * 100);
+            toastr.info(zoomPercent + "%");
+            fontSize += 0.2;
+            epubBook.setStyle('font-size', fontSize + "em");
+            break;
+          case 'zoomOut':
+            var zoomPercent = Math.round(((fontSize - 0.2) / (originalFontsize)) * 100);
+            toastr.info(zoomPercent + "%");
+            fontSize -= 0.2;
+            epubBook.setStyle('font-size', fontSize + "em");
+            break;
+          case 'defaultZoom':
+            toastr.info("100%");
+            epubBook.setStyle('font-size', "1em");
+            break;
+          default:
+            alert('Zooming In/Out Not Possible');
+        }
+
+      });
+      checkLogIn();
+    });
+  </script>
+  <!-- END JAVASCRIPTS -->
+</body>
+<!-- END BODY -->
+</html>

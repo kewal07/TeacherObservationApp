@@ -3,7 +3,6 @@ from login import views
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-    #url(r'^(?P<pk>\d+)/(?P<user_slug>[\w\-]+)/$',login_required(views.LoggedInView.as_view()),name='loggedIn'),
 	#url(r'^$',login_required(views.RedirectLoginView.as_view()),name='loginRedirect'),
 	#url(r'^(?P<pk>\d+)/(?P<user_slug>[\w\-]+)/editprofile$',login_required(views.LoggedInView.as_view()),name='editprofile'),
 	#url(r'^editprofile$',login_required(views.EditProfileView.as_view()),name='edit_profile'),

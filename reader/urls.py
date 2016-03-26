@@ -2,10 +2,11 @@ from django.conf.urls import patterns, include, url
 from login import views
 from reader import views
 from django.contrib.auth.decorators import login_required
+from django.views.generic import TemplateView
 
 urlpatterns = [
-    url(r'^$',login_required(views.IndexView.as_view()),name='loggedIn'),
-	#url(r'^$',login_required(views.RedirectLoginView.as_view()),name='loginRedirect'),
+    #url(r'^$',login_required(views.IndexView.as_view()),name='loggedIn'),
+	url(r'^$',login_required(TemplateView.as_view(template_name='my_library.html'),),name='mylibrary'),
 	#url(r'^(?P<pk>\d+)/(?P<user_slug>[\w\-]+)/editprofile$',login_required(views.LoggedInView.as_view()),name='editprofile'),
 	#url(r'^editprofile$',login_required(views.EditProfileView.as_view()),name='edit_profile'),
 	#url(r'^logout$',views.logout_view,name="logout"),
