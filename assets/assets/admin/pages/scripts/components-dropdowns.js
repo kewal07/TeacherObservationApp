@@ -36,7 +36,7 @@ var ComponentsDropdowns = function () {
 
         function format(state) {
             if (!state.id) return state.text; // optgroup
-            return "<img class='flag' src='" + Metronic.getGlobalImgPath() + "flags/" + state.id.toLowerCase() + ".png'/>&nbsp;&nbsp;" + state.text;
+            return "<img class='flag' src='" + {% static 'assets/global/img/' %} + "flags/" + state.id.toLowerCase() + ".png'/>&nbsp;&nbsp;" + state.text;
         }
         $("#select2_sample4").select2({
             placeholder: "Select a Country",
@@ -248,7 +248,7 @@ var ComponentsDropdowns = function () {
 
     return {
         //main function to initiate the module
-        init: function () {            
+        init: function () {
             handleSelect2();
             handleSelect2Modal();
             handleMultiSelect();

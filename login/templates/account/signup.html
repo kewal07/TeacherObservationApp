@@ -15,7 +15,6 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--[if !IE]><!-->
 {% load static %}
 {% load i18n %}
-{% load socialaccount %}
 <html lang="en">
 <!--<![endif]-->
 <!-- BEGIN HEAD -->
@@ -66,54 +65,91 @@ License: You must have a valid license purchased only from themeforest(the above
 	<!-- BEGIN LOGIN -->
 	<div class="content">
 		<!-- BEGIN REGISTRATION FORM -->
-		<form class="register-form" method="post">
+		{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-error">
+                <strong>{{ field }}{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-error">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+		{% endif %}
+		<form class="register-form" method="post" action="{% url 'account_signup' %}?next={{ request.GET.next }}&&ref={{ request.GET.ref }}" enctype="multipart/form-data">
+			{% csrf_token %}
 			<h3>Sign Up</h3>
 			<p>
 				Enter your personal details below:
 			</p>
-			<div class="form-group">
 
+			<div class="form-group">
 				<div class="input-icon">
 					<label class="control-label my-file" for="profilePicLabel">Profile Pic</label>
-					<input type="file" id="profilePhotoFileUpload" name="profilePicLabel" value="{% static 'defaultAvatar.png' %}">
+					<input type="file" id="profilePhotoFileUpload" name="image" value="{% static 'defaultAvatar.png' %}">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label visible-ie8 visible-ie9">Full Name</label>
+				{{ form.first_name.label_tag }}
+				<!-- <label class="control-label visible-ie8 visible-ie9">Full Name</label> -->
 				<div class="input-icon">
 					<i class="fa fa-font"></i>
-					<input class="form-control placeholder-no-fix" id="signup-full-name" type="text" placeholder="Full Name" name="fullname" />
+					{{ form.first_name }}
+					<!-- <input class="form-control placeholder-no-fix" id="signup-full-name" type="text" placeholder="Full Name" name="first_name" /> -->
 				</div>
 				<p class="login-error" id="invalid-full-name">This field is required</p>
 			</div>
+
 			<div class="form-group">
-				<!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
-				<label class="control-label visible-ie8 visible-ie9">Email</label>
+				{{ form.last_name.label_tag }}
+				<!-- <label class="control-label visible-ie8 visible-ie9">Full Name</label> -->
+				<div class="input-icon">
+					<i class="fa fa-font"></i>
+					{{ form.last_name }}
+					<!-- <input class="form-control placeholder-no-fix" id="signup-full-name" type="text" placeholder="Full Name" name="first_name" /> -->
+				</div>
+				<p class="login-error" id="invalid-full-name">This field is required</p>
+			</div>
+
+			<div class="form-group">
+				{{ form.email.label_tag }}
+				<!-- <label class="control-label visible-ie8 visible-ie9">Email</label> -->
 				<div class="input-icon">
 					<i class="fa fa-envelope"></i>
-					<input class="form-control placeholder-no-fix" id="signup-email" type="text" placeholder="Email" name="email" />
+					{{ form.email }}
+					<!-- <input class="form-control placeholder-no-fix" id="signup-email" type="text" placeholder="Email" name="email" /> -->
 				</div>
 				<p class="login-error" id="invalid-email">This field is required</p>
 			</div>
+
 			<div class="form-group">
-				<label class="control-label visible-ie8 visible-ie9">Address</label>
+				{{ form.address.label_tag }}
+				<!-- <label class="control-label visible-ie8 visible-ie9">Address</label> -->
 				<div class="input-icon">
 					<i class="fa fa-check"></i>
-					<input class="form-control placeholder-no-fix" id="signup-address" type="text" placeholder="Address" name="address" />
+					{{ form.address }}
+					<!-- <input class="form-control placeholder-no-fix" id="signup-address" type="text" placeholder="Address" name="address" /> -->
 				</div>
 				<p class="login-error" id="invalid-address">This field is required</p>
 			</div>
 			<div class="form-group">
-				<label class="control-label visible-ie8 visible-ie9">City/Town</label>
+				{{ form.city.label_tag }}
+				<!-- <label class="control-label visible-ie8 visible-ie9">City/Town</label> -->
 				<div class="input-icon">
 					<i class="fa fa-location-arrow"></i>
-					<input class="form-control placeholder-no-fix" id="signup-city" type="text" placeholder="City/Town" name="city" />
+					{{ form.city }}
+					<!-- <input class="form-control placeholder-no-fix" id="signup-city" type="text" placeholder="City/Town" name="city" /> -->
 				</div>
 				<p class="login-error" id="invalid-city">This field is required</p>
 			</div>
 			<div class="form-group">
-				<label class="control-label visible-ie8 visible-ie9">Country</label>
-				<select name="country" id="select2_sample4" class="select2 form-control">
+				<!-- <label class="control-label visible-ie8 visible-ie9">Country</label> -->
+				{{ form.country.label_tag }}
+				{{ form.country }}
+				<!-- <select name="country" id="select2_sample4" class="select2 form-control">
 					<option value=""></option>
 					<option value="AF">Afghanistan</option>
 					<option value="AL">Albania</option>
@@ -349,47 +385,56 @@ License: You must have a valid license purchased only from themeforest(the above
 					<option value="YE">Yemen</option>
 					<option value="ZM">Zambia</option>
 					<option value="ZW">Zimbabwe</option>
-				</select>
+				</select> -->
 				<p class="login-error" id="invalid-country">This field is required</p>
 			</div>
 			<p>
 				Enter your account details below:
 			</p>
 			<div class="form-group">
-				<label class="control-label visible-ie8 visible-ie9">Username</label>
+				{{ form.username.label_tag }}
+				<!-- <label class="control-label visible-ie8 visible-ie9">Username</label> -->
 				<div class="input-icon">
 					<i class="fa fa-user"></i>
-					<input class="form-control placeholder-no-fix" id="signup-username" type="text" autocomplete="off" placeholder="Username" name="username" />
+					{{ form.username }}
+					<!-- <input class="form-control placeholder-no-fix" id="signup-username" type="text" autocomplete="off" placeholder="Username" name="username" /> -->
 				</div>
 				<p class="login-error" id="invalid-username">This field is required</p>
 			</div>
 			<div class="form-group">
-				<label class="control-label visible-ie8 visible-ie9">Password</label>
+				{{ form.password1.label_tag}}
+				<!-- <label class="control-label visible-ie8 visible-ie9">Password</label> -->
 				<div class="input-icon">
 					<i class="fa fa-lock"></i>
-					<input class="form-control placeholder-no-fix" id="signup-password" type="password" autocomplete="off" id="register_password" placeholder="Password" name="password" />
+					{{ form.password1 }}
+					<!-- <input class="form-control placeholder-no-fix" id="signup-password" type="password" autocomplete="off" id="register_password" placeholder="Password" name="password1" /> -->
 				</div>
 				<p class="login-error" id="invalid-password">This field is required</p>
 			</div>
 			<div class="form-group">
-				<label class="control-label visible-ie8 visible-ie9">Re-type Your Password</label>
+				{{ form.password2.label_tag }}
+				<!-- <label class="control-label visible-ie8 visible-ie9">Re-type Your Password</label> -->
 				<div class="controls">
 					<div class="input-icon">
 						<i class="fa fa-check"></i>
-						<input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Re-type Your Password" name="rpassword" />
+						{{ form.password2 }}
+						<!-- <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Re-type Your Password" name="password2" /> -->
 					</div>
 				</div>
 			</div>
 			<div class="form-group">
-				<label>
+				<label></label>
 					<input type="checkbox" id="tnc" name="tnc" /> I agree to the <a href="termsofservice.html" target="_blank">
 			Terms of Service </a> and <a href="privacypolicy.html" target="_blank">
 			Privacy Policy </a>
-				</label>
+
 				<div id="register_tnc_error">
 				</div>
 				<p class="login-error" id="invalid-tnc">Please check that you have read and agree to the Terms & Conditions</p>
 			</div>
+			{% if redirect_field_value %}
+			  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+			{% endif %}
 			<div class="form-actions">
 				<button id="register-back-btn" type="button" class="btn">
 					<i class="m-icon-swapleft"></i> Back </button>
@@ -409,8 +454,6 @@ License: You must have a valid license purchased only from themeforest(the above
 	<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 	<!-- BEGIN CORE PLUGINS -->
 	<!--[if lt IE 9]>
-<script src="../../assets/global/plugins/respond.min.js"></script>
-<script src="../../assets/global/plugins/excanvas.min.js"></script>
 <![endif]-->
 	<script src="{% static 'assets/global/plugins/jquery.min.js' %}" type="text/javascript"></script>
 	<script src="{% static 'assets/global/plugins/jquery-migrate.min.js' %}" type="text/javascript"></script>
@@ -430,12 +473,13 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{% static 'assets/admin/layout/scripts/demo.js' %}" type="text/javascript"></script>
 	<script src="{% static 'assets/admin/pages/scripts/login-soft.js' %}" type="text/javascript"></script>
 	<!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
-	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-latest.js"></script>
 	<script src="{% static 'assets/global/plugins/bootbox/bootbox.min.js' %}" type="text/javascript"></script>
 	<script src="{% static 'assets/admin/pages/scripts/ui-alert-dialog-api.js' %}"></script>
 
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<script>
+	$('label').addClass('control-label visible-ie8 visible-ie9');
+	$('input').addClass('form-control placeholder-no-fix');
 		jQuery(document).ready(function() {
 			Metronic.init(); // init metronic core components
 			Layout.init(); // init current layout
@@ -453,8 +497,6 @@ License: You must have a valid license purchased only from themeforest(the above
 				duration: 8000
 			});
 
-			Parse.initialize("3lXaKuiy7u5fHQIp9syydggudckbGA94MaxiInbr", "82Z6d5nGiP6dwRU1vadlQ4YXf7T416ZpBpP4WQDS");
-
 			window.fbAsyncInit = function() {
 				Parse.FacebookUtils.init({ // this line replaces FB.init({
 					appId: '1806264196273899', // Facebook App ID
@@ -463,72 +505,9 @@ License: You must have a valid license purchased only from themeforest(the above
 					xfbml: true, // initialize Facebook social plugins on the page
 					version: 'v2.3' // point to the latest Facebook Graph API version
 				});
-				// console.log("FB");
-				$(".facebook").click(function() {
-					// console.log("India");
-					Parse.FacebookUtils.logIn("public_profile,email", {
-						success: function(user) {
-							FB.api("/me/picture?width=180&height=180", function(response) {
-								// console.log(response.data.url);
-								user.set("socialProfileUrl", response.data.url);
-								user.save();
-
-							});
-							if (!user.existed()) {
-								FB.api('/me', {
-									fields: 'id,name,gender,email'
-								}, function(response) {
-									user.set("fullName", response.name);
-									user.set("email", response.email);
-									user.set("address", "Address");
-									user.set("city", "City");
-									user.set("country", "Country");
-									// user.set("profilePic",parseFile);
-									user.set("issuedBooks", []);
-									user.save();
-									// console.log(JSON.stringify(response));
-								});
-								window.location = "index.html";
-							} else {
-								window.location = "index.html";
-							}
-						},
-						error: function(user, error) {
-							bootbox.alert("User cancelled the Facebook login or did not fully authorize.");
-						}
-					});
-				});
-
 			};
 
-			(function(d, s, id) {
-				var js, fjs = d.getElementsByTagName(s)[0];
-				if (d.getElementById(id)) {
-					return;
-				}
-				js = d.createElement(s);
-				js.id = id;
-				js.src = "https://connect.facebook.net/en_US/sdk.js";
-				fjs.parentNode.insertBefore(js, fjs);
-			}(document, 'script', 'facebook-jssdk'));
-
-			var parseFile;
-			$('input:file').change(function() {
-				var fileUploadControl = $("#profilePhotoFileUpload")[0];
-				if (fileUploadControl.files.length > 0) {
-					var file = fileUploadControl.files[0];
-					var name = fileUploadControl.files[0].name;
-					parseFile = new Parse.File(name, file);
-					parseFile.save().then(function() {
-						// The file has been saved to Parse.
-					}, function(error) {
-						// The file either could not be read, or could not be saved to Parse.
-					});
-				}
-			});
-
-			$("#register-submit-btn").click(function(event) {
-				event.preventDefault();
+			$("#register-submit-btn").bind('click',function(event) {
 				var verified = 1;
 				var fullName = $("#signup-full-name").val();
 				if (fullName === "") {
@@ -565,61 +544,33 @@ License: You must have a valid license purchased only from themeforest(the above
 					$("#invalid-password").css("display", "block");
 					verified = 0;
 				}
-				if (!$('#tnc').is(":checked")) {
-					$("#invalid-tnc").css("display", "block");
-					verified = 0;
-				}
+				// if (!$('#tnc').is(":checked")) {
+				// 	$("#invalid-tnc").css("display", "block");
+				// 	verified = 0;
+				// }
 				if (verified === 1) {
-					var user = new Parse.User();
-					user.set("username", username);
-					user.set("password", password);
-					user.set("fullName", fullName);
-					user.set("email", email);
-					user.set("address", address);
-					user.set("city", city);
-					user.set("country", country);
-					user.set("profilePic", parseFile);
-					user.set("issuedBooks", []);
-					user.signUp(null, {
-						success: function(user) {
-							Parse.User.logOut();
-							bootbox.alert("Signup Successful. Please verify your email.", function() {
-								window.location = "login_soft.html";
-							});
-						},
-						error: function(user, error) {
-							bootbox.alert(error.message);
-						}
-					});
-				} else {
-					bootbox.alert("Please check the Sign-up form. Unable to proceed.");
+					console.log("form submitted");
+					$("#register-submit-btn").unbind('click').click();
+					$("#register-submit-btn").attr("disabled","disabled");
 				}
 			});
-
-			$("#login-login").click(function(event) {
-				event.preventDefault();
-
-				var username = $("#login-username").val();
-				var password = $("#login-password").val();
-				localStorage.usrname = $('#login-username').val();
-				localStorage.pass = $('#login-password').val();
-				localStorage.chkbx = $('#remember_me').val();
-				Parse.User.logIn(username, password, {
-					success: function() {
-						var parseUser = arguments[0];
-						if (parseUser.attributes.emailVerified) {
-							console.log("Log In Success");
-							window.location = "index.html";
-						} else {
-							bootbox.alert("Please Verify your email address");
-						}
-					},
-					error: function(user, error) {
-						$("#invalid-usr-pwd").css("display", "block");
-					}
-				});
-			});
-
+			//register button click end
+			// fileInput.change(function(){
+			// 	console.log("file input called");
+	    // 	$this = $(this);
+	    // 	var fileVal = $this.val();
+    	// 	var fileNameIndex = fileVal.lastIndexOf("\\") + 1;
+    	// 	var fileName = fileVal.substr(fileNameIndex);
+    	// 	if (this.files && this.files[0])
+			// 	{
+      //   	var reader = new FileReader();
+      //     reader.onload = function (e)
+			// 		{
+      //     	imgSrc = e.target.result;
+      //     }
+      //     reader.readAsDataURL(this.files[0]);
+      //   }
+			// });
 		});
 	</script>
 	<!-- END JAVASCRIPTS -->
