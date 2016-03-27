@@ -1,3 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/')
