@@ -1,16 +1,28 @@
 from django.db import models
 from django.conf import settings
 
+def get_file_path(instance, filename):
+	ext = filename.split('.')[-1]
+	filename = "book%s.%s" % (instance.isbn, ext)
+	profilePath = (os.path.join(settings.BASE_DIR,'media'+os.sep+'books'+os.sep+str(folder_day)))
+	return os.path.join(profilePath,filename)
+
+def get_file_path_coverimages(instance, filename):
+	ext = filename.split('.')[-1]
+	filename = "bookcoverimage%s.%s" % (instance.isbn, ext)
+	coverimage = (os.path.join(settings.BASE_DIR,'media'+os.sep+'coverimage'+os.sep+str(folder_day)))
+	return os.path.join(coverimage,filename)
+
 class Book(models.Model):
     author = models.CharField(max_length=255)
     isbn = models.CharField(max_length=255)
     bookName = models.CharField(max_length=255)
-    bookEpub = models.FileField(upload_to='/media/books',blank=True,null=True)
+    bookEpub = models.FileField(upload_to=get_file_path,blank=True,null=True)
     coverImageUrl = models.ImageField(upload_to='/media/coverimage',blank=True,null=True)
     pub_date = models.DateTimeField('Date Published')
 
     def __str__(self):
-        return self.question_text
+        return self.bookName
 
     def has_image(self):
         image_list = []
@@ -56,3 +68,7 @@ class Note(models.Model):
 
     def __str__(self):
         return self.book + "_" + self.user + "_" + self.text
+
+class BooksIssued(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    book = models.ForeignKey(Book)
