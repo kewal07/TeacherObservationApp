@@ -55,6 +55,9 @@ class ExtendedUser(models.Model):
 		return folder_day
 
 	def get_profile_pic_url(self):
+		print('************************************************************************************************************')
+		print('helloyar')
+		print('************************************************************************************************************')
 		default_pic_url = "/static/login/images/defaultAvatar.png"
 		if self.imageUrl:
 			img_url = self.imageUrl.path

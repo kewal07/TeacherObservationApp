@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
 # Create your views here.
-class MyLibrary(generic.DetailView):
+class MyLibrary(generic.ListView):
 	context_object_name = 'data'
 
 	def get_template_names(self):
@@ -14,21 +14,38 @@ class MyLibrary(generic.DetailView):
 		template_name = 'my_library.html'
 		return [template_name]
 
-	def get_queryset(self):
+	def get_queryset(self, **kwargs):
 		request = self.request
 		user = request.user
 		context = {}
-		mainData = []
+		issuedBooks = []
 		userIssuedBooks = BooksIssued.objects.filter(user=user)
-		if user.is_authenticated():
-			context['issuedBooks'] = userIssuedBooks
+		for booking in userIssuedBooks:
+			book = Book.objects.get(id=booking.book_id)
+			issuedBooks.append(book)
+		context['issuedBooks'] = issuedBooks
+		return context
+
+# Create your views here.
+class CentralLibrary(generic.ListView):
+	context_object_name = 'data'
+
+	def get_template_names(self):
+		request = self.request
+		template_name = 'central_library.html'
+		return [template_name]
+
+	def get_queryset(self, **kwargs):
+		request = self.request
+		user = request.user
+		context = {}
+		issuedBooks = []
+		bookList = Book.objects.all()
+		context['books'] = [book for book in bookList]
 		return context
 
 def checkLogin(request):
 	user = request.user
-	print('*************************')
-	print(user)
-	print('*************************')
 	if user is None or not user.is_authenticated:
 		url = reverse('account_login')
 	else:
