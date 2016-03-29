@@ -218,15 +218,16 @@ License: You must have a valid license purchased only from themeforest(the above
 					flag = 1;
 					var that = $(this);
 					$(this).append(element);
+					var bookId = this.id
 					$(".btn-success").click(function(e) {
 						e.stopPropagation();
 						flag = 0;
 						$(".my-popover").remove();
+						var data_dict = {'user':{{ user.id }}, 'bookId':bookId};
 						$.ajax({
-							type: 'POST',
+							type: 'GET',
 							url:"/issuebook",
-							data:{'user':{{ user.id }}, 'bookId':that.id, 'csrfmiddlewaretoken': "{{ csrf_token }}"},
-							processData: false,
+							data:data_dict,
 							contentType: false,
 							success:function(response)
 							{

@@ -50,12 +50,10 @@ class IssueBookView(generic.ListView):
 		context = {}
 		return context
 
-	def post(self,request,*args,**kwargs):
-		print('***************REQUEST DATA**********************')
-		print(request.POST.get('user',''))
-		print(request.POST.get('bookId',''))
-		print('*************************************************')
-		pass
+	def get(self,request,*args,**kwargs):
+		user = request.user
+		bookId = request.GET.get('bookId','')
+		issuedBooks = UserIssuedBooks
 
 def checkLogin(request):
 	user = request.user
