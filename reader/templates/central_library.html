@@ -43,7 +43,7 @@ License: You must have a valid license purchased only from themeforest(the above
 	<link href="{% static 'assets/admin/layout/css/custom.css' %}" rel="stylesheet" type="text/css" />
 	<link href="{% static 'assets/admin/layout/css/central_custom.css' %}" rel="stylesheet" type="text/css" />
 	<!-- END THEME STYLES -->
-	<link rel="shortcut icon" href="favicon.ico" />
+	<link rel="shortcut icon" href="{% static 'favicon.png' %}" />
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
@@ -74,7 +74,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						</a>
 					</li>
 					<li class="">
-						<a href="index.html">
+						<a href="{% url 'reader:mylibrary' user.id user.username%}">
 							<i class="fa fa-book"></i>
 							<span class="title">My Library</span>
 						</a>
@@ -89,8 +89,8 @@ License: You must have a valid license purchased only from themeforest(the above
 					<!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
 					<li class="dropdown dropdown-user">
 						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-							<img alt="" class="img-circle" src="" />
-							<span class="username username-hide-on-mobile"></span>
+							<img alt="{{ user.first_name }}" class="img-circle" src="{{ user.extendeduser.get_profile_pic_url }}" />
+							<span class="username username-hide-on-mobile">{{ user.username }}</span>
 							<i class="fa fa-angle-down"></i>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-default">
@@ -141,6 +141,9 @@ License: You must have a valid license purchased only from themeforest(the above
 				<div class="row">
 					<div class="col-md-12">
 						<ul class="central-library-book-list">
+							{% for book in data.books %}
+								<li id ='{{ book.id }}' class='central-cover-image-li'><img class='central-cover-image' src='{{ book.get_cover_image_path }}'> <span class='central-book-info'> {{ book.bookName}} <br> {{ book.author }} </span></li>
+							{% endfor %}
 						</ul>
 						<ul class="central-library-book-list-search">
 						</ul>
@@ -165,8 +168,8 @@ License: You must have a valid license purchased only from themeforest(the above
 		<div class="scroll-to-top">
 			<i class="icon-arrow-up"></i>
 		</div>
-		<a style="visibility:hidden;" class="btn default" id="demo_1">
-			<a style="visibility:hidden;" class="btn default" id="demo_2">
+		<a style="visibility:hidden;" class="btn default" id="demo_1"></a>
+		<a style="visibility:hidden;" class="btn default" id="demo_2"></a>
 	</div>
 	<!-- END FOOTER -->
 	<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
@@ -201,220 +204,77 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{% static 'assets/admin/pages/scripts/ui-alert-dialog-api.js' %}"></script>
 
 	<script>
-		function searchOnEnter(obj, event) {
-			if (event.keyCode === 13) {
-				$(".icon-magnifier").click();
-			}
-		}
-		window.onresize = function() {
-			location.reload();
-		}
-		jQuery(document).ready(function() {
-			Metronic.init(); // init metronic core components
-			Layout.init(); // init current layout
-			QuickSidebar.init(); // init quick sidebar
-			Demo.init(); // init demo features
-			UIAlertDialogApi.init(); //for alert box
-			// Parse.initialize("Ffw4i7SDu6e3koGLzXqcBVWXVFTimvMj9jnrBdzf", "hjRk6pqv5wmXKPqnw5RHI9GBwxTMKKU9vRzmGBW1");
-
+		jQuery(document).ready(function()
+		{
 			var flag = 0;
 			var element =
 				'<div class="my-popover popover confirmation fade top in" id="confirmation644182" style="top: 54px; left: 258.938px; display: block;"><div class="arrow" style="left: 50%;"></div><h3 class="popover-title">Issue Book?</h3><div class="popover-content text-center"><div class="btn-group"><a class="btn btn-xs btn-success" data-apply="confirmation"><i class="glyphicon glyphicon-ok"></i> Yes</a><a class="btn btn-xs btn-danger" data-dismiss="confirmation"><i class="glyphicon glyphicon-remove"></i> No</a></div></div></div>';
 			var tickElement = '<i class="fa fa-check-circle"></i>';
 
-			function checkLogIn() {
-				var currentUser = Parse.User.current();
-				currentUser.fetch({
-					success: function(myObject) {
-						currentUser = myObject;
-						if (Parse.User.current()) {
-							$(".username").text(currentUser.get("fullName"));
-							$("#user-name-profile").text(currentUser.get("username"));
-							var profilePhoto = currentUser.get("profilePic");
-							var socialProfilePic = currentUser.get("socialProfileUrl");
-							if (socialProfilePic == null) {
-								if (profilePhoto) {
-									$(".img-circle").attr("src", profilePhoto.url());
-									$("#user-profile-pic").attr("src", profilePhoto.url());
-								}
-							} else {
-								$(".img-circle").attr("src", socialProfilePic);
-								$("#user-profile-pic").attr("src", socialProfilePic);
+			$(".central-cover-image-li").on('click', function()
+			{
+				if (flag == 0)
+				{
+					flag = 1;
+					var that = $(this);
+					$(this).append(element);
+					$(".btn-success").click(function(e) {
+						e.stopPropagation();
+						flag = 0;
+						$(".my-popover").remove();
+						$.ajax({
+							type: 'POST',
+							url:"/issuebook",
+							data:{'user':{{ user.id }}, 'bookId':that.id, 'csrfmiddlewaretoken': "{{ csrf_token }}"},
+							processData: false,
+							contentType: false,
+							success:function(response)
+							{
 							}
-							var books = Parse.Object.extend("Book");
-							var query = new Parse.Query(books);
-							// query.limit(10);
-							query.find({
-								success: function(results) {
-									var checkBooks = Parse.User.current().get("issuedBooks");
-									// Do something with the returned Parse.Object values
-									for (var i = 0; i < results.length; i++) {
-										var object = results[i];
-										$('.central-library-book-list').append("<li id ='" + object.id + "' class='central-cover-image-li'><img class='central-cover-image' src='" + object.get('coverImage').url() + "'>" + "<span class='central-book-info'>" + object.get(
-											'bookName') + "<br>" + object.get('Author') + "</span>" + "</li>");
-										$('.cover-image').css('width', $('.library-book-list').width() / 3.5);
-										if (jQuery.inArray(object.id, checkBooks) !== -1) {
-											$("#" + object.id).append(tickElement);
-										}
-									}
-									$(".central-cover-image-li").on('click', function() {
-										if (flag == 0) {
-											flag = 1;
-											var that = $(this);
-											$(this).append(element);
-											$(".btn-success").click(function(e) {
-												e.stopPropagation();
-												flag = 0;
-												$(".my-popover").remove();
-												var issuedBooks = Parse.User.current().get("issuedBooks");
-												if (typeof issuedBooks == "undefined") {
-													issuedBooks = [];
-												}
+						});
 
-												if (issuedBooks.length >= 3) {
-													bootbox.alert("You already have 3 books")
-												} else {
-													if (jQuery.inArray(that.attr('id'), issuedBooks) !== -1) {
-														$("#demo_1").trigger("click");
-													} else {
-														issuedBooks.push(that.attr('id'));
-														currentUser.set("issuedBooks", issuedBooks);
-														currentUser.save({
-															success: function() {
-																$("#demo_2").trigger("click");
-																that.append(tickElement);
-															},
-															error: function(error) {
-																//To be Filled
-															}
-														});
-													}
-												}
-											});
 
-											$(".btn-danger").click(function(e) {
-												e.stopPropagation();
-												$(".my-popover").remove();
-												flag = 0;
-											});
-										}
-									});
-								},
-								error: function(error) {
-									alert("Error: " + error.code + " " + error.message);
-								}
-							});
-							$(".icon-magnifier").click(function() {
-								var sValue = $("#eduzen-search").val();
-								if (sValue === "") {
-									bootbox.alert("Search box is empty!");
-								} else {
-									var bookSearch = Parse.Object.extend("Book");
-									var authorQuery = new Parse.Query(bookSearch);
-									authorQuery.matches("Author", sValue, "i");
-									//query.whereMatches("name", "("+searchData+")", "i");
-									var bookQuery = new Parse.Query(bookSearch);
-									bookQuery.matches("bookName", sValue, "i");
-									var isbnQuery = new Parse.Query(bookSearch);
-									isbnQuery.matches("ISBN", sValue, "i");
-									var mainBookQuery = Parse.Query.or(authorQuery, bookQuery, isbnQuery);
-									mainBookQuery.find({
-										success: function(results) {
-											$(".sub-h4").css("display", "none");
-											$('.central-library-book-list').css("display", "none");
-											$(".search-results").css("display", "block");
-											$(".central-library-book-list-search").css("display", "block");
-											var checkBooksUser = Parse.User.current().get("issuedBooks");
-											// Do something with the returned Parse.Object values
-											$('.central-library-book-list-search').empty();
-											if (results.length == 0) {
-												$('.central-library-book-list-search').append("<p>No Books Found </p>");
-											}
-											for (var i = 0; i < results.length; i++) {
-												var object = results[i];
-												$('.central-library-book-list-search').append("<li id ='" + object.id + "' class='central-cover-image-li'><img class='central-cover-image' src='" + object.get('coverImage').url() + "'>" + "<span class='central-book-info'>" +
-													object.get('bookName') + "<br>" + object.get('Author') + "</span>" + "</li>");
-												$('.cover-image').css('width', $('.library-book-list').width() / 3.5);
-												if (jQuery.inArray(object.id, checkBooksUser) !== -1) {
-													$("#" + object.id).append(tickElement);
-												}
-											}
-											$(".central-cover-image-li").on('click', function() {
-												if (flag == 0) {
-													flag = 1;
-													var that = $(this);
-													$(this).append(element);
-													$(".btn-success").click(function(e) {
-														e.stopPropagation();
-														flag = 0;
-														$(".my-popover").remove();
-														var issuedBooks = Parse.User.current().get("issuedBooks");
-														if (typeof issuedBooks == "undefined") {
-															issuedBooks = [];
-														}
+					// 	if (issuedBooks.length >= 3)
+					// 	{
+					// 		bootbox.alert("You already have 3 books")
+					// 	}
+					// 	else
+					// 	{
+					// 		if (jQuery.inArray(that.attr('id'), issuedBooks) !== -1)
+					// 		{
+					// 			$("#demo_1").trigger("click");
+					// 		}
+					// 		else
+					// 		{
+					// 			issuedBooks.push(that.attr('id'));
+					// 			currentUser.set("issuedBooks", issuedBooks);
+					// 			currentUser.save(
+					// 			{
+					// 				success: function()
+					// 				{
+					// 					$("#demo_2").trigger("click");
+					// 					that.append(tickElement);
+					// 				},
+					// 				error: function(error)
+					// 				{
+					// 									//To be Filled
+					// 				}
+					// 		 });
+					// 	 }
+					// }
+				});
 
-														if (issuedBooks.length >= 3) {
-															bootbox.alert("You already have 3 books")
-														} else {
-															if (jQuery.inArray(that.attr('id'), issuedBooks) !== -1) {
-																$("#demo_1").trigger("click");
-															} else {
-																issuedBooks.push(that.attr('id'));
-																currentUser.set("issuedBooks", issuedBooks);
-																currentUser.save({
-																	success: function() {
-																		$("#demo_2").trigger("click");
-																		that.append(tickElement);
-																	},
-																	error: function(error) {
-																		//To be Filled
-																	}
-																});
-															}
-														}
-													});
-
-													$(".btn-danger").click(function(e) {
-														e.stopPropagation();
-														$(".my-popover").remove();
-														flag = 0;
-													});
-												}
-											});
-										},
-										error: function(error) {
-											alert("Error: " + error.code + " " + error.message);
-										}
-									});
-								}
-							});
-						} else {
-							$(".username").html("");
-						}
-					},
-					error: function(myObject, error) {
-						// The object was not refreshed successfully.
-						// error is a Parse.Error with an error code and message.
-					}
+				$(".btn-danger").click(function(e)
+				{
+					e.stopPropagation();
+					$(".my-popover").remove();
+					flag = 0;
 				});
 			}
-			$("#central-library-title").click(function() {
-				window.location = "central_library.html";
-			});
-			$("span.central-library").click(function() {
-				window.location = "central_library.html";
-			});
-			checkLogIn();
-			$(".my-logout").click(function() {
-				Parse.User.logOut();
-
-				window.location = "login_soft.html";
-			});
 		});
+	});
 	</script>
 	<!-- END JAVASCRIPTS -->
-
 </body>
 <!-- END BODY -->
-
 </html>

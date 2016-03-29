@@ -44,6 +44,19 @@ class CentralLibrary(generic.ListView):
 		context['books'] = [book for book in bookList]
 		return context
 
+class IssueBookView(generic.ListView):
+	template_name = 'central_library.html'
+	def get_queryset(self):
+		context = {}
+		return context
+
+	def post(self,request,*args,**kwargs):
+		print('***************REQUEST DATA**********************')
+		print(request.POST.get('user',''))
+		print(request.POST.get('bookId',''))
+		print('*************************************************')
+		pass
+
 def checkLogin(request):
 	user = request.user
 	if user is None or not user.is_authenticated:
