@@ -138,7 +138,7 @@ License: You must have a valid license purchased only from themeforest(the above
             </a>
           </li>
           <li class="active open">
-            <a href="index.html">
+            <a href="{% url 'reader:mylibrary' user.id user.username%}">
               <i class="fa fa-book tooltips" data-placement="bottom" data-original-title="My Library"></i>
               <span id="menu-items-text" class="title tooltips">My Library</span>
             </a>
@@ -313,6 +313,7 @@ License: You must have a valid license purchased only from themeforest(the above
       var serializedHighlights = decodeURIComponent(window.location.search.slice(window.location.search.indexOf("=") + 1));
       var initialDoc;
       var crossElement = '<i class="fa fa-times-circle"></i>';
+      var bookName = '';
 
       window.highlighter;
       window.highlights = [];
@@ -364,15 +365,15 @@ License: You must have a valid license purchased only from themeforest(the above
               bootbox.alert(response.error)
             } else {
               bookUrl = response.bookUrl;
+              bookName = response.bookName;
               bookUrl = "http://{{ request.META.HTTP_HOST }}"+bookUrl;
-              console.log(bookUrl);
               handleBookDisplay(bookUrl);
             }
           }
         });
       }); //End of book loading
 
-      function handleBookDisplay(bookUrl){
+      function handleBookDisplay(bookUrl){ // Start of handle book display function
         epubBook = ePub(bookUrl);
         //mybook = book;
         $(".col-md-12").toggle("slow");
@@ -380,7 +381,62 @@ License: You must have a valid license purchased only from themeforest(the above
         $("body").removeClass("page-full-width");
         rendered = epubBook.renderTo("area");
         $("#my-library-title").remove();
-      }
+
+        $('.page-sidebar-menu').on('click', '.slider-options', function(event) {
+          var id = '#' + this.id;
+          id = id.toString();
+          var sliderElements = $('.slider-options');
+          for (var i = 0; i < sliderElements.length; i++)
+          {
+            var elemId = '#' + sliderElements[i].id;
+            $(elemId).parent().removeClass('active');
+            $(elemId).parent().removeClass('open');
+          }
+          $(id).parent().addClass('active open');
+        });
+
+        $(".meter").toggle("slow");
+        $('.page-sidebar-menu').html("<li class='active open'><a class='slider-options' id='chapter-slider' href='javascript:;'><i class='icon-rocket'></i><span class='title'>" + bookName +
+                      "</span><span class='selected'></span><span class='arrow open'></span></a><ul class='sub-menu scroll-smenu' id='contents'></ul></li>");
+        $(".book-functions").toggle("slow");
+        $("<div id='prev' class='arrow'><i class='fa fa-arrow-left'></i></div><div id='next' class='arrow'><i class='fa fa-arrow-right'></i></div>").insertAfter("#area");
+        $("#next").on('click', function() {
+          epubBook.nextPage();
+        });
+        $("#prev").on('click', function() {
+          epubBook.prevPage();
+        });
+        $('#area').css('height', height);
+
+        epubBook.ready.all.then(function() { // Start of block to implement highlight and other functionalities
+          iframe = $("iframe")[0];
+          highlighter = rangy.createHighlighter(iframe.contentWindow);
+
+          highlighter.addClassApplier(rangy.createClassApplier("highlight", {
+            ignoreWhiteSpace: true,
+            tagNames: ["span", "a"]
+          }));
+
+          highlighter.addClassApplier(rangy.createClassApplier("note", {
+            ignoreWhiteSpace: true,
+            elementTagName: "a",
+            elementProperties: {
+              href: "#",
+              onclick: function()
+              {
+                var highlight = highlighter.getHighlightForElement(this);
+                if (window.confirm("Delete this note (ID " + highlight.id + ")?"))
+                {
+                  highlighter.removeHighlights([highlight]);
+                }
+                return false;
+              }
+            }
+          }));
+          
+        });
+      } // End of handle book display function
+
     }); // End of JQuery Ready Block
   </script>
   <!-- END JAVASCRIPTS -->

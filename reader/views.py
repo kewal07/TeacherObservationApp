@@ -119,6 +119,7 @@ def getbook(request):
 			bookUrl = str(bookToRead.bookEpub)
 			bookUrl = '/media/books/'+bookUrl.split('/')[-1]
 			message['bookUrl'] = bookUrl
+			message['bookName'] = str(bookToRead.bookName)
 			return HttpResponse(json.dumps(message), content_type='application/json')
 		else:
 			message['error'] = 'Error retrieving book info.'
