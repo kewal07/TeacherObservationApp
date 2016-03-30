@@ -9,8 +9,8 @@ urlpatterns = [
 	url(r'^mylibrary/(?P<pk>\d+)/(?P<user_name>[\w\-]+)$',login_required(views.MyLibrary.as_view()),name='mylibrary'),
     url(r'^centrallibrary/(?P<pk>\d+)/(?P<user_name>[\w\-]+)$',login_required(views.CentralLibrary.as_view()),name='centrallibrary'),
 	url(r'^issuebook$',login_required(views.IssueBookView.as_view()),name='issuebook'),
-	#url(r'^editprofile$',login_required(views.EditProfileView.as_view()),name='edit_profile'),
-	#url(r'^logout$',views.logout_view,name="logout"),
+	url(r'^returnbook$',login_required(views.ReturnBookView.as_view()),name='returnbook'),
+	url(r'^getbookurl$',login_required(views.getbook),name='getbook'),
 	#url(r'^changepassword$',login_required(views.MyChangePasswordView.as_view()),name="change_password"),
 	# url(r'^/detail$',views.DetailView.as_view(),name='detail'),
 ]

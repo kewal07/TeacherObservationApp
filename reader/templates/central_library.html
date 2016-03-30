@@ -194,7 +194,6 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{% static 'assets/admin/layout/scripts/layout.js' %}" type="text/javascript"></script>
 	<script src="{% static 'assets/admin/layout/scripts/quick-sidebar.js' %}" type="text/javascript"></script>
 	<script src="{% static 'assets/admin/layout/scripts/demo.js' %}" type="text/javascript"></script>
-	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-latest.js"></script>
 	<script src="{% static 'assets/admin/layout/scripts/zip.min.js' %}" type="text/javascript"></script>
 	<script src="{% static 'assets/admin/layout/scripts/epub.js' %}" type="text/javascript"></script>
 	<script src="{% static 'assets/admin/layout/scripts/rangy-core.js' %}" type="text/javascript"></script>
@@ -223,46 +222,16 @@ License: You must have a valid license purchased only from themeforest(the above
 						e.stopPropagation();
 						flag = 0;
 						$(".my-popover").remove();
-						var data_dict = {'user':{{ user.id }}, 'bookId':bookId};
+						var data_dict = {'bookId':bookId, 'csrfmiddlewaretoken': "{{ csrf_token }}"};
 						$.ajax({
-							type: 'GET',
+							type: 'POST',
 							url:"/issuebook",
 							data:data_dict,
-							contentType: false,
 							success:function(response)
 							{
+								bootbox.alert(response['success'])
 							}
 						});
-
-
-					// 	if (issuedBooks.length >= 3)
-					// 	{
-					// 		bootbox.alert("You already have 3 books")
-					// 	}
-					// 	else
-					// 	{
-					// 		if (jQuery.inArray(that.attr('id'), issuedBooks) !== -1)
-					// 		{
-					// 			$("#demo_1").trigger("click");
-					// 		}
-					// 		else
-					// 		{
-					// 			issuedBooks.push(that.attr('id'));
-					// 			currentUser.set("issuedBooks", issuedBooks);
-					// 			currentUser.save(
-					// 			{
-					// 				success: function()
-					// 				{
-					// 					$("#demo_2").trigger("click");
-					// 					that.append(tickElement);
-					// 				},
-					// 				error: function(error)
-					// 				{
-					// 									//To be Filled
-					// 				}
-					// 		 });
-					// 	 }
-					// }
 				});
 
 				$(".btn-danger").click(function(e)

@@ -212,8 +212,9 @@ License: You must have a valid license purchased only from themeforest(the above
                 <p class='no-books'>You do not have any books issued. Go ahead and issue one at the <a href='central_library.html' class='no-books-a'>Central Library</a></p>
               {% else %}
                 {% for book in data.issuedBooks %}
-                  <li id ='{{ book.id }}' class='cover-image-li'><img class='cover-image' src='{{ book.get_cover_image_path }}'><span class='book-info'> {{ book.bookName }} <br> {{ book.author }}</span></li>
-                  <i class="fa fa-times-circle"></i>
+                  <li id ='{{ book.id }}' class='cover-image-li'><img class='cover-image' src='{{ book.get_cover_image_path }}'><span class='book-info'> {{ book.bookName }} <br> {{ book.author }}</span>
+                      <i class="fa fa-times-circle"></i>
+                  </li>
                 {% endfor %}
               {% endif %}
             </ul>
@@ -269,6 +270,118 @@ License: You must have a valid license purchased only from themeforest(the above
   <script src="{% static 'assets/admin/pages/scripts/ui-alert-dialog-api.js' %}"></script>
 
   <script>
+    function saveNoteEnter(obj, event) {
+      if (event.keyCode === 13) {
+        $("#saveNote").click();
+      }
+    }
+
+    function saveBookMarkEnter(obj, event) {
+      if (event.keyCode === 13) {
+        $("#saveBookMark").click();
+      }
+    }
+
+    function searchOnEnter(obj, event) {
+      if (event.keyCode === 13) {
+        $("#searchTextButton").click();
+      }
+    }
+
+    jQuery(document).ready(function() {
+      Metronic.init(); // init metronic core components
+      Layout.init(); // init current layout
+      QuickSidebar.init(); // init quick sidebar
+      Demo.init(); // init demo features
+      UIAlertDialogApi.init(); //for alert box
+      rangy.init();
+      var metronicHeight = Metronic.getViewPort().height;
+      var pageHeaderHeight = $('.page-header').height();
+      var pageFooterHeight = $('.page-footer').height();
+      var height = metronicHeight - pageHeaderHeight - pageFooterHeight;
+      height = height - 20;
+      var bookAlreadyOpened = 0;
+      var bookUrl = '';
+      var rendered;
+      var iframe;
+      var myrange;
+      var fontSize = 1;
+      var originalFontsize = 1;
+      var Note;
+      var Highlight;
+      var epub;
+      var serializedHighlights = decodeURIComponent(window.location.search.slice(window.location.search.indexOf("=") + 1));
+      var initialDoc;
+      var crossElement = '<i class="fa fa-times-circle"></i>';
+
+      window.highlighter;
+      window.highlights = [];
+      window.notes = [];
+      window.bookmarks = [];
+      window.epubBook;
+      window.mybook;
+      window.currentNote = null;
+
+      $("#noteText").css('display', 'hidden');
+      $("#saveNote").css('display', 'hidden');
+
+      $(".fa-times-circle").on('click', function(e) { // Return book function
+        var that = $(this);
+        e.stopPropagation();
+        bootbox.confirm("Do you want to return the book? You would have to issue it again from Central Library to read.", function(result) {
+          if (result)
+          {
+            var bId = that.parent().attr("id");
+            $.ajax({
+							type: 'POST',
+							url:"/returnbook",
+							data:{'bookId':bId, 'csrfmiddlewaretoken': "{{ csrf_token }}"},
+							success:function(response)
+							{
+								bootbox.alert(response['success']);
+                $("#" + bId).remove();
+							}
+						});
+          }
+          else
+          {
+          }
+        });
+      }); // End of return book block
+
+      $(".cover-image-li").on('click', function(event) { // Book loading block
+        $(".cover-image-li").unbind("click");
+        bookAlreadyOpened = 1;
+        var bookId = $(this)[0].id;
+
+        $.ajax({
+          type: 'POST',
+          url:"/getbookurl",
+          data:{'bookId':bookId, 'csrfmiddlewaretoken': "{{ csrf_token }}"},
+          success:function(response)
+          {
+            if(typeof response.bookUrl === 'undefined'){
+              bootbox.alert(response.error)
+            } else {
+              bookUrl = response.bookUrl;
+              bookUrl = "http://{{ request.META.HTTP_HOST }}"+bookUrl;
+              console.log(bookUrl);
+              handleBookDisplay(bookUrl);
+            }
+          }
+        });
+      }); //End of book loading
+
+      function handleBookDisplay(bookUrl){
+        epubBook = ePub(bookUrl);
+        //mybook = book;
+        $(".col-md-12").toggle("slow");
+        $(".container-epub").toggle("slow");
+        $("body").removeClass("page-full-width");
+        rendered = epubBook.renderTo("area");
+        $("#my-library-title").remove();
+      }
+    }); // End of JQuery Ready Block
   </script>
   <!-- END JAVASCRIPTS -->
 </body>
