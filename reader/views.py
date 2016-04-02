@@ -8,6 +8,27 @@ import sys, os
 import simplejson as json
 
 # Create your views here.
+
+class MyProfile(generic.ListView):
+	context_object_name = 'data'
+
+	def get_template_names(self):
+		request = self.request
+		template_name = 'profile.html'
+		return [template_name]
+
+	def get_queryset(self, **kwargs):
+		request = self.request
+		user = request.user
+		context = {}
+		issuedBooks = []
+		userIssuedBooks = BooksIssued.objects.filter(user=user)
+		for booking in userIssuedBooks:
+			book = Book.objects.get(id=booking.book_id)
+			issuedBooks.append(book)
+		context['issuedBooks'] = issuedBooks
+		return context
+
 class MyLibrary(generic.ListView):
 	context_object_name = 'data'
 
@@ -184,7 +205,7 @@ def getHighlights(request):
 			book = Book.objects.get(pk=bookId)
 			userHighlights = Highlight.objects.filter(user=user, book=book)
 			for highlight in userHighlights:
-				highlights.append({'noteText':highlight.text, 'chapterHref':highlight.chapterHref, 'pageCfi':highlight.pageCfi, 'wordRange':highlight.wordRange})
+				highlights.append({'highlightText':highlight.text, 'chapterHref':highlight.chapterHref, 'pageCfi':highlight.pageCfi, 'wordRange':highlight.wordRange})
 			message['highlightList'] = highlights
 			return HttpResponse(json.dumps(message), content_type='application/json')
 		else:

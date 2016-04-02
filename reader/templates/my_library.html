@@ -490,10 +490,10 @@ License: You must have a valid license purchased only from themeforest(the above
                 notes.push({
                   chapterHref: highlightItem.chapterHref,
                   wordRange: JSON.parse(highlightItem.wordRange)[0],
-                  text: highlightItem.noteText,
+                  text: highlightItem.highlightText,
                   pageCfi: highlightItem.pageCfi,
                 });
-                $('#myHighlights').append("<li><a id='" + highlightItem.pageCfi + "'>" + highlightItem.text + "</a></li>");
+                $('#myHighlights').append("<li><a id='" + highlightItem.pageCfi + "'>" + highlightItem.highlightText + "</a></li>");
               });
             }
           });
@@ -588,7 +588,10 @@ License: You must have a valid license purchased only from themeforest(the above
                 el.style.backgroundColor = "yellow";
                 var iframe = $("iframe")[0];
                 var x = highlightItem.wordRange;
-                myrange = rangy.getSelection(iframe).restoreCharacterRanges(iframe.contentWindow.document.childNodes[1], x);
+                var y = [];
+                y.push(x);
+                var lengthOfContent =  iframe.contentWindow.document.childNodes.length;
+                myrange = rangy.getSelection(iframe).restoreCharacterRanges(iframe.contentWindow.document.childNodes[lengthOfContent - 1], y);
                 highlightResultApplier.applyToRange(myrange);
                 highlightedElements = iframe.contentDocument.body.getElementsByClassName('highlight');
 
