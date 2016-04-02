@@ -367,15 +367,15 @@ License: You must have a valid license purchased only from themeforest(the above
               bookUrl = response.bookUrl;
               bookName = response.bookName;
               bookUrl = "http://{{ request.META.HTTP_HOST }}"+bookUrl;
-              handleBookDisplay(bookUrl);
+              handleBookDisplay(bookUrl, bookId);
             }
           }
         });
       }); //End of book loading
 
-      function handleBookDisplay(bookUrl){ // Start of handle book display function
+      function handleBookDisplay(bookUrl, myBookId){ // Start of handle book display function
         epubBook = ePub(bookUrl);
-        //mybook = book;
+
         $(".col-md-12").toggle("slow");
         $(".container-epub").toggle("slow");
         $("body").removeClass("page-full-width");
@@ -433,8 +433,92 @@ License: You must have a valid license purchased only from themeforest(the above
               }
             }
           }));
-          
-        });
+
+          // adding Note, BookMark & Highlights in Sidebar
+          $('.page-sidebar-menu').append(
+            "<li><a class='slider-options' id='bookmark-slider' href='javascript:;'><i class='fa fa-bookmark'></i><span class='title'>My Bookmarks</span></span><span class='arrow open'></span></a><ul class='sub-menu scroll-smenu' id='myBookmarks'></ul></li>"
+          );
+
+          $('.page-sidebar-menu').append(
+            "<li><a class='slider-options' id='notes-slider' href='javascript:;'><i class='fa fa-pencil-square-o'></i><span class='title'>My Notes</span></span><span class='arrow open'></span></a><ul class='sub-menu scroll-smenu' id='myNotes'></ul></li>"
+          );
+
+          $('.page-sidebar-menu').append(
+            "<li><a class='slider-options' id='highlights-slider' href='javascript:;'><i class='fa fa-text-height'></i><span class='title'>My Highlights</span></span><span class='arrow open'></span></a><ul class='sub-menu scroll-smenu' id='myHighlights'></ul></li>"
+          );
+
+          $.ajax({
+            type: 'POST',
+            url:"/getbookmarks",
+            data:{'bookId':myBookId, 'csrfmiddlewaretoken': "{{ csrf_token }}"},
+            success:function(response)
+            {
+              response['bookmarkList'].forEach(function(bookmarkItem) {
+                bookmarks.push({
+                  chapterHref: bookmarkItem.chapterHref,
+                  pageCfi: bookmarkItem.pageCfi
+                });
+                $('#myBookmarks').append("<li><a id='" + bookmarkItem.pageCfi + "'>" + bookmarkItem.chapterHref + "</a></li>");
+              });
+            }
+          });
+
+          $.ajax({
+            type: 'POST',
+            url:"/getnotes",
+            data:{'bookId':myBookId, 'csrfmiddlewaretoken': "{{ csrf_token }}"},
+            success:function(response)
+            {
+              response['noteList'].forEach(function(noteItem) {
+                notes.push({
+                  chapterHref: noteItem.chapterHref,
+                  wordRange: noteItem.wordRange,
+                  noteText: noteItem.noteText,
+                  pageCfi: noteItem.pageCfi,
+                });
+                $('#myNotes').append("<li><a id='" + noteItem.pageCfi + "'>" + noteItem.noteText + "</a></li>");
+              });
+            }
+          });
+
+          $.ajax({
+            type: 'POST',
+            url:"/getnotes",
+            data:{'bookId':myBookId, 'csrfmiddlewaretoken': "{{ csrf_token }}"},
+            success:function(response)
+            {
+              response['noteList'].forEach(function(noteItem) {
+                notes.push({
+                  chapterHref: noteItem.chapterHref,
+                  wordRange: noteItem.wordRange,
+                  noteText: noteItem.noteText,
+                  pageCfi: noteItem.pageCfi,
+                });
+                $('#myNotes').append("<li><a id='" + noteItem.pageCfi + "'>" + noteItem.noteText + "</a></li>");
+              });
+            }
+          });
+
+          $.ajax({
+            type: 'POST',
+            url:"/gethighlights",
+            data:{'bookId':myBookId, 'csrfmiddlewaretoken': "{{ csrf_token }}"},
+            success:function(response)
+            {
+              response['highlightList'].forEach(function(highlightItem) {
+                notes.push({
+                  chapterHref: highlightItem.chapterHref,
+                  wordRange: highlightItem.wordRange,
+                  text: highlightItem.noteText,
+                  pageCfi: highlightItem.pageCfi,
+                });
+                $('#myHighlights').append("<li><a id='" + highlightItem.pageCfi + "'>" + highlightItem.text + "</a></li>");
+              });
+            }
+          });
+        }); // End of epub.ready.all function
+
+        
       } // End of handle book display function
 
     }); // End of JQuery Ready Block

@@ -11,6 +11,7 @@ urlpatterns = [
 	url(r'^issuebook$',login_required(views.IssueBookView.as_view()),name='issuebook'),
 	url(r'^returnbook$',login_required(views.ReturnBookView.as_view()),name='returnbook'),
 	url(r'^getbookurl$',login_required(views.getbook),name='getbook'),
-	#url(r'^changepassword$',login_required(views.MyChangePasswordView.as_view()),name="change_password"),
+    url(r'^getbookmarks$',login_required(views.getbookmarks),name='getbookmarks'),
+	url(r'^getnotes$',login_required(views.getNotes),name='getNotes'),
 	# url(r'^/detail$',views.DetailView.as_view(),name='detail'),
 ]

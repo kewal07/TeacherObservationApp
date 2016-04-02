@@ -130,11 +130,76 @@ def getbook(request):
 		message['error'] = 'Some error occured'
 		return HttpResponse(json.dumps(message), content_type='application/json')
 
+def getbookmarks(request):
+	message = {}
+	bookMarks = []
+	try:
+		user = request.user
+		bookId = int(request.POST.get('bookId',''))
+		if bookId and user:
+			book = Book.objects.get(pk=bookId)
+			userBookmarks = BookMark.objects.filter(user=user, book=book)
+			for bookmark in userBookmarks:
+				bookMarks.append({'bookMarkName':bookmark.bookmarkName, 'chapterHref':bookmark.chapterHref, 'pageCfi':bookmark.pageCfi})
+			message['bookmarkList'] = bookMarks
+			return HttpResponse(json.dumps(message), content_type='application/json')
+		else:
+			message['error'] = 'Error in retrieving Bookmarks.'
+			return HttpResponse(json.dumps(message), content_type='application/json')
+	except:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
+		message['error'] = 'Some error occured'
+		return HttpResponse(json.dumps(message), content_type='application/json')
+
+def getNotes(request):
+	message = {}
+	notes = []
+	try:
+		user = request.user
+		bookId = int(request.POST.get('bookId',''))
+		if bookId and user:
+			book = Book.objects.get(pk=bookId)
+			userNotes = Note.objects.filter(user=user, book=book)
+			for note in userNotes:
+				notes.append({'noteText':note.text, 'chapterHref':note.chapterHref, 'pageCfi':note.pageCfi, 'wordRange':note.wordRange})
+			message['noteList'] = notes
+			return HttpResponse(json.dumps(message), content_type='application/json')
+		else:
+			message['error'] = 'Error in retrieving Notes.'
+			return HttpResponse(json.dumps(message), content_type='application/json')
+	except:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
+		message['error'] = 'Some error occured'
+		return HttpResponse(json.dumps(message), content_type='application/json')
+
+def getHighlights(request):
+	message = {}
+	highlights = []
+	try:
+		user = request.user
+		bookId = int(request.POST.get('bookId',''))
+		if bookId and user:
+			book = Book.objects.get(pk=bookId)
+			userHighlights = Highlight.objects.filter(user=user, book=book)
+			for highlight in userHighlights:
+				highlights.append({'noteText':highlight.text, 'chapterHref':highlight.chapterHref, 'pageCfi':highlight.pageCfi, 'wordRange':highlight.wordRange})
+			message['highlightList'] = highlights
+			return HttpResponse(json.dumps(message), content_type='application/json')
+		else:
+			message['error'] = 'Error in retrieving Highlights.'
+			return HttpResponse(json.dumps(message), content_type='application/json')
+	except:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
+		message['error'] = 'Some error occured'
+		return HttpResponse(json.dumps(message), content_type='application/json')
+
 def checkLogin(request):
 	user = request.user
 	if user is None or not user.is_authenticated:
 		url = reverse('account_login')
 	else:
-		print("here")
 		url = reverse('reader:mylibrary', kwargs={'pk':user.id,'user_name':user.username})
 	return HttpResponseRedirect(url)
