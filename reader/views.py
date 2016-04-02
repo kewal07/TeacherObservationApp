@@ -196,6 +196,79 @@ def getHighlights(request):
 		message['error'] = 'Some error occured'
 		return HttpResponse(json.dumps(message), content_type='application/json')
 
+def saveNotes(request):
+	message = {}
+	try:
+		user = request.user
+		bookId = int(request.POST.get('bookId',''))
+		wordRange = request.POST.get('wordRange','')
+		pageCfi = request.POST.get('pageCfi','')
+		chapterHref = request.POST.get('chapterHref','')
+		noteText = request.POST.get('noteText','')
+		book = Book.objects.get(pk=bookId)
+
+		if book and wordRange and pageCfi and chapterHref and noteText:
+			newNote = Note(user=user, book=book, text=noteText, wordRange=wordRange, chapterHref=chapterHref, pageCfi=pageCfi)
+			newNote.save()
+			message['message'] = 'Successfully saved Notes.'
+			return HttpResponse(json.dumps(message), content_type='application/json')
+		else:
+			message['message'] = 'Error occured while saving Note.'
+			return HttpResponse(json.dumps(message), content_type='application/json')
+	except:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
+		message['error'] = 'Some error occured'
+		return HttpResponse(json.dumps(message), content_type='application/json')
+
+def saveBookmark(request):
+	message = {}
+	try:
+		user = request.user
+		bookmarkName = request.POST.get('bookmarkName','')
+		bookId = int(request.POST.get('bookId',''))
+		pageCfi = request.POST.get('pageCfi','')
+		chapterHref = request.POST.get('chapterHref','')
+		book = Book.objects.get(pk=bookId)
+
+		if book and pageCfi and chapterHref and bookmarkName:
+			newBookmark = BookMark(user=user, book=book, bookmarkName=bookmarkName, chapterHref=chapterHref, pageCfi=pageCfi)
+			newBookmark.save()
+			message['message'] = 'Bookmark saved successfully'
+			return HttpResponse(json.dumps(message), content_type='application/json')
+		else:
+			message['message'] = 'Error occured while saving Note.'
+			return HttpResponse(json.dumps(message), content_type='application/json')
+	except:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
+		message['error'] = 'Some error occured'
+		return HttpResponse(json.dumps(message), content_type='application/json')
+
+def saveHighlights(request):
+	message = {}
+	try:
+		user = request.user
+		bookmarkName = request.POST.get('bookmarkName','')
+		bookId = int(request.POST.get('bookId',''))
+		pageCfi = request.POST.get('pageCfi','')
+		chapterHref = request.POST.get('chapterHref','')
+		book = Book.objects.get(pk=bookId)
+
+		if book and pageCfi and chapterHref and bookmarkName:
+			newBookmark = BookMark(user=user, book=book, bookmarkName=bookmarkName, chapterHref=chapterHref, pageCfi=pageCfi)
+			newBookmark.save()
+			message['message'] = 'Bookmark saved successfully'
+			return HttpResponse(json.dumps(message), content_type='application/json')
+		else:
+			message['message'] = 'Error occured while saving Note.'
+			return HttpResponse(json.dumps(message), content_type='application/json')
+	except:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
+		message['error'] = 'Some error occured'
+		return HttpResponse(json.dumps(message), content_type='application/json')
+
 def checkLogin(request):
 	user = request.user
 	if user is None or not user.is_authenticated:

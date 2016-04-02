@@ -12,6 +12,9 @@ urlpatterns = [
 	url(r'^returnbook$',login_required(views.ReturnBookView.as_view()),name='returnbook'),
 	url(r'^getbookurl$',login_required(views.getbook),name='getbook'),
     url(r'^getbookmarks$',login_required(views.getbookmarks),name='getbookmarks'),
+    url(r'^gethighlights$',login_required(views.getHighlights),name='gethighlights'),
 	url(r'^getnotes$',login_required(views.getNotes),name='getNotes'),
-	# url(r'^/detail$',views.DetailView.as_view(),name='detail'),
+	url(r'^savenotes$',login_required(views.saveNotes),name='saveNotes'),
+    url(r'^savebookmark$',login_required(views.saveBookmark),name='savebookmark'),
+    url(r'^savehighlights$',login_required(views.saveHighlights),name='savehighlights'),
 ]

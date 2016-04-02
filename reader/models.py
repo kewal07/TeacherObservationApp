@@ -20,7 +20,7 @@ class Book(models.Model):
 	bookName = models.CharField(max_length=255)
 	bookEpub = models.FileField(upload_to=get_file_path,blank=True,null=True)
 	coverImageUrl = models.ImageField(upload_to=get_file_path_coverimages,blank=True,null=True)
-	pub_date = models.DateTimeField('Date Published')
+	pub_date = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 
 	def __str__(self):
 		return self.bookName
@@ -43,7 +43,7 @@ class BookMark(models.Model):
     bookmarkName = models.CharField(max_length=255)
     chapterHref = models.CharField(max_length=512)
     pageCfi = models.CharField(max_length=512)
-    pub_date = models.DateTimeField('Date Published')
+    pub_date = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 
     def __str__(self):
         return self.book + "_" + self.user + "_" + self.bookmarkName
@@ -55,7 +55,7 @@ class Highlight(models.Model):
     wordRange = models.CharField(max_length=4095)
     chapterHref = models.CharField(max_length=512)
     pageCfi = models.CharField(max_length=512)
-    pub_date = models.DateTimeField('Date Published')
+    pub_date = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 
     def __str__(self):
         return self.book + "_" + self.user + "_" + self.text
@@ -67,8 +67,7 @@ class Note(models.Model):
     wordRange = models.CharField(max_length=4095)
     chapterHref = models.CharField(max_length=512)
     pageCfi = models.CharField(max_length=512)
-    textCfi = models.CharField(max_length=512)
-    pub_date = models.DateTimeField('Date Published')
+    pub_date = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 
     def __str__(self):
         return self.book + "_" + self.user + "_" + self.text
