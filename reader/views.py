@@ -210,7 +210,7 @@ def saveNotes(request):
 		if book and wordRange and pageCfi and chapterHref and noteText:
 			newNote = Note(user=user, book=book, text=noteText, wordRange=wordRange, chapterHref=chapterHref, pageCfi=pageCfi)
 			newNote.save()
-			message['message'] = 'Successfully saved Notes.'
+			message['message'] = 'Notes saved successfully.'
 			return HttpResponse(json.dumps(message), content_type='application/json')
 		else:
 			message['message'] = 'Error occured while saving Note.'
@@ -259,9 +259,9 @@ def saveHighlights(request):
 		print(book, pageCfi, chapterHref, text)
 
 		if book and pageCfi and chapterHref and text and wordRange:
-			newBookmark = BookMark(user=user, book=book, wordRange=wordRange, text=text, chapterHref=chapterHref, pageCfi=pageCfi)
-			newBookmark.save()
-			message['message'] = 'Bookmark saved successfully'
+			newHighlight = Highlight(user=user, book=book, wordRange=wordRange, text=text, chapterHref=chapterHref, pageCfi=pageCfi)
+			newHighlight.save()
+			message['message'] = 'Highlight saved successfully'
 			return HttpResponse(json.dumps(message), content_type='application/json')
 		else:
 			message['message'] = 'Error occured while saving Highlight'
