@@ -73,7 +73,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <div class="page-header-inner">
       <!-- BEGIN LOGO -->
       <div class="page-logo">
-        <a href="index.html">
+        <a href="{% url 'reader:mylibrary' user.id user.username%}">
           <img class="logo-header" src="{% static 'assets/admin/layout/img/logo-big.png' %}" alt="logo" class="logo-default" />
         </a>
         <div class="menu-toggler sidebar-toggler hide">
@@ -144,7 +144,7 @@ License: You must have a valid license purchased only from themeforest(the above
             </a>
           </li>
           <li>
-            <a href="profile.html">
+            <a href="{% url 'reader:myprofile' user.id user.username%}">
               <i class="icon-user tooltips" data-placement="bottom" data-original-title="Profile"></i>
               <span id="menu-items-text" class="title tooltips">Profile</span>
             </a>

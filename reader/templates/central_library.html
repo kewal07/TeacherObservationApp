@@ -54,7 +54,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		<div class="page-header-inner">
 			<!-- BEGIN LOGO -->
 			<div class="page-logo">
-				<a href="index.html">
+				<a href="{% url 'reader:mylibrary' user.id user.username%}">
 					<img class="logo-header" src="{% static 'assets/admin/layout/img/logo-big.png' %}" alt="logo" class="logo-default" />
 				</a>
 				<div class="menu-toggler sidebar-toggler hide">
@@ -68,7 +68,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			<div class="top-menu">
 				<ul class="nav navbar-nav pull-right">
 					<li class="active open">
-						<a href="central_library.html">
+						<a href="{% url 'reader:centrallibrary' user.id user.username %}">
 							<i class="fa fa-university"></i>
 							<span class="title">Central Library</span>
 						</a>
@@ -80,7 +80,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						</a>
 					</li>
 					<li>
-						<a href="profile.html">
+						<a href="{% url 'reader:myprofile' user.id user.username%}">
 							<i class="icon-user"></i>
 							<span class="title">Profile</span>
 						</a>

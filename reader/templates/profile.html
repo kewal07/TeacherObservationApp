@@ -44,7 +44,7 @@ License: You must have a valid license purchased only from themeforest(the above
 	<link href="{% static 'assets/admin/layout/css/central_custom.css' %}" rel="stylesheet" type="text/css" />
 	<!-- END THEME STYLES -->
 	<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css' />
-	<link rel="shortcut icon" href="favicon.ico" />
+	<link rel="shortcut icon" href="{% static 'favicon.png' %}" />
 </head>
 
 <body class="page-header-fixed page-quick-sidebar-over-content page-full-width">
@@ -54,8 +54,8 @@ License: You must have a valid license purchased only from themeforest(the above
 		<div class="page-header-inner">
 			<!-- BEGIN LOGO -->
 			<div class="page-logo">
-				<a href="index.html">
-					<img class="logo-header" src="assets/admin/layout/img/logo-big.png" alt="logo" class="logo-default" />
+				<a href="{% url 'reader:mylibrary' user.id user.username%}">
+					<img class="logo-header" src="{% static 'assets/admin/layout/img/logo-big.png' %}" alt="logo" class="logo-default" />
 				</a>
 				<div class="menu-toggler sidebar-toggler hide">
 				</div>
@@ -63,13 +63,13 @@ License: You must have a valid license purchased only from themeforest(the above
 			<div class="top-menu">
 				<ul class="nav navbar-nav pull-right">
 					<li>
-						<a href="central_library.html">
+						<a href="{% url 'reader:centrallibrary' user.id user.username %}">
 							<i class="fa fa-university"></i>
 							<span class="title">Central Library</span>
 						</a>
 					</li>
 					<li class="">
-						<a href="index.html">
+						<a href="{% url 'reader:mylibrary' user.id user.username%}">
 							<i class="fa fa-book"></i>
 							<span class="title">My Library</span>
 						</a>
