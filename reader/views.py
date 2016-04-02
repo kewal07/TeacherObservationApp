@@ -237,7 +237,7 @@ def saveBookmark(request):
 			message['message'] = 'Bookmark saved successfully'
 			return HttpResponse(json.dumps(message), content_type='application/json')
 		else:
-			message['message'] = 'Error occured while saving Note.'
+			message['message'] = 'Error occured while saving Bookmark.'
 			return HttpResponse(json.dumps(message), content_type='application/json')
 	except:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -249,19 +249,22 @@ def saveHighlights(request):
 	message = {}
 	try:
 		user = request.user
-		bookmarkName = request.POST.get('bookmarkName','')
 		bookId = int(request.POST.get('bookId',''))
+		wordRange = request.POST.get('wordRange','')
 		pageCfi = request.POST.get('pageCfi','')
 		chapterHref = request.POST.get('chapterHref','')
+		text = request.POST.get('text','')
 		book = Book.objects.get(pk=bookId)
 
-		if book and pageCfi and chapterHref and bookmarkName:
-			newBookmark = BookMark(user=user, book=book, bookmarkName=bookmarkName, chapterHref=chapterHref, pageCfi=pageCfi)
+		print(book, pageCfi, chapterHref, text)
+
+		if book and pageCfi and chapterHref and text and wordRange:
+			newBookmark = BookMark(user=user, book=book, wordRange=wordRange, text=text, chapterHref=chapterHref, pageCfi=pageCfi)
 			newBookmark.save()
 			message['message'] = 'Bookmark saved successfully'
 			return HttpResponse(json.dumps(message), content_type='application/json')
 		else:
-			message['message'] = 'Error occured while saving Note.'
+			message['message'] = 'Error occured while saving Highlight'
 			return HttpResponse(json.dumps(message), content_type='application/json')
 	except:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
