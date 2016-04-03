@@ -197,6 +197,14 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{% static 'assets/admin/pages/scripts/ui-alert-dialog-api.js' %}"></script>
 
 	<script>
+		function searchOnEnter(obj, event) {
+			if (event.keyCode === 13) {
+				$(".icon-magnifier").click();
+			}
+		}
+		window.onresize = function() {
+			location.reload();
+		}
 		jQuery(document).ready(function()
 		{
 			var flag = 0;
@@ -204,7 +212,7 @@ License: You must have a valid license purchased only from themeforest(the above
 				'<div class="my-popover popover confirmation fade top in" id="confirmation644182" style="top: 54px; left: 258.938px; display: block;"><div class="arrow" style="left: 50%;"></div><h3 class="popover-title">Issue Book?</h3><div class="popover-content text-center"><div class="btn-group"><a class="btn btn-xs btn-success" data-apply="confirmation"><i class="glyphicon glyphicon-ok"></i> Yes</a><a class="btn btn-xs btn-danger" data-dismiss="confirmation"><i class="glyphicon glyphicon-remove"></i> No</a></div></div></div>';
 			var tickElement = '<i class="fa fa-check-circle"></i>';
 
-			$(".central-cover-image-li").on('click', function()
+			$(".central-cover-image-li").on('click', function() //cover image click block start
 			{
 				if (flag == 0)
 				{
@@ -233,6 +241,39 @@ License: You must have a valid license purchased only from themeforest(the above
 					e.stopPropagation();
 					$(".my-popover").remove();
 					flag = 0;
+				});
+			}
+		}); // cover image click block end
+
+		$(".icon-magnifier").click(function() {
+			var sValue = $("#eduzen-search").val();
+			if (sValue === "") {
+				bootbox.alert("Search box is empty!");
+			} else {
+				$.ajax({
+					type: 'POST',
+					url:"/searchbook",
+					data:{'searchKey':sValue, 'csrfmiddlewaretoken': "{{ csrf_token }}"},
+					success:function(response)
+					{
+						$(".sub-h4").css("display", "none");
+						$('.central-library-book-list').css("display", "none");
+						$(".search-results").css("display", "block");
+						$(".central-library-book-list-search").css("display", "block");
+						$('.central-library-book-list-search').empty();
+						if(typeof response['bookList'] === 'undefined'){
+							$('.central-library-book-list-search').append("<p>" + response['message'] + "</p>");
+						}
+						console.log(response);
+						for (var i = 0; i < response['bookList'].length; i++) {
+							$('.central-library-book-list-search').append("<li id ='" + response['bookList'][i].id + "' class='central-cover-image-li'><img class='central-cover-image' src='" + response['bookList'][i].get_cover_image_path + "'>" + "<span class='central-book-info'>" +
+								response['bookList'][i].bookName + "<br>" + response['bookList'][i].author + "</span>" + "</li>");
+							$('.cover-image').css('width', $('.library-book-list').width() / 3.5);
+							if (jQuery.inArray(object.id, checkBooksUser) !== -1) {
+								$("#" + response['bookList'][i].id).append(tickElement);
+							}
+						}
+					}
 				});
 			}
 		});

@@ -4,7 +4,7 @@ from reader.models import BooksIssued, Note, Highlight, BookMark, Book
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect,HttpResponse, HttpResponseNotFound
-import sys, os
+import sys, os, re
 import simplejson as json
 
 # Create your views here.
@@ -128,7 +128,7 @@ class ReturnBookView(generic.ListView):
 		except:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
-			message['message'] = 'Some error occured'
+			message['success'] = 'Some error occured'
 			return HttpResponse(json.dumps(message), content_type='application/json')
 
 def getbook(request):
@@ -315,6 +315,41 @@ def editProfile(request):
 		user.save()
 		message['message'] = 'Profile updated'
 		return HttpResponse(json.dumps(message), content_type='application/json')
+	except:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
+		message['message'] = 'Some error occured'
+		return HttpResponse(json.dumps(message), content_type='application/json')
+
+def searchBook(request):
+	bookList = []
+	bookFound = False
+	message = {}
+	try:
+		user = request.user
+		searchKey = request.POST.get('searchKey','')
+
+		if searchKey:
+			allBooks = Book.objects.all()
+			for book in allBooks:
+				if re.search(searchKey, book.bookName, re.IGNORECASE):
+					bookList.append(book[0])
+					bookFound = True
+				elif re.search(searchKey, book.author, re.IGNORECASE):
+					bookList.append(book[0])
+					bookFound = True
+				elif re.search(searchKey, book.isbn, re.IGNORECASE):
+					bookList.append(book[0])
+					bookFound = True
+			if not bookFound:
+				message['message'] = 'Book not found'
+				return HttpResponse(json.dumps(message), content_type='application/json')
+			else:
+				message['bookList'] = bookList
+				return HttpResponse(json.dumps(message), content_type='application/json')
+		else:
+			message['message'] = 'Provide a valid search key.'
+			return HttpResponse(json.dumps(message), content_type='application/json')
 	except:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
