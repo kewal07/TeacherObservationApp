@@ -1,7 +1,9 @@
 eduzen/settings.py
 db.sqlite3
 *.pyc
-media*
+media/books
+media/coverimage
+media/profile
 *migrations*
 *pycache*
 static*
