@@ -209,7 +209,7 @@ License: You must have a valid license purchased only from themeforest(the above
           <div class="col-md-12">
             <ul class="library-book-list">
               {% if not data.issuedBooks %}
-                <p class='no-books'>You do not have any books issued. Go ahead and issue one at the <a href='central_library.html' class='no-books-a'>Central Library</a></p>
+                <p class='no-books'>You do not have any books issued. Go ahead and issue one at the <a href="{% url 'reader:centrallibrary' user.id user.username %}" class='no-books-a'>Central Library</a></p>
               {% else %}
                 {% for book in data.issuedBooks %}
                   <li id ='{{ book.id }}' class='cover-image-li'><img class='cover-image' src='{{ book.get_cover_image_path }}'><span class='book-info'> {{ book.bookName }} <br> {{ book.author }}</span>
