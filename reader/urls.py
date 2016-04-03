@@ -18,4 +18,5 @@ urlpatterns = [
 	url(r'^savenotes$',login_required(views.saveNotes),name='saveNotes'),
     url(r'^savebookmark$',login_required(views.saveBookmark),name='savebookmark'),
     url(r'^savehighlights$',login_required(views.saveHighlights),name='savehighlights'),
+    url(r'^editprofile$',login_required(views.editProfile),name='editprofile'),
 ]

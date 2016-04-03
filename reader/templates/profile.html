@@ -16,9 +16,6 @@ License: You must have a valid license purchased only from themeforest(the above
 {% load static %}
 {% load i18n %}
 <html lang="en">
-<!--<![endif]-->
-<!-- BEGIN HEAD -->
-
 <head>
 	<meta charset="utf-8" />
 	<title>Eduzen | Your Library</title>
@@ -82,13 +79,13 @@ License: You must have a valid license purchased only from themeforest(the above
 					</li>
 					<li class="dropdown dropdown-user">
 						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-							<img alt="" class="img-circle" src="" />
-							<span class="username username-hide-on-mobile"></span>
+							<img alt="{{ user.first_name }}" class="img-circle" src="{{ user.extendeduser.get_profile_pic_url }}" />
+							<span class="username username-hide-on-mobile"> {{ user.username }}</span>
 							<i class="fa fa-angle-down"></i>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-default">
 							<li class="my-logout">
-								<i class="icon-key"></i> Log Out </a>
+								<a href="{% url 'login:logout' %}"> <i class="icon-key"></i> Log Out </a>
 							</li>
 						</ul>
 					</li>
@@ -124,13 +121,14 @@ License: You must have a valid license purchased only from themeforest(the above
 			<div class="page-content">
 				<!-- BEGIN PAGE HEADER-->
 				<h3 id="user-name-profile" class="page-title">
-			</h3>
+          {{ user.extendeduser.first_name }}
+			  </h3>
 				<!-- END PAGE HEADER-->
 				<!-- BEGIN PAGE CONTENT-->
 				<div class="row">
 					<div class="col-md-12">
 						<div class="user-profile-pic-div">
-							<img id="user-profile-pic" src="">
+							<img id="user-profile-pic" src="{{ user.extendeduser.get_profile_pic_url }}">
 						</div>
 						<div class="user-details">
 						</div>
@@ -177,7 +175,67 @@ License: You must have a valid license purchased only from themeforest(the above
 
 	<script>
 		jQuery(document).ready(function() {
-		});
+      Metronic.init();
+			Layout.init();
+			QuickSidebar.init();
+			Demo.init();
+			UIAlertDialogApi.init();
+
+      $(".user-details").append("<div id='username-div'><p class='user-pr'id='username'>" + "{{ user.username }}" + "</p></div>");
+			$(".user-details").append("<div id='firstname-div'><p class='user-p' id='first_name'>" + "{{ user.first_name }}" + "</p></div>");
+			$(".user-details").append("<div id='lastname-div'><p class='user-p' id='last_name'>" + "{{ user.last_name }}" + "</p></div>");
+			$(".user-details").append("<div id='email-div'><p class='user-pr' id='email'>" + "{{ user.email }}" + "</p></div>");
+			$(".user-details").append("<div id='address-div'><p class='user-p' id='address'>" + "{{ user.extendeduser.address }}" + "</p></div>");
+			$(".user-details").append("<div id='city-div'><p class='user-p' id='city'>" + "{{ user.extendeduser.city }}" + "</p></div>");
+			$(".user-details").append("<div id='country-div'><p class='user-p' id='country'>" + "{{ user.extendeduser.country }}" + "</p></div>");
+			$(".user-p").append('<i class="fa edit-profile fa-pencil"></i>');
+			$(".user-details").on('click', '.edit-profile', function(e) {
+				var pid = $(this).parent().attr("id");
+				var text = ($("#" + pid).text());
+				var tid = pid + "__edit";
+				var input = $('<input />', {
+					'type': 'text',
+					'name': 'n' + tid,
+					'id': tid,
+					'class': 'text_box_edit_pr',
+					'value': text
+				});
+				$("#" + pid).parent().append(input);
+				$("#" + pid).remove();
+				input.focus();
+			});
+
+			$("input").live('blur', function(e) {
+				var id = $(this).attr("id");
+				var tid = id.split('__')[0];
+				if ($(this).val() === "" || $(this).val() == undefined) {
+					bootbox.alert("The field is edited by you is required. Please provide a valid value.", function() {
+						location.reload();
+					});
+				} else {
+					var input = $('<p />', {
+						'id': tid,
+						'class': 'user-p',
+						'html': $(this).val()
+					});
+					console.log(tid);
+					console.log($(this).val());
+					$.ajax({
+            type: 'POST',
+            url:"/editprofile",
+            data:{'field':tid, 'value':$(this).val(),'csrfmiddlewaretoken':"{{ csrf_token }}"},
+            success:function(response)
+            {
+              console.log(response);
+							location.reload();
+            }
+          });
+				}
+				$(this).parent().append(input);
+				$(".user-p").append('<i class="fa edit-profile fa-pencil"></i>');
+			});
+
+		}); // End of JQuery document ready block
 	</script>
 	<!-- END JAVASCRIPTS -->
 

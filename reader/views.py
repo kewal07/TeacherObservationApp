@@ -128,7 +128,7 @@ class ReturnBookView(generic.ListView):
 		except:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
-			message['success'] = 'Some error occured'
+			message['message'] = 'Some error occured'
 			return HttpResponse(json.dumps(message), content_type='application/json')
 
 def getbook(request):
@@ -148,7 +148,7 @@ def getbook(request):
 	except:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
-		message['error'] = 'Some error occured'
+		message['message'] = 'Some error occured'
 		return HttpResponse(json.dumps(message), content_type='application/json')
 
 def getbookmarks(request):
@@ -170,7 +170,7 @@ def getbookmarks(request):
 	except:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
-		message['error'] = 'Some error occured'
+		message['message'] = 'Some error occured'
 		return HttpResponse(json.dumps(message), content_type='application/json')
 
 def getNotes(request):
@@ -192,7 +192,7 @@ def getNotes(request):
 	except:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
-		message['error'] = 'Some error occured'
+		message['message'] = 'Some error occured'
 		return HttpResponse(json.dumps(message), content_type='application/json')
 
 def getHighlights(request):
@@ -214,7 +214,7 @@ def getHighlights(request):
 	except:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
-		message['error'] = 'Some error occured'
+		message['message'] = 'Some error occured'
 		return HttpResponse(json.dumps(message), content_type='application/json')
 
 def saveNotes(request):
@@ -239,7 +239,7 @@ def saveNotes(request):
 	except:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
-		message['error'] = 'Some error occured'
+		message['message'] = 'Some error occured'
 		return HttpResponse(json.dumps(message), content_type='application/json')
 
 def saveBookmark(request):
@@ -263,7 +263,7 @@ def saveBookmark(request):
 	except:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
-		message['error'] = 'Some error occured'
+		message['message'] = 'Some error occured'
 		return HttpResponse(json.dumps(message), content_type='application/json')
 
 def saveHighlights(request):
@@ -277,8 +277,6 @@ def saveHighlights(request):
 		text = request.POST.get('text','')
 		book = Book.objects.get(pk=bookId)
 
-		print(book, pageCfi, chapterHref, text)
-
 		if book and pageCfi and chapterHref and text and wordRange:
 			newHighlight = Highlight(user=user, book=book, wordRange=wordRange, text=text, chapterHref=chapterHref, pageCfi=pageCfi)
 			newHighlight.save()
@@ -290,12 +288,42 @@ def saveHighlights(request):
 	except:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
-		message['error'] = 'Some error occured'
+		message['message'] = 'Some error occured'
+		return HttpResponse(json.dumps(message), content_type='application/json')
+
+def editProfile(request):
+	message = {}
+	try:
+		user = request.user
+		fieldToEdit = request.POST.get('field','')
+		newValue = request.POST.get('value')
+
+		if fieldToEdit == 'first_name':
+			user.first_name = newValue
+		elif fieldToEdit == 'last_name':
+			user.last_name = newValue
+		elif fieldToEdit == 'address':
+			user.extendeduser.address = newValue
+		elif fieldToEdit == 'city':
+			user.extendeduser.city = newValue
+		elif fieldToEdit == 'country':
+			user.extendeduser.country = newValue
+		else:
+			message['message'] = fieldToEdit+' is not editable.'
+			return HttpResponse(json.dumps(message), content_type='application/json')
+		user.extendeduser.save()
+		user.save()
+		message['message'] = 'Profile updated'
+		return HttpResponse(json.dumps(message), content_type='application/json')
+	except:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
+		message['message'] = 'Some error occured'
 		return HttpResponse(json.dumps(message), content_type='application/json')
 
 def checkLogin(request):
 	user = request.user
-	if user is None or not user.is_authenticated:
+	if user is None or not user.is_authenticated or user.is_anonymous():
 		url = reverse('account_login')
 	else:
 		url = reverse('reader:mylibrary', kwargs={'pk':user.id,'user_name':user.username})
