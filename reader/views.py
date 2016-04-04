@@ -4,6 +4,7 @@ from reader.models import BooksIssued, Note, Highlight, BookMark, Book
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect,HttpResponse, HttpResponseNotFound
+from login.models import ExtendedUser
 import sys, os, re
 import simplejson as json
 
@@ -40,6 +41,19 @@ class MyLibrary(generic.ListView):
 	def get_queryset(self, **kwargs):
 		request = self.request
 		user = request.user
+		if hasattr(request.user,'extendeduser'):
+			pass
+		elif user.socialaccount_set.all():
+			social_set = user.socialaccount_set.all()[0]
+			if not (ExtendedUser.objects.filter(user_id = user.id)):
+				if social_set.provider == 'facebook':
+					facebook_data = social_set.extra_data
+					print('****************************')
+					print(facebook_data)
+					print('****************************')
+					img_url =  "https://graph.facebook.com/{}/picture?width=140&&height=140".format(facebook_data.get('id',''))
+					extendedUser = ExtendedUser(user=user, imageUrl = img_url)
+					extendedUser.save()
 		context = {}
 		issuedBooks = []
 		userIssuedBooks = BooksIssued.objects.filter(user=user)

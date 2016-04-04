@@ -108,10 +108,12 @@ License: You must have a valid license purchased only from themeforest(the above
 			<div class="login-options">
 				<h4>Or login with</h4>
 				<ul class="social-icons">
-					<li>
-						<p class="facebook" data-original-title="facebook">Facebook
-						</p>
-					</li>
+					<a href="{% provider_login_url "facebook" method="oauth2" %}" class="signup-a facebook">
+						<li>
+							<p class="facebook" data-original-title="facebook">Facebook
+							</p>
+						</li>
+					</a>
 					<!-- <li>
 					<a class="twitter" data-original-title="Twitter" href="javascript:;">
 					</a>
@@ -201,6 +203,23 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script>
 	$('label').addClass('control-label visible-ie8 visible-ie9');
 	$('input').addClass('form-control placeholder-no-fix');
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1073284352728581',
+      xfbml      : true,
+      version    : 'v2.5'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
 		jQuery(document).ready(function() {
 			Metronic.init(); // init metronic core components
 			Layout.init(); // init current layout

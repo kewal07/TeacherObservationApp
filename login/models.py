@@ -58,12 +58,10 @@ class ExtendedUser(models.Model):
 		default_pic_url = "/static/login/images/defaultAvatar.png"
 		if self.imageUrl:
 			img_url = self.imageUrl.path
-			if img_url.find("https:/") != -1:
-				img_url = self.imageUrl.path.replace("/home/ubuntu/askpopulo/media/","")
-				return r"https://"+self.imageUrl.path.replace("/home/ubuntu/askpopulo/media/https:/","")
-			elif img_url.find("http:/") != -1:
-				img_url = self.imageUrl.path.replace("/home/ubuntu/askpopulo/media/","")
-				return r"http://"+self.imageUrl.path.replace("/home/ubuntu/askpopulo/media/http:/","")
+			if img_url.find("https:"+os.sep) != -1:
+				return img_url.split('media')[1][1:]
+			elif img_url.find("http:"+os.sep) != -1:
+				return img_url.split('media')[1][1:]
 			else:
 				return "/media/profile/"+self.get_folder_day()+os.sep+self.get_profile_pic_name()
 		return default_pic_url
