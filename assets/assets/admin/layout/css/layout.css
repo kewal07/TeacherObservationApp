@@ -2723,7 +2723,7 @@ img.cover-image{
 .book-functions{
   display: none;
   position: absolute;
-  left: 35%;
+  left: 48%;
   transform: translate(-50%, 0);
   top: 10px;
 }
