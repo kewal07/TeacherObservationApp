@@ -87,7 +87,7 @@ License: You must have a valid license purchased only from themeforest(the above
             <!-- <i class="fa fa-search-plus" id="addNote"></i> -->
             <button class="btn green-meadow tooltips" data-placement="bottom" id="addNote" data-original-title="Add Notes"><i class="fa fa-pencil-square-o"></i></button>
           </p>
-          <p class="on-add-note-click">
+          <p class="on-add-note-click temporaryinputnotebox">
             <input id="noteText" type="text" onkeydown="saveNoteEnter(this, event)" />
             <button id="saveNote" class="btn default my-btn-default">Save Note</button>
           </p>
@@ -113,7 +113,7 @@ License: You must have a valid license purchased only from themeforest(the above
           <p>
             <button class="btn green-meadow tooltips" data-placement="bottom" id="findText" data-original-title="Search"><i class="fa fa-binoculars"></i></button>
           </p>
-          <p class="on-find-text-click">
+          <p class="on-find-text-click temporaryinputsearchbox">
             <input id="searchText" type="text" onkeydown="searchOnEnter(this, event)" />
             <button id="searchTextButton" class="btn default my-btn-default">Search</button>
           </p>
@@ -641,6 +641,9 @@ License: You must have a valid license purchased only from themeforest(the above
         }
 
         $("body").on('click', '#findText', function() {
+          if($('.temporaryinputnotebox').is(':visible')){
+            $('.temporaryinputnotebox').toggle();
+          }
           $(".on-find-text-click").toggle("slow");
         });
 
@@ -649,10 +652,14 @@ License: You must have a valid license purchased only from themeforest(the above
         });
 
         $("body").on('click', '#addNote', function() {
+          if($('.temporaryinputsearchbox').is(':visible')){
+            $('.temporaryinputsearchbox').toggle();
+          }
           $(".on-add-note-click").toggle("slow");
         });
 
         $("body").on('click', '#searchTextButton', function() {
+          $('.on-find-text-click').toggle();
           var classApplierModule = rangy.modules.ClassApplier;
           if (rangy.supported && classApplierModule && classApplierModule.supported) {
             searchResultApplier = rangy.createClassApplier("searchResult");

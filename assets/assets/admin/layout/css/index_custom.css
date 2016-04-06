@@ -1,6 +1,9 @@
 .sidebar-list-background{
 	background:black !important;
 }
+#searchTextButton{
+	background-color: #1BBC9B;
+}
 @media only screen and (max-width: 480px){
 	.page-header.navbar .menu-toggler .responsive-toggler {
     	/*display: none;*/
@@ -31,10 +34,19 @@
     	/*display: none;*/
     	background-color: #1BBC9B;
 	}
+	ul.library-book-list{
+		padding-left:0;
+	}
+	li.cover-image-li{
+		width:28%;
+	}
 }
 
 @media only screen and (max-width: 990px){
 	#menu-items-text{
 		display:none;
+	}
+	.book-functions{
+		left:45%;
 	}
 }

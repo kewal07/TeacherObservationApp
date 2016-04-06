@@ -12,7 +12,7 @@ input:-moz-placeholder { font-size: 9pt;}
     	padding-left: 0 !important;
     	float: none !important;
 	}
-	
+
 	.page-header.navbar .top-menu .navbar-nav {
    		margin: 0 auto !important;
     	width: 100% !important;
@@ -23,8 +23,8 @@ input:-moz-placeholder { font-size: 9pt;}
 		display: none !important;
 	}
 	#search-box{
-		position: initial; 
-		right: initial; 
+		position: initial;
+		right: initial;
 		margin: 0 auto;
 		margin-bottom: 1rem;
 	}
@@ -33,5 +33,14 @@ input:-moz-placeholder { font-size: 9pt;}
 	}
 	i{
 		cursor:pointer;
+	}
+}
+@media only screen and (min-width: 480px) and (max-width: 800px){
+	ul.central-library-book-list{
+		padding-left:0;
+	}
+	li.central-cover-image-li{
+		width:28%;
+		margin:1rem;
 	}
 }

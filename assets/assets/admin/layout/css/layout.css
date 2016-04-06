@@ -2743,12 +2743,20 @@ p.on-add-bookmark-click{
   top: 34px;
   width:100%;
 }
+
+p.on-find-text-click{
+	display:none;
+  position: absolute;
+  top: 34px;
+  width:100%;
+}
+
 input#noteText{
   width: 65.5%;
   margin-top: 0.3rem;
 }
 .my-btn-default{
-  padding: 0 10px !important;
+  padding: 3px 10px !important;
   margin-left: 1px !important;
 }
 p.no-books{
