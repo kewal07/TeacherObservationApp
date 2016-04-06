@@ -185,24 +185,23 @@ License: You must have a valid license purchased only from themeforest(the above
 			$(".user-details").append("<div id='firstname-div'><p class='user-p' id='first_name'>" + "{{ user.first_name }}" + "</p></div>");
 			$(".user-details").append("<div id='lastname-div'><p class='user-p' id='last_name'>" + "{{ user.last_name }}" + "</p></div>");
 			$(".user-details").append("<div id='email-div'><p class='user-pr' id='email'>" + "{{ user.email }}" + "</p></div>");
-
-			{% ifequal user.extendeduser.address "None" %}
+			if("{{ user.extendeduser.address }}" === "None"){
 				$(".user-details").append("<div id='address-div'><p class='user-p' id='address'>" + "Address" + "</p></div>");
-			{% else %}
+			} else {
 				$(".user-details").append("<div id='address-div'><p class='user-p' id='address'>" + "{{ user.extendeduser.address }}" + "</p></div>");
-			{% endifequal %}
+			}
 
-			{% ifequal user.extendeduser.city "None" %}
+			if("{{ user.extendeduser.city }}" === "None"){
 				$(".user-details").append("<div id='city-div'><p class='user-p' id='city'>" + "City" + "</p></div>");
-			{% else %}
+			} else {
 				$(".user-details").append("<div id='city-div'><p class='user-p' id='city'>" + "{{ user.extendeduser.city }}" + "</p></div>");
-			{% endifequal %}
+			}
 
-			{% ifequal user.extendeduser.city "None" %}
+			if("{{ user.extendeduser.country }}" === "None"){
+				$(".user-details").append("<div id='country-div'><p class='user-p' id='country'>" + "Country" + "</p></div>");
+			} else {
 				$(".user-details").append("<div id='country-div'><p class='user-p' id='country'>" + "{{ user.extendeduser.country }}" + "</p></div>");
-			{% else %}
-				$(".user-details").append("<div id='country-div'><p class='user-p' id='country'>" + "{{ user.extendeduser.country }}" + "</p></div>");
-			{% endifequal %}
+			}
 			$(".user-p").append('<i class="fa edit-profile fa-pencil"></i>');
 			$(".user-details").on('click', '.edit-profile', function(e) {
 				var pid = $(this).parent().attr("id");
