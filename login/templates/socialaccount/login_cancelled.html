@@ -1,6 +1,3 @@
-{% extends "polls/common.html" %}
-
-{% load url from future %}
 {% load i18n %}
 
 {% block head_title %}{% trans "Login Cancelled" %}{% endblock %}
@@ -16,7 +13,7 @@
 
 			<p>{% blocktrans %}You decided to cancel logging in to our site using one of your existing accounts. If this was a mistake, please proceed to <a href="{{login_url}}"><span class="anchorSpan">Sign in</span></a></a>.{% endblocktrans %}</p>
 
-			
+
 		</div>
 	</div>
 </section>
