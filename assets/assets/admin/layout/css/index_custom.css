@@ -2,7 +2,7 @@
 	background:black !important;
 }
 #searchTextButton{
-	background-color: #1BBC9B;
+	background-color: #1BBC9B !important;
 }
 @media only screen and (max-width: 480px){
 	.page-header.navbar .menu-toggler .responsive-toggler {
