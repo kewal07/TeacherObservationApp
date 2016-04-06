@@ -142,7 +142,8 @@ License: You must have a valid license purchased only from themeforest(the above
 					<div class="col-md-12">
 						<ul class="central-library-book-list">
 							{% for book in data.books %}
-								<li id ='{{ book.id }}' class='central-cover-image-li'><img class='central-cover-image' src='{{ book.get_cover_image_path }}'> <span class='central-book-info'> {{ book.bookName}} <br> {{ book.author }} </span></li>
+								<li id ='{{ book.id }}' class='central-cover-image-li'><img class='central-cover-image' src='{{ book.get_cover_image_path }}'> <span class='central-book-info'> {{ book.bookName}} <br> {{ book.author }} </span>
+							</li>
 							{% endfor %}
 						</ul>
 						<ul class="central-library-book-list-search">
@@ -197,6 +198,7 @@ License: You must have a valid license purchased only from themeforest(the above
 	<script src="{% static 'assets/admin/pages/scripts/ui-alert-dialog-api.js' %}"></script>
 
 	<script>
+		var tickElement = '<i class="fa fa-check-circle"></i>';
 		function searchOnEnter(obj, event) {
 			if (event.keyCode === 13) {
 				$(".icon-magnifier").click();
@@ -207,10 +209,22 @@ License: You must have a valid license purchased only from themeforest(the above
 		}
 		jQuery(document).ready(function()
 		{
+			$.ajax({
+				type: 'POST',
+				url:"/userissuedbooks",
+				data:{'csrfmiddlewaretoken': "{{ csrf_token }}"},
+				success:function(testResponse)
+				{
+					for(var i=0; i<testResponse['issuedBookList'].length; i++) {
+						$("#" + testResponse['issuedBookList'][i]).append(tickElement);
+					}
+				}
+			});
+
 			var flag = 0;
+			var issuedBookList;
 			var element =
 				'<div class="my-popover popover confirmation fade top in" id="confirmation644182" style="top: 54px; left: 258.938px; display: block;"><div class="arrow" style="left: 50%;"></div><h3 class="popover-title">Issue Book?</h3><div class="popover-content text-center"><div class="btn-group"><a class="btn btn-xs btn-success" data-apply="confirmation"><i class="glyphicon glyphicon-ok"></i> Yes</a><a class="btn btn-xs btn-danger" data-dismiss="confirmation"><i class="glyphicon glyphicon-remove"></i> No</a></div></div></div>';
-			var tickElement = '<i class="fa fa-check-circle"></i>';
 
 			$(".central-cover-image-li").on('click', function() //cover image click block start
 			{
@@ -232,6 +246,7 @@ License: You must have a valid license purchased only from themeforest(the above
 							success:function(response)
 							{
 								bootbox.alert(response['success'])
+								$("#" + bookId).append(tickElement);
 							}
 						});
 				});
@@ -252,6 +267,16 @@ License: You must have a valid license purchased only from themeforest(the above
 			} else {
 				$.ajax({
 					type: 'POST',
+					url:"/userissuedbooks",
+					data:{'csrfmiddlewaretoken': "{{ csrf_token }}"},
+					success:function(testResponse)
+					{
+						issuedBookList = testResponse['issuedBookList'];
+					}
+				});
+
+				$.ajax({
+					type: 'POST',
 					url:"/searchbook",
 					data:{'searchKey':sValue, 'csrfmiddlewaretoken': "{{ csrf_token }}"},
 					success:function(response)
@@ -263,16 +288,54 @@ License: You must have a valid license purchased only from themeforest(the above
 						$('.central-library-book-list-search').empty();
 						if(typeof response['bookList'] === 'undefined'){
 							$('.central-library-book-list-search').append("<p>" + response['message'] + "</p>");
+						} else {
+								for (var i = 0; i < response['bookList'].length; i++) {
+									var tempId = response['bookList'][i].id;
+
+									if(issuedBookList.indexOf(response['bookList'][i].id) !== -1)
+									{
+									$('.central-library-book-list-search').append("<li id ='" + response['bookList'][i].id + "' class='central-cover-image-li'><img class='central-cover-image' src='" + response['bookList'][i].coverImageUrl + "'>" + "<span class='central-book-info'>" +
+										response['bookList'][i].bookName + "<br>" + response['bookList'][i].author + "</span>" + tickElement +"</li>");
+									} else {
+										$('.central-library-book-list-search').append("<li id ='" + response['bookList'][i].id + "' class='central-cover-image-li'><img class='central-cover-image' src='" + response['bookList'][i].coverImageUrl + "'>" + "<span class='central-book-info'>" +
+											response['bookList'][i].bookName + "<br>" + response['bookList'][i].author + "</span>" +"</li>");
+									}
+
+									$('.cover-image').css('width', $('.library-book-list').width() / 3.5);
+								}
 						}
-						console.log(response);
-						for (var i = 0; i < response['bookList'].length; i++) {
-							$('.central-library-book-list-search').append("<li id ='" + response['bookList'][i].id + "' class='central-cover-image-li'><img class='central-cover-image' src='" + response['bookList'][i].get_cover_image_path + "'>" + "<span class='central-book-info'>" +
-								response['bookList'][i].bookName + "<br>" + response['bookList'][i].author + "</span>" + "</li>");
-							$('.cover-image').css('width', $('.library-book-list').width() / 3.5);
-							if (jQuery.inArray(object.id, checkBooksUser) !== -1) {
-								$("#" + response['bookList'][i].id).append(tickElement);
+							$(".central-cover-image-li").on('click', function() //cover image click block start
+							{
+								if (flag == 0)
+								{
+									flag = 1;
+									var that = $(this);
+									$(this).append(element);
+									var bookId = this.id
+									$(".btn-success").click(function(e) {
+										e.stopPropagation();
+										flag = 0;
+										$(".my-popover").remove();
+										var data_dict = {'bookId':bookId, 'csrfmiddlewaretoken': "{{ csrf_token }}"};
+										$.ajax({
+											type: 'POST',
+											url:"/issuebook",
+											data:data_dict,
+											success:function(response)
+											{
+												bootbox.alert(response['success'])
+											}
+										});
+								});
+
+								$(".btn-danger").click(function(e)
+								{
+									e.stopPropagation();
+									$(".my-popover").remove();
+									flag = 0;
+								});
 							}
-						}
+						});
 					}
 				});
 			}

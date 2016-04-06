@@ -339,22 +339,35 @@ def searchBook(request):
 	bookList = []
 	bookFound = False
 	message = {}
+	currBookFound = False
 	try:
 		user = request.user
 		searchKey = request.POST.get('searchKey','')
 
 		if searchKey:
 			allBooks = Book.objects.all()
+			print(allBooks)
 			for book in allBooks:
 				if re.search(searchKey, book.bookName, re.IGNORECASE):
-					bookList.append(book[0])
+					currBookFound = True
 					bookFound = True
 				elif re.search(searchKey, book.author, re.IGNORECASE):
-					bookList.append(book[0])
+					currBookFound = True
 					bookFound = True
 				elif re.search(searchKey, book.isbn, re.IGNORECASE):
-					bookList.append(book[0])
+					currBookFound = True
+					bookList.append(book)
 					bookFound = True
+
+				if currBookFound:
+					currBookFound = False
+					tempBook = {}
+					tempBook['id'] = book.id
+					tempBook['bookName'] = book.bookName
+					tempBook['coverImageUrl'] = '/media'+str(book.coverImageUrl).split('media')[1]
+					tempBook['author'] = book.author
+					bookList.append(tempBook)
+
 			if not bookFound:
 				message['message'] = 'Book not found'
 				return HttpResponse(json.dumps(message), content_type='application/json')
@@ -363,6 +376,23 @@ def searchBook(request):
 				return HttpResponse(json.dumps(message), content_type='application/json')
 		else:
 			message['message'] = 'Provide a valid search key.'
+			return HttpResponse(json.dumps(message), content_type='application/json')
+	except:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
+		message['message'] = 'Some error occured'
+		return HttpResponse(json.dumps(message), content_type='application/json')
+
+def userIssuedBooks(request):
+	user = request.user
+	message = {}
+	issuedBookList = []
+	try:
+		userIssuedBooks = BooksIssued.objects.filter(user=user)
+		if userIssuedBooks:
+			for book in userIssuedBooks:
+				issuedBookList.append(book.book.id)
+			message['issuedBookList'] = issuedBookList
 			return HttpResponse(json.dumps(message), content_type='application/json')
 	except:
 		exc_type, exc_obj, exc_tb = sys.exc_info()

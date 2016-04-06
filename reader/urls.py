@@ -20,4 +20,7 @@ urlpatterns = [
     url(r'^savehighlights$',login_required(views.saveHighlights),name='savehighlights'),
     url(r'^editprofile$',login_required(views.editProfile),name='editprofile'),
     url(r'^searchbook$',login_required(views.searchBook),name='searchbook'),
+    url(r'^userissuedbooks$',login_required(views.userIssuedBooks),name='userissuedbooks'),
+    url(r'^termsofservice', TemplateView.as_view(template_name='termsofservice.html'), name='termsofservice'),
+    url(r'^privacypolicy', TemplateView.as_view(template_name='privacypolicy.html'), name='privacypolicy'),
 ]
