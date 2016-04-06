@@ -394,6 +394,9 @@ def userIssuedBooks(request):
 				issuedBookList.append(book.book.id)
 			message['issuedBookList'] = issuedBookList
 			return HttpResponse(json.dumps(message), content_type='application/json')
+		else:
+			message['issuedBookList'] = []
+			return HttpResponse(json.dumps(message), content_type='application/json')
 	except:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
