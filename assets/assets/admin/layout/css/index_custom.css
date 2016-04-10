@@ -4,6 +4,7 @@
 #searchTextButton{
 	background-color: #1BBC9B !important;
 }
+
 @media only screen and (max-width: 480px){
 	.page-header.navbar .menu-toggler .responsive-toggler {
     	/*display: none;*/
@@ -18,9 +19,10 @@
 		margin-top:17px !important;
 	}
 	.book-functions{
-    	left:20%;
     	transform:none;
     	top:initial;
+			margin-top:6rem;
+			left:12%;
   	}
   	.f button.green-meadow{
     	padding:7px 10px;
@@ -50,6 +52,7 @@
 		display:none;
 	}
 	.book-functions{
-		left:45%;
+
+
 	}
 }

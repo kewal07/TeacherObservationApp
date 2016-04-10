@@ -81,48 +81,6 @@ License: You must have a valid license purchased only from themeforest(the above
         </div>
       </div>
       <!-- END LOGO -->
-      <div class="book-functions">
-        <div class="f">
-          <p>
-            <!-- <i class="fa fa-search-plus" id="addNote"></i> -->
-            <button class="btn green-meadow tooltips" data-placement="bottom" id="addNote" data-original-title="Add Notes"><i class="fa fa-pencil-square-o"></i></button>
-          </p>
-          <p class="on-add-note-click temporaryinputnotebox">
-            <input id="noteText" type="text" onkeydown="saveNoteEnter(this, event)" />
-            <button id="saveNote" class="btn default my-btn-default">Save Note</button>
-          </p>
-          <p>
-            <button class="btn green-meadow zoom tooltips" data-placement="bottom" id="zoomIn" data-original-title="Zoom In"><i class="fa fa-search-plus"></i></button>
-          </p>
-          <p>
-            <button class="btn green-meadow zoom tooltips" data-placement="bottom" id="zoomOut" data-original-title="Zoom Out"><i class="fa fa-search-minus"></i></button>
-          </p>
-          <p>
-            <button class="btn green-meadow zoom tooltips" data-placement="bottom" id="defaultZoom" data-original-title="Default Font Size"><i class="fa fa-search"></i></button>
-          </p>
-          <p>
-            <button class="btn green-meadow tooltips" data-placement="bottom" id="highlights" data-original-title="Highlight Text"><i class="fa fa-text-height"></i></button>
-          </p>
-          <p>
-            <button class="btn green-meadow tooltips" data-placement="bottom" id="addBookmark" data-original-title="Bookmark"><i class="fa fa-bookmark"></i></button>
-          </p>
-          <p class="on-add-bookmark-click">
-            <input id="bookmarkText" type="text" onkeydown="saveBookMarkEnter(this, event)" />
-            <button id="saveBookMark" class="btn default my-btn-default">Save</button>
-          </p>
-          <p>
-            <button class="btn green-meadow tooltips" data-placement="bottom" id="findText" data-original-title="Search"><i class="fa fa-binoculars"></i></button>
-          </p>
-          <p class="on-find-text-click temporaryinputsearchbox">
-            <input id="searchText" type="text" onkeydown="searchOnEnter(this, event)" />
-            <button id="searchTextButton" class="btn default my-btn-default">Search</button>
-          </p>
-        </div>
-      </div>
-      <!-- BEGIN RESPONSIVE MENU TOGGLER -->
-      <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
-      </a>
-      <!-- END RESPONSIVE MENU TOGGLER -->
       <!-- BEGIN TOP NAVIGATION MENU -->
       <div class="top-menu">
 
@@ -165,6 +123,49 @@ License: You must have a valid license purchased only from themeforest(the above
         </ul>
       </div>
       <!-- END TOP NAVIGATION MENU -->
+      <div class="book-functions">
+        <div class="f">
+          <p>
+            <!-- <i class="fa fa-search-plus" id="addNote"></i> -->
+            <button class="btn green-meadow tooltips" data-placement="bottom" id="addNote" data-original-title="Add Notes"><i class="fa fa-pencil-square-o"></i></button>
+          </p>
+          <p class="on-add-note-click temporaryinputnotebox">
+            <input id="noteText" type="text" onkeydown="saveNoteEnter(this, event)" />
+            <button id="saveNote" class="btn default my-btn-default">Save Note</button>
+          </p>
+          <p>
+            <button class="btn green-meadow zoom tooltips" data-placement="bottom" id="zoomIn" data-original-title="Zoom In"><i class="fa fa-search-plus"></i></button>
+          </p>
+          <p>
+            <button class="btn green-meadow zoom tooltips" data-placement="bottom" id="zoomOut" data-original-title="Zoom Out"><i class="fa fa-search-minus"></i></button>
+          </p>
+          <p>
+            <button class="btn green-meadow zoom tooltips" data-placement="bottom" id="defaultZoom" data-original-title="Default Font Size"><i class="fa fa-search"></i></button>
+          </p>
+          <p>
+            <button class="btn green-meadow tooltips" data-placement="bottom" id="highlights" data-original-title="Highlight Text"><i class="fa fa-text-height"></i></button>
+          </p>
+          <p>
+            <button class="btn green-meadow tooltips" data-placement="bottom" id="addBookmark" data-original-title="Bookmark"><i class="fa fa-bookmark"></i></button>
+          </p>
+          <p class="on-add-bookmark-click">
+            <input id="bookmarkText" type="text" onkeydown="saveBookMarkEnter(this, event)" />
+            <button id="saveBookMark" class="btn default my-btn-default">Save</button>
+          </p>
+          <p>
+            <button class="btn green-meadow tooltips" data-placement="bottom" id="findText" data-original-title="Search"><i class="fa fa-binoculars"></i></button>
+          </p>
+          <p class="on-find-text-click temporaryinputsearchbox">
+            <input id="searchText" type="text" onkeydown="searchOnEnter(this, event)" />
+            <button id="searchTextButton" class="btn default my-btn-default">Search</button>
+          </p>
+          <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+          <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+          </a>
+          <!-- END RESPONSIVE MENU TOGGLER -->
+        </div>
+      </div>
+
     </div>
     <!-- END HEADER INNER -->
   </div>
@@ -375,6 +376,9 @@ License: You must have a valid license purchased only from themeforest(the above
       function handleBookDisplay(bookUrl, myBookId){ // Start of handle book display function
         epubBook = ePub(bookUrl);
 
+        //if(screen.width < 480){
+          $(".page-header.navbar .menu-toggler.responsive-toggler").css("display","inline-block");
+        //}
         $(".col-md-12").toggle("slow");
         $(".container-epub").toggle("slow");
         $("body").removeClass("page-full-width");

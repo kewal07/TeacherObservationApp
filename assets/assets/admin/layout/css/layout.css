@@ -151,8 +151,8 @@ Page Header
   cursor: pointer;
   opacity: 0.7;
   filter: alpha(opacity=70);
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
   background-repeat: no-repeat;
   background-position: center center;
 }
@@ -170,7 +170,8 @@ Page Header
 .page-header.navbar .menu-toggler.responsive-toggler {
   display: none;
   float: right;
-  margin: 11px 6px 0 6px;
+  margin-left:10px;
+  /*margin: 11px 6px 0 6px;*/
 }
 .page-header.navbar .top-menu {
   margin: 0;
@@ -702,7 +703,8 @@ Horizontal Menu
     display: none !important;
   }
   .page-header.navbar .menu-toggler.responsive-toggler {
-    display: inline-block;
+    display: none;
+    background-color: #1BBC9B;
   }
   .page-header.navbar .top-menu .navbar-nav {
     display: inline-block;
