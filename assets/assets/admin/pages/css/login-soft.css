@@ -54,10 +54,6 @@ Login page
   background-color: #fff;
 }
 
-.login .content .forget-form {
-  display: none;
-}
-
 .login .content .form-title {
   font-weight: 300;
   margin-bottom: 25px;
