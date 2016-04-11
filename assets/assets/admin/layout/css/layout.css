@@ -2646,12 +2646,12 @@ Page Loading
 #prev{
   position: absolute;
     left: 0rem;
-    top: 45rem;
+    top: 50%;
 }
 #next{
   position: absolute;
     right: 0rem;
-    top: 45rem;
+    top: 50%;
 }
 #my-library-title{
   cursor:pointer;

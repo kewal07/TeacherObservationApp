@@ -5,6 +5,11 @@
 	background-color: #1BBC9B !important;
 }
 
+#searchText{
+	border: 1px solid;
+  margin-top: 1rem;
+}
+
 @media only screen and (max-width: 480px){
 	.page-header.navbar .menu-toggler .responsive-toggler {
     	/*display: none;*/
@@ -22,7 +27,7 @@
     	transform:none;
     	top:initial;
 			margin-top:6rem;
-			left:12%;
+			left:5%;
   	}
   	.f button.green-meadow{
     	padding:7px 10px;
