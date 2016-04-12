@@ -375,10 +375,9 @@ License: You must have a valid license purchased only from themeforest(the above
 
       function handleBookDisplay(bookUrl, myBookId){ // Start of handle book display function
         epubBook = ePub(bookUrl);
-
-        //if(screen.width < 480){
+        console.log(screen.width);
           $(".page-header.navbar .menu-toggler.responsive-toggler").css("display","inline-block");
-        //}
+        }
         $(".col-md-12").toggle("slow");
         $(".container-epub").toggle("slow");
         $("body").removeClass("page-full-width");
@@ -869,7 +868,6 @@ License: You must have a valid license purchased only from themeforest(the above
           $(document).on('click', '#myHighlights li', function(e) {
             e.preventDefault();
             var pageUrl = $(this)[0].firstChild.id;
-            console.log(pageUrl);
             epubBook.goto(pageUrl);
           });
         });
