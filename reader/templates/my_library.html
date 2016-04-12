@@ -376,6 +376,7 @@ License: You must have a valid license purchased only from themeforest(the above
       function handleBookDisplay(bookUrl, myBookId){ // Start of handle book display function
         epubBook = ePub(bookUrl);
         console.log(screen.width);
+        if(screen.width < 600){
           $(".page-header.navbar .menu-toggler.responsive-toggler").css("display","inline-block");
         }
         $(".col-md-12").toggle("slow");
