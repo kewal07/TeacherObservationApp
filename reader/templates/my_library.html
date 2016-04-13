@@ -422,20 +422,25 @@ License: You must have a valid license purchased only from themeforest(the above
 
           highlighter.addClassApplier(rangy.createClassApplier("note", {
             ignoreWhiteSpace: true,
-            elementTagName: "a",
-            elementProperties: {
-              href: "#",
-              onclick: function()
-              {
-                var highlight = highlighter.getHighlightForElement(this);
-                if (window.confirm("Delete this note (ID " + highlight.id + ")?"))
-                {
-                  highlighter.removeHighlights([highlight]);
-                }
-                return false;
-              }
-            }
+            tagNames: ["span", "a"]
           }));
+
+          // highlighter.addClassApplier(rangy.createClassApplier("note", {
+          //   ignoreWhiteSpace: true,
+          //   elementTagName: "a",
+          //   elementProperties: {
+          //     href: "#",
+          //     onclick: function()
+          //     {
+          //       var highlight = highlighter.getHighlightForElement(this);
+          //       if (window.confirm("Delete this note (ID " + highlight.id + ")?"))
+          //       {
+          //         highlighter.removeHighlights([highlight]);
+          //       }
+          //       return false;
+          //     }
+          //   }
+          // }));
 
           // adding Note, BookMark & Highlights in Sidebar
           $('.page-sidebar-menu').append(
@@ -745,8 +750,9 @@ License: You must have a valid license purchased only from themeforest(the above
           });
 
           $('#myNotes').append("<li><a id='" + epubBook.getCurrentLocationCfi() + "'>" + $("#noteText").val() + "</a></li>");
-          highlightSelectedText();
-          highlightedElements = iframe.contentDocument.body.getElementsByClassName('highlight');
+          noteSelectedText();
+          //highlightSelectedText();
+          highlightedElements = iframe.contentDocument.body.getElementsByClassName('note');
 
           for (var i = 0; i < highlightedElements.length; i++) {
             highlightedElements[i].style.backgroundColor = 'limegreen';
