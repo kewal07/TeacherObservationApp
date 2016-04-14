@@ -210,7 +210,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		jQuery(document).ready(function()
 		{
 			$.ajax({
-				type: 'POST',
+				type: 'GET',
 				url:"/userissuedbooks",
 				data:{'csrfmiddlewaretoken': "{{ csrf_token }}"},
 				success:function(testResponse)
@@ -266,7 +266,7 @@ License: You must have a valid license purchased only from themeforest(the above
 				bootbox.alert("Search box is empty!");
 			} else {
 				$.ajax({
-					type: 'POST',
+					type: 'GET',
 					url:"/userissuedbooks",
 					data:{'csrfmiddlewaretoken': "{{ csrf_token }}"},
 					success:function(testResponse)

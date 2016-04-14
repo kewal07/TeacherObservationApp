@@ -46,7 +46,7 @@ class BookMark(models.Model):
     pub_date = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 
     def __str__(self):
-        return self.book + "_" + self.user + "_" + self.bookmarkName
+        return self.book.bookName + "_" + self.user + "_" + self.bookmarkName
 
 class Highlight(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
