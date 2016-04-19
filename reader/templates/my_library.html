@@ -376,7 +376,7 @@ License: You must have a valid license purchased only from themeforest(the above
       function handleBookDisplay(bookUrl, myBookId){ // Start of handle book display function
         epubBook = ePub(bookUrl);
         console.log(screen.width);
-        if(screen.width < 600){
+        if(screen.width < 700){
           $(".page-header.navbar .menu-toggler.responsive-toggler").css("display","inline-block");
         }
         $(".col-md-12").toggle("slow");
@@ -466,7 +466,7 @@ License: You must have a valid license purchased only from themeforest(the above
                   chapterHref: bookmarkItem.chapterHref,
                   pageCfi: bookmarkItem.pageCfi
                 });
-                $('#myBookmarks').append("<li><a id='" + bookmarkItem.pageCfi + "'>" + bookmarkItem.chapterHref + "</a></li>");
+                $('#myBookmarks').append("<li><a id='" + bookmarkItem.pageCfi + "'>" + bookmarkItem.bookMarkName + "</a></li>");
               });
             }
           });
@@ -697,14 +697,22 @@ License: You must have a valid license purchased only from themeforest(the above
             for (var i = 0; i < searchResultElements.length; i++) {
               searchResultElements[i].style.backgroundColor = 'none';
             }
-
+            
+            var atleastOneMatch = false;
+            
             if (searchTerm !== "") {
               var i = 0;
               while (range.findText(searchTerm, options)) {
+                atleastOneMatch = true;
                 searchResultApplier.applyToRange(range);
                 range.collapse(false);
               }
             }
+            
+            if(!atleastOneMatch){
+              bootbox.alert('No Text Matched');
+            }
+            
             searchResultElements = iframe.contentDocument.body.getElementsByClassName('searchResult');
             for (var i = 0; i < searchResultElements.length; i++) {
               searchResultElements[i].style.backgroundColor = 'red';

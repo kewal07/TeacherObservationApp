@@ -2947,7 +2947,8 @@ p.login-error{
 ul.sub-menu{
     overflow-y: scroll;
 }
-#saveNote{
+#saveNote, #saveBookMark{
+  color:white;
   background-color: #1BBC9B;
 }
 @media only screen and (max-width: 480px){
