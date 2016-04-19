@@ -2654,7 +2654,6 @@ Page Loading
     top: 50%;
 }
 #my-library-title{
-  cursor:pointer;
   color:orange;
 }
 .library-book-list,.central-library-book-list{
@@ -2788,9 +2787,6 @@ i.icon-magnifier{
 }
 ul.central-library-book-list-search{
   display: none;
-}
-#central-library-title{
-  cursor:pointer;
 }
 .my-popover{
   position: absolute;
@@ -2949,7 +2945,6 @@ p.login-error{
     z-index: 100000;
 }
 ul.sub-menu{
-  height: 50rem;
     overflow-y: scroll;
 }
 #saveNote{
