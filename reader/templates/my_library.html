@@ -322,6 +322,7 @@ License: You must have a valid license purchased only from themeforest(the above
       window.epubBook;
       window.mybook;
       window.currentNote = null;
+      window.currentHighlight = null;
 
       $("#noteText").css('display', 'hidden');
       $("#saveNote").css('display', 'hidden');
@@ -375,7 +376,6 @@ License: You must have a valid license purchased only from themeforest(the above
 
       function handleBookDisplay(bookUrl, myBookId){ // Start of handle book display function
         epubBook = ePub(bookUrl);
-        console.log(screen.width);
         if(screen.width < 700){
           $(".page-header.navbar .menu-toggler.responsive-toggler").css("display","inline-block");
         }
@@ -425,23 +425,6 @@ License: You must have a valid license purchased only from themeforest(the above
             tagNames: ["span", "a"]
           }));
 
-          // highlighter.addClassApplier(rangy.createClassApplier("note", {
-          //   ignoreWhiteSpace: true,
-          //   elementTagName: "a",
-          //   elementProperties: {
-          //     href: "#",
-          //     onclick: function()
-          //     {
-          //       var highlight = highlighter.getHighlightForElement(this);
-          //       if (window.confirm("Delete this note (ID " + highlight.id + ")?"))
-          //       {
-          //         highlighter.removeHighlights([highlight]);
-          //       }
-          //       return false;
-          //     }
-          //   }
-          // }));
-
           // adding Note, BookMark & Highlights in Sidebar
           $('.page-sidebar-menu').append(
             "<li><a class='slider-options' id='bookmark-slider' href='javascript:;'><i class='fa fa-bookmark'></i><span class='title'>My Bookmarks</span></span><span class='arrow open'></span></a><ul class='sub-menu scroll-smenu' id='myBookmarks'></ul></li>"
@@ -477,14 +460,14 @@ License: You must have a valid license purchased only from themeforest(the above
             data:{'bookId':myBookId, 'csrfmiddlewaretoken': "{{ csrf_token }}"},
             success:function(response)
             {
-              response['noteList'].forEach(function(noteItem) {
+              response['noteList'].forEach(function(noteItem, index) {
                 notes.push({
                   chapterHref: noteItem.chapterHref,
                   wordRange: JSON.parse(noteItem.wordRange)[0],
                   noteText: noteItem.noteText,
                   pageCfi: noteItem.pageCfi,
                 });
-                $('#myNotes').append("<li><a id='" + noteItem.pageCfi + "'>" + noteItem.noteText + "</a></li>");
+                $('#myNotes').append("<li><a data-note="+ index +" id='" + noteItem.pageCfi + "'>" + noteItem.noteText + "</a></li>");
               });
             }
           });
@@ -495,14 +478,14 @@ License: You must have a valid license purchased only from themeforest(the above
             data:{'bookId':myBookId, 'csrfmiddlewaretoken': "{{ csrf_token }}"},
             success:function(response)
             {
-              response['highlightList'].forEach(function(highlightItem) {
+              response['highlightList'].forEach(function(highlightItem, index) {
                 highlights.push({
                   chapterHref: highlightItem.chapterHref,
                   wordRange: JSON.parse(highlightItem.wordRange)[0],
                   text: highlightItem.highlightText,
                   pageCfi: highlightItem.pageCfi,
                 });
-                $('#myHighlights').append("<li><a id='" + highlightItem.pageCfi + "'>" + highlightItem.highlightText + "</a></li>");
+                $('#myHighlights').append("<li><a data-highlight="+ index +" id='" + highlightItem.pageCfi + "'>" + highlightItem.highlightText + "</a></li>");
               });
             }
           });
@@ -575,7 +558,7 @@ License: You must have a valid license purchased only from themeforest(the above
                 var lengthOfContent =  iframe.contentWindow.document.childNodes.length;
 
                 el.id = "r";
-                el.style.backgroundColor = "green";
+                el.style.backgroundColor = "red";
                 myrange = rangy.getSelection(iframe).restoreCharacterRanges(iframe.contentWindow.document.childNodes[lengthOfContent - 1], y);
                 el.textContent = myrange.toString();
                 myrange.extractContents();
@@ -590,7 +573,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
           if (highlights.length !== 0) {
             highlights.forEach(function(highlightItem) {
-              if (highlightItem.chapterHref === epubBook.currentChapter.href) {
+              if (highlightItem.chapterHref === epubBook.currentChapter.href && JSON.stringify(currentHighlight) !== JSON.stringify(highlightItem) ) {
                 var classApplierModule = rangy.modules.ClassApplier;
                 if (rangy.supported && classApplierModule && classApplierModule.supported) {
                   highlightResultApplier = rangy.createClassApplier("highlight");
@@ -609,6 +592,24 @@ License: You must have a valid license purchased only from themeforest(the above
                 for (var i = 0; i < highlightedElements.length; i++) {
                   highlightedElements[i].style.backgroundColor = 'yellow';
                 }
+              } else if(currentHighlight && currentHighlight.chapterHref === epubBook.currentChapter.href && JSON.stringify(currentHighlight) === JSON.stringify(highlightItem)){
+                var x = currentHighlight.wordRange;
+                var y = [];
+                y.push(x);
+                var iframe = $("iframe")[0];
+                var el = document.createElement("span");
+                var lengthOfContent =  iframe.contentWindow.document.childNodes.length;
+
+                el.id = "r";
+                el.style.backgroundColor = "red";
+                myrange = rangy.getSelection(iframe).restoreCharacterRanges(iframe.contentWindow.document.childNodes[lengthOfContent - 1], y);
+                el.textContent = myrange.toString();
+                myrange.extractContents();
+
+                if (myrange.canSurroundContents(el)) {
+                  myrange.insertNode(el);
+                }
+                currentNote = null;
               }
             });
           }
@@ -883,6 +884,12 @@ License: You must have a valid license purchased only from themeforest(the above
           $(document).on('click', '#myHighlights li', function(e) {
             e.preventDefault();
             var pageUrl = $(this)[0].firstChild.id;
+            var index = $(this)[0].firstChild.getAttribute('data-highlight');
+            currentHighlight = highlights[index];
+            if (pageUrl === epubBook.getCurrentLocationCfi() && highlights.length !== 0) {
+              epubBook.trigger('renderer:chapterDisplayed');
+              epubBook.goto(pageUrl);
+            }
             epubBook.goto(pageUrl);
           });
         });
