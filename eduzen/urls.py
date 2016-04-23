@@ -8,7 +8,7 @@ import django.views.defaults
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^', include('reader.urls',namespace="reader")),
+    url(r'^', include('evaluationapp.urls',namespace="evaluationapp")),
     url(r'^admin/', admin.site.urls),
     url(r'^user/',include('login.urls',namespace="login")),
     url(r'^admin/', include(admin.site.urls)),
