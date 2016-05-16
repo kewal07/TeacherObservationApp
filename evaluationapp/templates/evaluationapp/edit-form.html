@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<!--
+Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.4
+Version: 4.0.2
+Author: KeenThemes
+Website: http://www.keenthemes.com/
+Contact: support@keenthemes.com
+Follow: www.twitter.com/keenthemes
+Like: www.facebook.com/keenthemes
+Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
+License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
+-->
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+{% load static %}
+{% load i18n %}
+{% load getChecked %}
+<html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+
+<head>
+	<meta charset="utf-8" />
+	<title>Eduzen | Teacher Observation Web App</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+	<!-- BEGIN GLOBAL MANDATORY STYLES -->
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/simple-line-icons/simple-line-icons.min.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/uniform/css/uniform.default.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css' %}" rel="stylesheet" type="text/css" />
+	<!-- END GLOBAL MANDATORY STYLES -->
+	<!-- BEGIN THEME STYLES -->
+	<link href="{% static 'assets/global/css/components.css' %}" id="style_components" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/css/plugins.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/admin/layout/css/layout.css' %}" rel="stylesheet" type="text/css" />
+	<link id="style_color" href="{% static 'assets/admin/layout/css/themes/darkblue.css' %}" rel="stylesheet" type="text/css" />
+	<!-- END THEME STYLES -->
+	<!-- Page Level -->
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-select/bootstrap-select.min.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/select2/select2.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/jquery-multi-select/css/multi-select.css' %}"/>
+	<link href="{% static 'assets/global/plugins/icheck/skins/all.css' %}" rel="stylesheet"/>
+	<link href="{% static 'assets/admin/layout/css/index_teacher.css' %}" rel="stylesheet" type="text/css" />
+	<!-- End Page Level -->
+	<link rel="shortcut icon" href="{% static 'favicon.png' %}" />
+</head>
+<!-- END HEAD -->
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->
+<!-- DOC: Apply "page-sidebar-closed" class to the body and "page-sidebar-menu-closed" class to the sidebar menu element to hide the sidebar by default -->
+<!-- DOC: Apply "page-sidebar-hide" class to the body to make the sidebar completely hidden on toggle -->
+<!-- DOC: Apply "page-sidebar-closed-hide-logo" class to the body element to make the logo hidden on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-hide" class to body element to completely hide the sidebar on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-fixed" class to have fixed sidebar -->
+<!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
+<!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
+<!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
+<body class="page-header-fixed page-quick-sidebar-over-content">
+<!-- BEGIN HEADER -->
+<div class="page-header navbar navbar-fixed-top">
+	<!-- BEGIN HEADER INNER -->
+	<div class="page-header-inner">
+		<!-- BEGIN LOGO -->
+		<div class="page-logo">
+			<a href="{% url 'evaluationapp:index' %}">
+          		<img src="{% static 'assets/admin/layout/img/logo-big.png' %}" alt="logo" class="logo-default" />
+        	</a>
+			<div class="menu-toggler sidebar-toggler hide">
+				<!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
+			</div>
+		</div>
+		<!-- END LOGO -->
+		<!-- BEGIN RESPONSIVE MENU TOGGLER -->
+		<a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+		</a>
+		<!-- END RESPONSIVE MENU TOGGLER -->
+		<!-- BEGIN TOP NAVIGATION MENU -->
+		<div class="top-menu">
+			<ul class="nav navbar-nav pull-right">
+				<li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Home"></i>
+		              <span id="menu-items-text" class="title tooltips">Home</span>
+		            </a>
+		        </li>
+		        <li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <span id="menu-items-text" class="title tooltips">Evaluations</span>
+		            </a>
+		        </li>
+		         <li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <span id="menu-items-text" class="title tooltips">Analytics</span>
+		            </a>
+		        </li>
+		        <li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <span id="menu-items-text" class="title tooltips">Upload</span>
+		            </a>
+		        </li>
+		        <li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <span id="menu-items-text" class="title tooltips">Download</span>
+		            </a>
+		        </li>
+		        <li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Settings"></i>
+		              <span id="menu-items-text" class="title tooltips">Settings</span>
+		            </a>
+		        </li>
+				<li class="dropdown dropdown-user">
+					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+		              <img alt="{{ user.first_name }}" class="img-circle" src="{{ user.extendeduser.get_profile_pic_url }}" />
+		              <span class="username username-hide-on-mobile">{{ user.username }}</span>
+		              <i class="fa fa-angle-down"></i>
+		            </a>
+		            <ul class="dropdown-menu dropdown-menu-default">
+		              <li class="my-index-logout">
+		                <a href="{% url 'login:logout' %}"> <i class="icon-key"></i> Log Out </a>
+		              </li>
+		            </ul>
+				</li>
+				<!-- END USER LOGIN DROPDOWN -->
+			</ul>
+		</div>
+		<!-- END TOP NAVIGATION MENU -->
+	</div>
+	<!-- END HEADER INNER -->
+</div>
+<!-- END HEADER -->
+<div class="clearfix">
+</div>
+<!-- BEGIN CONTAINER -->
+<div class="page-container">
+	<!-- BEGIN SIDEBAR -->
+	<div class="page-sidebar-wrapper">
+		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+		<div class="page-sidebar navbar-collapse collapse">
+			<!-- BEGIN SIDEBAR MENU -->
+			<!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+			<!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+			<!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+			<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+			<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+			<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+			<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+				<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+				<li class="sidebar-toggler-wrapper">
+					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+					<div class="sidebar-toggler">
+					</div>
+					<!-- END SIDEBAR TOGGLER BUTTON -->
+				</li>
+				<li class="start ">
+					<a href="javascript:;">
+						<i class="icon-home"></i>
+						<span class="title">Home</span>
+						<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="#">
+							<i class="icon-home"></i>
+							Create</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="icon-basket"></i>
+							Edit</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="icon-home"></i>
+							Active</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="icon-basket"></i>
+							InActive</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="javascript:;">
+					<i class="icon-basket"></i>
+					<span class="title">Evaluations</span>
+					<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="#">
+							<i class="icon-home"></i>
+							Assign Evaluation</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="icon-basket"></i>
+							Ongoing Evaluations</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="icon-tag"></i>
+							Submitted Evaluations</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="icon-handbag"></i>
+							Reviewed Evaluations</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="icon-pencil"></i>
+							Completed Evaluations</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="javascript:;">
+						<i class="icon-rocket"></i>
+						<span class="title">Analytics</span>
+					</a>
+				</li>
+				<li>
+					<a href="javascript:;">
+						<i class="icon-diamond"></i>
+						<span class="title">Uploads</span>
+					</a>
+				</li>
+				<li>
+					<a href="javascript:;">
+						<i class="icon-puzzle"></i>
+						<span class="title">Downloads</span>
+					</a>
+				</li>
+				<li class="last ">
+					<a href="javascript:;">
+					<i class="icon-puzzle"></i>
+					<span class="title">Settings</span>
+				</li>
+			</ul>
+			<!-- END SIDEBAR MENU -->
+		</div>
+	</div>
+	<!-- END SIDEBAR -->
+	<!-- BEGIN CONTENT -->
+	<div class="page-content-wrapper">
+		<div class="page-content">
+			<!-- BEGIN PAGE HEADER-->
+			<h3 class="page-title">
+			Edit Evaluation Form 
+			</h3>
+			<div class="page-bar">
+				<ul class="page-breadcrumb">
+					<li>
+						<i class="fa fa-home"></i>
+						<a href="#">Home</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
+					<li>
+						<i class="fa fa-home"></i>
+						<a href="#">Edit</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
+					<li>
+						<i class="fa fa-home"></i>
+						<a href="#">{{ form.form_name|title }}</a>
+					</li>
+				</ul>
+			</div>
+			<!-- END PAGE HEADER-->
+			<!-- BEGIN PAGE CONTENT-->
+			<div class="row">
+				<div class="col-md-12">
+					<div class="portlet box blue" id="form_wizard_1">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-gift"></i> Evaluation Form Wizard - <span class="step-title">
+								Step 1 of 3 </span>
+							</div>
+							<div class="tools hidden-xs">
+								<a href="javascript:;" class="collapse">
+								</a>
+								<a href="javascript:;" class="reload">
+								</a>
+							</div>
+						</div>
+						<div class="portlet-body form create-form">
+							<form action="{% url 'evaluationapp:create-form' %}" class="form-horizontal" id="submit_form" method="POST" enctype="multipart/form-data">
+								{% csrf_token %}
+								<div class="form-wizard">
+									<div class="form-body">
+										<ul class="nav nav-pills nav-justified steps">
+											<li>
+												<a href="#tab1" data-toggle="tab" class="step">
+												<span class="number">
+												1 </span>
+												<span class="desc">
+												<i class="fa fa-check"></i> Evaluation F	orm Setup </span>
+												</a>
+											</li>
+											<li>
+												<a href="#tab2" data-toggle="tab" class="step">
+												<span class="number">
+												2 </span>
+												<span class="desc">
+												<i class="fa fa-check"></i> Add Sections </span>
+												</a>
+											</li>
+											<li>
+												<a href="#tab3" data-toggle="tab" class="step active">
+												<span class="number">
+												3 </span>
+												<span class="desc">
+												<i class="fa fa-check"></i> Add Questions </span>
+												</a>
+											</li>
+										</ul>
+										<div id="bar" class="progress progress-striped" role="progressbar">
+											<div class="progress-bar progress-bar-success">
+											</div>
+										</div>
+										<div class="tab-content">
+											<div class="alert alert-danger display-none">
+												<button class="close" data-dismiss="alert"></button>
+												You have some form errors. Please check below.
+											</div>
+											<div class="alert alert-success display-none">
+												<button class="close" data-dismiss="alert"></button>
+												Your form validation is successful!
+											</div>
+											<div class="tab-pane active" id="tab1">
+												<h3 class="block">Provide Form Details</h3>
+												<div class="form-group">
+													<label class="control-label col-md-3">Title <span class="required">
+													* </span>
+													</label>
+													<div class="col-md-4">
+														<input type="text" class="form-control" name="name" value="{{ form.form_name }}"/>
+														<span class="help-block">
+														Provide a Title for the Form </span>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="control-label col-md-3">Description</label>
+													<div class="col-md-4">
+														<textarea class="form-control" rows="3" name="description">{{ form.description }}</textarea>
+														<span class="help-block">
+														Provide a Description for the Form, such as Measuring Criteria etc </span>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="control-label col-md-3">Form Submit Text</label>
+													<div class="col-md-4">
+														<input type="text" class="form-control" name="submit-text" placeholder="Thank You for the Evaluation" value="{{ form.thanks_msg }}"/>
+														<span class="help-block">
+														Provide a Submit Text for the Form </span>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="control-label col-md-3">Category <span class="required">
+													* </span></label>
+													<div class="col-md-4">
+														<input type="hidden" id="select2_sample5" class="form-control select2" name="category-selected" value="">
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-3 control-label">Other Settings</label>
+													<div class="col-md-4">
+														<div class="input-group">
+															<div class="icheck-inline">
+																<label>
+																<input type="checkbox" id="mandatory" class="icheck" name="mandatory" {{ allMandatory|getChecked }}> All Questions Mandatory </label>
+																<label>
+																<input type="checkbox" id="horizontalOptions" class="icheck" name="horizontal-options" {{ allHO|getChecked }}> Arrange Options Horizontaly</label>
+																<label>
+																<input type="checkbox" id="addComment" class="icheck" name="require-feedback" {{ allAC|getChecked }}> Require Feedback on Every Question</label>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="tab-pane" id="tab2">
+												<h3 class="block">Add Sections if Required</h3>
+												<div class="form-group">
+													<label class="control-label col-md-3">No Of Sections</label>
+													<div class="col-md-4">
+														<select id="section-select" name="no-of-section" class="bs-select form-control">
+															<option value="2" {{ 2|getSelectedSection:form.formsection_set.count }} >Two</option>
+															<option value="3" {{ 3|getSelectedSection:form.formsection_set.all.count }}>Three</option>
+															<option value="4" {{ 4|getSelectedSection:form.formsection_set.all.count }}>Four</option>
+															<option value="5" {{ 5|getSelectedSection:form.formsection_set.all.count }}>Five</option>
+															<option value="6" {{ 6|getSelectedSection:form.formsection_set.all.count }}>Six</option>
+															<option value="7" {{ 7|getSelectedSection:form.formsection_set.all.count }}>Seven</option>
+															<option value="8" {{ 8|getSelectedSection:form.formsection_set.all.count }}>Eight</option>
+															<option value="9" {{ 9|getSelectedSection:form.formsection_set.all.count }}>Nine</option>
+															<option value="10" {{ 10|getSelectedSection:form.formsection_set.all.count }}>Ten</option>
+														</select>
+													</div>
+												</div>
+												{% for fs in form.formsection_set.all %}
+													{% if forloop.counter > 2 %}
+														<div class="form-group extra-section-div">
+													{% else %}
+														<div class="form-group">
+													{% endif %}
+														<label class="control-label col-md-3">Section{{ fs.sectionOrder }}
+														</label>
+														<div class="col-md-4">
+															<input type="text" id="sectionName---{{ fs.sectionOrder }}" class="form-control" name="section{{ fs.sectionOrder }}" value="{{ fs.sectionName }}"/>
+														</div>
+													</div>
+												{% endfor %}
+											</div>
+											<div class="tab-pane" id="tab3">
+												<h3 class="block">Add Questions</h3>
+												<p class="add-q"><i class="fa fa-plus-circle"></i> Add New Question</p>	
+												{% for form_que in form.formquestion_set.all %}
+													<div class="portlet box blue-hoki survey-question form-group" id="questionDiv{{ forloop.counter }}">
+														<div class=" portlet-title question-box-title">
+															<div class="caption">
+																<i class="fa fa-gift"></i>Question{{ forloop.counter }}
+															</div>
+															<div class="actions">
+																<a href="javascript:;" class="btn blue btn-sm">
+																	<span id="remove-question{{ forloop.counter }}" class="remove-question">Remove Question</span>
+																</a>
+															</div>
+														</div>
+			  											<div class="portlet-body">
+		  													<div class="form-group">
+		  														<label class="control-label col-md-3">Question Title <span class="required">*</span>
+		  														</label>
+		  														<div class="col-md-4">
+		  															<input type="text" class="form-control" name="question-title{{ forloop.counter }}" value="{{ form_que.question.question_text }}"/>
+		  														</div>
+		  													</div>
+		  													<div class="form-group">
+		  														<label class="control-label col-md-3">Question Description</label>
+		  														<div class="col-md-4">
+		  															<textarea class="form-control" rows="3" name="question-description{{ forloop.counter }}">
+		  																{{ form_que.question.description }}
+		  															</textarea>
+		  														</div>
+		  													</div>
+		  													<div class="form-group">
+		  														<label class="col-md-3 control-label">Other Settings</label>
+		  														<div class="col-md-4">
+		  															<div class="input-group">
+		  																<div class="icheck-inline">
+				  															<label><input type="checkbox" id="mandatory{{ forloop.counter }}" class="icheck" name="question-mandatory{{ forloop.counter }}" {{ form_que.mandatory|getChecked }}>Question Mandatory 
+				  															</label>
+	  																		<label><input type="checkbox" id="addComment{{ forloop.counter }}" class="icheck" name="question-require-feedback{{ forloop.counter }}" {{ form_que.add_comment|getChecked }}> Require Feedback
+	  																		</label>
+	  																		<label><input type="checkbox" id="horizontalOptions{{ forloop.counter }}" class="icheck" name="question-horizontal-options{{ forloop.counter }}" {{ form_que.question.horizontal_options|getChecked }}> Arrange Options Horizontaly
+	  																		</label>
+	  																	</div>
+	  																</div>
+	  															</div>
+	  														</div>
+		  													<div class="form-group">
+		  														<label class="control-label col-md-3">Section</label>
+		  														<div class="col-md-4">
+		  															<select id="question-section-select" name="question-section{{ forloop.counter }}" class="bs-select form-control">
+		  																{% for fs in form.formsection_set.all %}
+		  																	<option value="{{ fs.sectionName }}" {{ fs.sectionName|getSelected:form_que.section.sectionName }}>{{ fs.sectionName }}</option>
+		  																{% endfor %}
+		  															</select>
+		  														</div>
+		  													</div>
+		  													<div class="form-group">
+		  														<label class="control-label col-md-3">Question Type</label>
+		  														<div class="col-md-4">
+		  															<select id="question-type-select---{{ forloop.counter }}" name="question-type{{ forloop.counter }}" class="bs-select form-control question-type-select">
+		  																<option value="noselect">Select</option>
+		  																<option value="radio" {{ 'radio'|getSelected:form_que.question_type }}>Single Select</option>
+		  																<option value="checkbox" {{ 'checkbox'|getSelected:form_que.question_type }}>Multi Select</option>
+		  																<option value="rating" {{ 'rating'|getSelected:form_que.question_type }}>Rating</option>
+		  																<option value="text" {{ 'text'|getSelected:form_que.question_type }}>Text</option>
+		  															</select>
+		  														</div>
+		  													</div>
+		  													<div id="question{{ forloop.counter }}choiceDiv">
+		  														{% if form_que.question_type == "rating" %}
+		  														<div class="form-group">
+		  															<label class="control-label col-md-3">Min Value <span class="required">* </span></label>
+		  															<div class="col-md-4"><input type="text" class="form-control" name="{{ forloop.counter }}---{{ form_que.question_type }}---Min" id="{{ forloop.counter }}---{{ form_que.question_type }}---Min" placeholder="Minimum Value" value="{{ form_que.min_value }}"/>
+		  															</div>
+		  														</div>
+		  														<div class="form-group">
+		  															<label class="control-label col-md-3">Max Value <span class="required">* </span></label>
+		  															<div class="col-md-4"><input type="text" class="form-control" name="{{ forloop.counter }}---{{ form_que.question_type }}---Max" id="{{ forloop.counter }}---{{ form_que.question_type }}---Max" placeholder="Maximum Value" value="{{ form_que.max_value }}"/>
+		  															</div>
+		  														</div>
+		  														{% elif form_que.question_type != "text" %}
+		  														<i id="{{ forloop.counter }}---{{ form_que.question_type }}" class="fa fa-plus-circle add-choice"> Add Another Choice</i>
+		  														{% for choice in form_que.question.choice_set.all %}
+		  														<div class="form-group" id="questionDiv{{ forloop.parentloop.counter }}choice{{ forloop.counter }}Div">
+		  															<label class="control-label col-md-3"></label>
+		  															<div class="col-md-4">
+		  																<input type="text" class="form-control" name="questionDiv{{ forloop.parentloop.counter }}choice{{ forloop.counter }}" id="questionDiv{{ forloop.parentloop.counter }}choice{{ forloop.counter }}" placeholder="Enter Choice Value" value="{{ choice.choice_text }}"/>
+		  															</div>
+		  															<div class="col-md-4">
+		  																<i id="{{ forloop.parentloop.counter }}---{{ forloop.counter }}---{{ form_que.question_type }}" class="fa fa-times-circle remove-choice"> Remove</i>
+		  															</div>
+		  														</div>
+		  														{% endfor %}
+		  														{% endif %}
+		  													</div>
+			  											</div>
+			  										</div>
+												{% endfor %}
+											</div>
+										</div>
+									</div>
+									<div class="form-actions">
+										<div class="row">
+											<div class="col-md-offset-3 col-md-9">
+												<a href="javascript:;" class="btn default button-previous">
+												<i class="m-icon-swapleft"></i> Back </a>
+												<a href="javascript:;" class="btn blue button-next">
+												Continue <i class="m-icon-swapright m-icon-white"></i>
+												</a>
+												<a href="javascript:;" class="btn green button-submit surveySubmit" id="createSurveySubmit">
+												Submit <i class="m-icon-swapright m-icon-white"></i>
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- END PAGE CONTENT-->
+		</div>
+	</div>
+	<!-- END CONTENT -->
+</div>
+<!-- END CONTAINER -->
+<!-- BEGIN FOOTER -->
+<div class="page-footer">
+	<div class="page-footer-inner">
+		 2016 &copy; Eduzen <a href="http://educationzen.com/" title="Eduzen" target="_blank">Eduzen Private Limited</a>
+	</div>
+	<div class="scroll-to-top">
+		<i class="icon-arrow-up"></i>
+	</div>
+</div>
+<!-- END FOOTER -->
+<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+<!-- BEGIN CORE PLUGINS -->
+<!--[if lt IE 9]>
+<script src="../../assets/global/plugins/respond.min.js"></script>
+<script src="../../assets/global/plugins/excanvas.min.js"></script> 
+<![endif]-->
+<script src="{% static 'assets/global/plugins/jquery.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/jquery-migrate.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/jquery-ui/jquery-ui.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/jquery.blockui.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/jquery.cokie.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/uniform/jquery.uniform.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/scripts/metronic.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/admin/layout/scripts/layout.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/admin/layout/scripts/quick-sidebar.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/admin/layout/scripts/demo.js' %}" type="text/javascript"></script>
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script src="{% static 'assets/global/plugins/jquery-validation/js/jquery.validate.min.js' %}"></script>
+<script src="{% static 'assets/global/plugins/jquery-validation/js/additional-methods.min.js' %}"></script>
+<script src="{% static 'assets/global/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/bootstrap-select/bootstrap-select.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/select2/select2.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js' %}"></script>
+<script src="{% static 'assets/global/plugins/icheck/icheck.min.js' %}"></script>
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- Page Level Scripts -->
+<script src="{% static 'assets/admin/pages/scripts/components-dropdowns.js' %}"></script>
+<script src="{% static 'assets/admin/pages/scripts/form-wizard.js' %}"></script>
+<script src="{% static 'assets/admin/pages/scripts/components-dropdowns.js' %}"></script>
+<script src="{% static 'assets/admin/pages/scripts/form-icheck.js ' %}"></script>
+<!-- End Page Level Scripts -->
+<script>
+		//Variables
+			var noOfSections;
+			var display_question_count = 0;
+			var question_count = 0;
+			var question_list = [];
+			var choice_count = {};
+			var choice_list = {};
+			var mandatory = {{ allMandatory|yesno:"true,false" }};
+			var addComment = {{ allAC|yesno:"true,false" }};
+			var horizontalOptions = {{ allHO|yesno:"true,false" }};
+			{% for fquestion in form.formquestion_set.all %}
+				question_count += 1;
+				question_list.push(question_count.toString());
+				choice_count[question_count] = 0;
+		  		choice_list[question_count] = [];
+				{% for choice in fquestion.question.choice_set.all %}
+					choice_count[question_count] += 1;
+					choice_list[question_count].push(choice_count[question_count]);
+				{% endfor %}
+				choice_count[question_count] += 1;
+			{% endfor %}
+			question_count += 1
+			display_question_count = question_count;
+			// End Variables
+	  	function add_another_choice(question_count_select,selectedType){
+			var question_choice_count = choice_count[question_count_select];
+	  		choice_list[question_count_select].push(question_choice_count);
+	  		var choice_elem_div = "question"+question_count_select+"choiceDiv";
+	  		var question_div = "questionDiv"+question_count_select;
+			var choice_elem_id = question_div+'choice'+question_choice_count;
+			var choice_elem = "";
+			if(selectedType != "text"){
+				choice_elem = '<div id="'+choice_elem_div+'"></div>';
+				$("#"+question_div+" .portlet-body .scroller").append(choice_elem);
+				$("#"+choice_elem_div).append('<div class="form-group" id="questionDiv'+question_count_select+'choice'+question_choice_count+'Div"><label class="control-label col-md-3"></label><div class="col-md-4"><input type="text" class="form-control" name="'+choice_elem_id+'" id=="'+choice_elem_id+'" placeholder="Enter Choice Value"/></div><div class="col-md-4"><i id="' +question_count_select+'---'+ question_choice_count+'---'+selectedType+ '" class="fa fa-times-circle remove-choice"> Remove</i></div></div>');
+			}
+			choice_count[question_count_select]+=1;
+		}
+
+      jQuery(document).ready(function() {    
+         	Metronic.init(); // init metronic core components
+			Layout.init(); // init current layout
+			QuickSidebar.init(); // init quick sidebar
+			Demo.init(); // init demo features
+			FormWizard.init();
+			ComponentsDropdowns.init();
+
+			// Adding Value for Category
+			var value = '';
+			var tag_list = [];
+			{% for category in categories %}
+				tag_list.push("{{ category.category_title }}");
+			{% endfor %}
+			{% for category in form_categories %}
+				value += "{{ category.category_title }}";
+				{% if not forloop.last %}
+					value+= ", ";
+				{% endif %}
+			{% endfor %}
+			$("#select2_sample5").val(value);
+			$("#select2_sample5").select2({
+            	tags: tag_list
+        	});
+			// End Adding Value for Category
+
+			// Sections
+			$("#tab2").on("change","select#section-select",function(){
+				$(".extra-section-div").remove();
+				noOfSections = $("select#section-select").val();
+				if(parseInt(noOfSections) > 2){
+					var i;
+					for (i = 1; i <= parseInt(noOfSections)-2; i++) { 
+						var element = '<div class="form-group extra-section-div"><label class="control-label col-md-3">Section'+(i+parseInt(2))+'</label><div class="col-md-4"><input type="text" id="sectionName---'+(i+parseInt(2))+'"  class="form-control" name="section'+(i+parseInt(2))+'"/></div></div>';
+						$("#tab2").append(element);
+					}
+				}
+			});
+			// End Sections
+
+			// Add Question
+			$("#tab3").on("click",".add-q",function(){
+				choice_count[question_count] = 1;
+			  	choice_list[question_count] = [];
+			  	var question_count_str = question_count.toString();
+			  	question_list.push(question_count_str);
+			  	var question_elem = '<div class="portlet box blue-hoki" id="questionDiv'+question_count_str+'"><div class=" portlet-title question-box-title"><div class="caption"><i class="fa fa-gift"></i>Question'+display_question_count+'</div><div class="actions"><a href="javascript:;" class="btn blue btn-sm"><span id="remove-question'+question_count_str+'" class="remove-question">Remove Question</span></a></div></div>';
+			  	question_elem += '<div class="portlet-body"><div class="scroller"><div class="form-group"><label class="control-label col-md-3">Question Title <span class="required">*</span></label><div class="col-md-4"><input type="text" class="form-control" name="question-title'+question_count_str+'"/></div></div>';
+			  	question_elem += '<div class="form-group"><label class="control-label col-md-3">Question Description</label><div class="col-md-4"><textarea class="form-control" rows="3" name="question-description'+question_count_str+'"></textarea></div></div>';
+			  	question_elem += '<div class="form-group"><label class="col-md-3 control-label">Other Settings</label><div class="col-md-4"><div class="input-group"><div class="icheck-inline">';
+			  	if(mandatory)
+			  		question_elem += '<label><input type="checkbox" id="mandatory'+question_count_str+'" class="icheck" name="question-mandatory'+question_count_str+'" checked>Question Mandatory </label>';
+		  		else
+		  			question_elem += '<label><input type="checkbox" id="mandatory'+question_count_str+'" class="icheck" name="question-mandatory'+question_count_str+'">Question Mandatory </label>';
+		  		if(addComment)
+		  			question_elem += '<label><input type="checkbox" id="addComment'+question_count_str+'" class="icheck" name="question-require-feedback'+question_count_str+'" checked> Require Feedback</label>';
+		  		else
+		  			question_elem += '<label><input type="checkbox" id="addComment'+question_count_str+'" class="icheck" name="question-require-feedback'+question_count_str+'"> Require Feedback</label>';
+		  		if(horizontalOptions)
+		  			question_elem += '<label><input type="checkbox" id="horizontalOptions'+question_count_str+'" class="icheck" name="question-horizontal-options'+question_count_str+'" checked> Arrange Options Horizontaly</label>';
+		  		else
+		  			question_elem += '<label><input type="checkbox" id="horizontalOptions'+question_count_str+'" class="icheck" name="question-horizontal-options'+question_count_str+'"> Arrange Options Horizontaly</label>';
+			  	question_elem += '</div></div></div></div>';
+			  	question_elem += '<div class="form-group"><label class="control-label col-md-3">Section</label><div class="col-md-4"><select id="question-section-select" name="question-section'+question_count_str+'" class="bs-select form-control">';
+			  	var i;
+			  	noOfSections = $("select#section-select").val();
+			  	for (i = 1; i <= parseInt(noOfSections); i++) { 
+			  		question_elem += '<option value="'+$("#sectionName---"+i).val()+'">'+$("#sectionName---"+i).val()+'</option>';
+			  	}
+			  	question_elem += '</select></div></div>';
+			  	question_elem += '<div class="form-group"><label class="control-label col-md-3">Question Type</label><div class="col-md-4"><select id="question-type-select---'+question_count_str+'" name="question-type'+question_count_str+'" class="bs-select form-control question-type-select"><option value="noselect">Select</option><option value="radio">Single Select</option><option value="checkbox">Multi Select</option><option value="rating">Rating</option><option value="text">Text</option>';
+			  	question_elem += '</select></div></div>';
+			  	question_elem += '</div></div></div>';
+			  	$("#tab3").append(question_elem);
+			  	question_count += 1;
+			  	display_question_count += 1;
+			  	var id="#questionDiv"+question_count_str;
+			  		$('html, body').animate({
+				        scrollTop: $(id).offset().top-120
+				    }, 1000);
+			});
+			// End Add Question
+
+			// Question Type Select
+			$("#tab3").on("change",".question-type-select",function(){
+				var select_elem_id = $(this)[0].id;
+				console.log("select_elem_id: "+select_elem_id);
+		  		var question_count_select = select_elem_id.replace("question-type-select---","");
+		  		console.log("question_count_select: "+question_count_select);
+		  		choice_count[question_count_select] = 1;
+		  		choice_list[question_count_select] = [];
+		  		var question_choice_count = choice_count[question_count_select];
+		  		var choice_elem_div = "question"+question_count_select+"choiceDiv";
+		  		console.log("choice_elem_div: "+choice_elem_div);
+		  		var question_div = "questionDiv"+question_count_select;
+		  		console.log("question_div: "+question_div);
+		  		$("#"+choice_elem_div).remove();
+		  		var selectedType = $("#"+select_elem_id+" option:selected").val();
+		  		console.log("selectedType: "+selectedType);
+		  		if(selectedType != "text" && selectedType != "rating"){
+		  			var add_another_choice_elem = '<div id="'+choice_elem_div+'"></div>';
+		  			$("#"+question_div+" .portlet-body .scroller").append(add_another_choice_elem);
+		  			$("#"+choice_elem_div).append('<i id="' +question_count_select+'---'+selectedType +'" class="fa fa-plus-circle add-choice"> Add Another Choice</i>'); 
+					add_another_choice(question_count_select,selectedType);
+				}
+				if(selectedType == "rating"){
+					var add_another_choice_elem = '<div id="'+choice_elem_div+'"></div>';
+					$("#"+question_div+" .portlet-body .scroller").append(add_another_choice_elem);
+					$("#"+choice_elem_div).append('<div class="form-group"><label class="control-label col-md-3">Min Value <span class="required">* </span></label><div class="col-md-4"><input type="text" class="form-control" name="'+question_count_select+'---'+selectedType+'---Min" id="'+question_count_select+'---'+selectedType+'---Min" placeholder="Minimum Value"/></div></div><div class="form-group"><label class="control-label col-md-3">Max Value <span class="required">* </span></label><div class="col-md-4"><input type="text" class="form-control" name="'+question_count_select+'---'+selectedType+'---Max" id="'+question_count_select+'---'+selectedType+'---Max" placeholder="Maximum Value"/></div></div>');
+				}
+			});
+			// End Question Type Select
+
+			// Add Choice
+			$("#tab3").on("click",".add-choice",function(){
+				var elemId = $(this)[0].id;
+				var question_count_select1 = elemId.split("---")[0];
+				var selectedType1 = elemId.split("---")[1];
+				add_another_choice(question_count_select1,selectedType1);
+			});
+			// End Add Choice
+
+			// Remove Choice
+			$("#tab3").on("click",".remove-choice",function(){
+				var elemId = $(this)[0].id;
+				var question_count_select2 = elemId.split("---")[0];
+				var question_choice_count2 = elemId.split("---")[1];
+				var selectedType2 = elemId.split("---")[2];
+				$("#questionDiv"+question_count_select2+"choice"+question_choice_count2+"Div").remove();
+				choice_list[question_count_select2] = jQuery.grep(choice_list[question_count_select2], function(value) {
+				  return value != question_choice_count2;
+				})
+			});
+			// End Remove Choice
+
+			// Remove Question
+			$("#tab3").on("click",".remove-question",function(){
+				var elemId = $(this)[0].id;
+				var question_count_select3 = elemId.replace("remove-question","");
+				$("#questionDiv"+question_count_select3).remove();
+				question_list = jQuery.grep(question_list, function(value) {
+				  return value != question_count_select3;
+				})
+				delete choice_list[question_count_select3];
+				var refresh_display_count = 1;
+				$(".display_question_count").each(function(i){
+					$(this)[0].innerHTML = refresh_display_count;
+					refresh_display_count += 1;
+				});
+				display_question_count = refresh_display_count;
+			});
+			// End Remove Question
+
+			// Mandatory Check
+			$('#mandatory').on('ifClicked', function(event){
+				mandatory = !mandatory;
+				var checked = "uncheck";
+				if(mandatory)
+					checked = "check";
+				for(var i=0; i<question_list.length; i++){
+					$("#mandatory"+question_list[i]).iCheck(checked); 
+				}
+			});
+			// End Mandatory Check
+
+			// Feedback Check
+			$('#addComment').on('ifClicked', function(event){
+				addComment = !addComment;
+				var checked = "uncheck";
+				if(addComment)
+					checked = "check";
+				for(var i=0; i<question_list.length; i++){
+					$("#addComment"+question_list[i]).iCheck(checked); 
+				}
+			});
+			// End Feedback Check
+
+			// Horizontal Options Check
+			$('#horizontalOptions').on('ifClicked', function(event){
+				horizontalOptions = !horizontalOptions;
+				var checked = "uncheck";
+				if(horizontalOptions)
+					checked = "check";
+				for(var i=0; i<question_list.length; i++){
+					$("#horizontalOptions"+question_list[i]).iCheck(checked); 
+				}
+			});
+			// End Horizontal Options Check
+
+			// Form Submit
+			$(".surveySubmit").click(function(event){
+				event.preventDefault();
+				var elemid = "#submit_form";
+				var form_data = new FormData($(elemid)[0]);
+				form_data.append('question_count', JSON.stringify(question_list));
+				form_data.append('choice_count', JSON.stringify(choice_list));
+				$("#createSurveySubmit").attr("disabled","disabled");
+				{% if user.is_authenticated %}
+					$.ajax(
+					{
+						type: 'POST',
+						url:"/create-form?fid={{ form.id }}",
+						data:form_data,
+						processData: false,
+						contentType: false,
+						success:function(obj)
+						{
+							$(".errorlist").remove();
+							if(obj.hasOwnProperty("success")){
+								window.location = "{{ DOMAIN_URL }}";
+							}
+							else{
+								for(var key in obj){
+								    if (obj.hasOwnProperty(key)){
+								    	if(key === "formError")
+									        $(".create-form").children().first().prepend('<span class="errorlist errorlistForm error-form"><br>'+obj[key]+'</span>');
+									   	else{
+									   		$("#"+key).parent().append('<span class="errorlist errorlistForm"><br>'+obj[key]+'</span>');
+									   	}
+								    }
+								}
+								$("#createSurveySubmit").removeAttr("disabled");
+							}
+						}
+					});
+				{% else %}
+					$(location).attr('href',create_url);
+				{% endif %}
+			});
+			// End Form Submit
+      });
+</script>
+<!-- END JAVASCRIPTS -->
+</body>
+<!-- END BODY -->
+</html>

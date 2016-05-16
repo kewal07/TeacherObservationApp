@@ -53,8 +53,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <body class="login">
 	<!-- BEGIN LOGO -->
 	<div class="logo">
-		<a href="index.html">
-			<img style="width:34rem;" src="{% static 'assets/admin/layout/img/logo-big.png' %}" alt="" />
+		<a href="{% url 'evaluationapp:index' %}">
+			<img class="signup-logo" src="{% static 'assets/admin/layout/img/logo-big.png' %}" alt="" />
 		</a>
 	</div>
 	<!-- END LOGO -->
@@ -187,8 +187,8 @@ License: You must have a valid license purchased only from themeforest(the above
 			</div>
 			<div class="form-group">
 				<label></label>
-					<input type="checkbox" id="tnc" name="tnc" /> I agree to the <a href="{% url 'reader:termsofservice' %}" target="_blank">
-			Terms of Service </a> and <a href="{% url 'reader:privacypolicy' %}" target="_blank">
+					<input type="checkbox" id="tnc" name="tnc" /> I agree to the <a href="#" target="_blank">
+			Terms of Service </a> and <a href="#" target="_blank">
 			Privacy Policy </a>
 
 				<div id="register_tnc_error">
@@ -211,7 +211,7 @@ License: You must have a valid license purchased only from themeforest(the above
 	<!-- END LOGIN -->
 	<!-- BEGIN COPYRIGHT -->
 	<div class="copyright">
-		2015 &copy; <a href="http://educationzen.com/" title="Eduzen" target="_blank">Eduzen Private Limited</a>
+		2016 &copy; <a href="http://educationzen.com/" title="Eduzen" target="_blank">Eduzen Private Limited</a>
 	</div>
 	<!-- END COPYRIGHT -->
 	<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->

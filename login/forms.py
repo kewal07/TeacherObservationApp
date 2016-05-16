@@ -33,11 +33,9 @@ class MySignupForm(forms.Form):
 	agreement = forms.BooleanField(required=False,label="")
 
 	def __init__(self,*args,**kwargs):
-		print("reached in init function")
 		super(MySignupForm,self).__init__(*args,**kwargs)
 
 	def signup(self, request, user):
-		print("reached here")
 		user.first_name = self.cleaned_data['first_name']
 		user.last_name = self.cleaned_data['last_name']
 		address = request.POST.get('address','')

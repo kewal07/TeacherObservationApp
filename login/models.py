@@ -59,6 +59,7 @@ class ExtendedUser(models.Model):
 	user_slug = models.SlugField(null=True,blank=True)
 	is_admin = models.BooleanField(default=0)
 	bio = models.CharField(max_length=1024,blank=True,null=True)
+	gender = models.CharField(max_length=1,blank=True,null=True)
 
 	def __str__(self):
 		return self.user.username

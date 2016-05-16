@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns,static
 from django.views.generic import TemplateView
-from . import settings
+from . import settings  
 from django.contrib.auth.decorators import login_required
 import django.views.defaults
 

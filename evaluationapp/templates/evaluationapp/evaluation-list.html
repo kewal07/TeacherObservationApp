@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<!--
+Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.4
+Version: 4.0.2
+Author: KeenThemes
+Website: http://www.keenthemes.com/
+Contact: support@keenthemes.com
+Follow: www.twitter.com/keenthemes
+Like: www.facebook.com/keenthemes
+Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
+License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
+-->
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+{% load static %}
+{% load i18n %}
+<html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+
+<head>
+	<meta charset="utf-8" />
+	<title>Eduzen | Teacher Observation Web App</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+	<!-- BEGIN GLOBAL MANDATORY STYLES -->
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/simple-line-icons/simple-line-icons.min.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/uniform/css/uniform.default.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css' %}" rel="stylesheet" type="text/css" />
+	<!-- END GLOBAL MANDATORY STYLES -->
+	<!-- BEGIN THEME STYLES -->
+	<link href="{% static 'assets/global/css/components.css' %}" id="style_components" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/global/css/plugins.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/admin/layout/css/layout.css' %}" rel="stylesheet" type="text/css" />
+	<link id="style_color" href="{% static 'assets/admin/layout/css/themes/darkblue.css' %}" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/jquery-tags-input/jquery.tagsinput.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-markdown/css/bootstrap-markdown.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/typeahead/typeahead.css' %}">
+	<link href="{% static 'assets/admin/layout/css/index_teacher.css' %}" rel="stylesheet" type="text/css" />
+	<!-- END THEME STYLES -->
+	<link rel="shortcut icon" href="{% static 'favicon.png' %}" />
+	{% block page-css %}
+	{% endblock %}
+</head>
+<!-- END HEAD -->
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->
+<!-- DOC: Apply "page-sidebar-closed" class to the body and "page-sidebar-menu-closed" class to the sidebar menu element to hide the sidebar by default -->
+<!-- DOC: Apply "page-sidebar-hide" class to the body to make the sidebar completely hidden on toggle -->
+<!-- DOC: Apply "page-sidebar-closed-hide-logo" class to the body element to make the logo hidden on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-hide" class to body element to completely hide the sidebar on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-fixed" class to have fixed sidebar -->
+<!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
+<!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
+<!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
+<body class="page-header-fixed page-quick-sidebar-over-content">
+<!-- BEGIN HEADER -->
+{% if user.extendeduser.is_admin %}
+<div class="page-header navbar navbar-fixed-top">
+	<!-- BEGIN HEADER INNER -->
+	<div class="page-header-inner">
+		<!-- BEGIN LOGO -->
+		<div class="page-logo">
+			<a href="{% url 'evaluationapp:index' %}">
+          		<img src="{% static 'assets/admin/layout/img/logo-big.png' %}" alt="logo" class="logo-default" />
+        	</a>
+			<div class="menu-toggler sidebar-toggler hide">
+				<!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
+			</div>
+		</div>
+		<!-- END LOGO -->
+		<!-- BEGIN RESPONSIVE MENU TOGGLER -->
+		<a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+		</a>
+		<!-- END RESPONSIVE MENU TOGGLER -->
+		<!-- BEGIN TOP NAVIGATION MENU -->
+		<div class="top-menu">
+			<ul class="nav navbar-nav pull-right">
+				<li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Home"></i>
+		              <span id="menu-items-text" class="title tooltips">Home</span>
+		            </a>
+		        </li>
+		        <li>
+		            <a href="{% url 'evaluationapp:evaluation_home' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <span id="menu-items-text" class="title tooltips">Evaluations</span>
+		            </a>
+		        </li>
+		         <li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <span id="menu-items-text" class="title tooltips">Analytics</span>
+		            </a>
+		        </li>
+		        <li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <span id="menu-items-text" class="title tooltips">Upload</span>
+		            </a>
+		        </li>
+		        <li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <span id="menu-items-text" class="title tooltips">Download</span>
+		            </a>
+		        </li>
+		        <li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Settings"></i>
+		              <span id="menu-items-text" class="title tooltips">Settings</span>
+		            </a>
+		        </li>
+				<li class="dropdown dropdown-user">
+					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+		              <img alt="{{ user.first_name }}" class="img-circle" src="{{ user.extendeduser.get_profile_pic_url }}" />
+		              <span class="username username-hide-on-mobile">{{ user.username }}</span>
+		              <i class="fa fa-angle-down"></i>
+		            </a>
+		            <ul class="dropdown-menu dropdown-menu-default">
+		              <li class="my-index-logout">
+		                <a href="{% url 'login:logout' %}"> <i class="icon-key"></i> Log Out </a>
+		              </li>
+		            </ul>
+				</li>
+				<!-- END USER LOGIN DROPDOWN -->
+			</ul>
+		</div>
+		<!-- END TOP NAVIGATION MENU -->
+	</div>
+	<!-- END HEADER INNER -->
+</div>
+{% else %}
+<div class="page-header navbar navbar-fixed-top">
+	<!-- BEGIN HEADER INNER -->
+	<div class="page-header-inner">
+		<!-- BEGIN LOGO -->
+		<div class="page-logo">
+			<a href="{% url 'evaluationapp:index' %}">
+          		<img src="{% static 'assets/admin/layout/img/logo-big.png' %}" alt="logo" class="logo-default" />
+        	</a>
+			<div class="menu-toggler sidebar-toggler hide">
+				<!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
+			</div>
+		</div>
+		<!-- END LOGO -->
+		<!-- BEGIN RESPONSIVE MENU TOGGLER -->
+		<a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+		</a>
+		<!-- END RESPONSIVE MENU TOGGLER -->
+		<!-- BEGIN TOP NAVIGATION MENU -->
+		<div class="top-menu">
+			<ul class="nav navbar-nav pull-right">
+				<li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Home"></i>
+		              <span id="menu-items-text" class="title tooltips">Home</span>
+		            </a>
+		        </li>
+		        <!-- <li>
+		            <a href="{% url 'evaluationapp:evaluation_home' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <span id="menu-items-text" class="title tooltips">Evaluations</span>
+		            </a>
+		        </li> -->
+		        <!-- <li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <span id="menu-items-text" class="title tooltips">Analytics</span>
+		            </a>
+		        </li> -->
+		       <!--  <li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <span id="menu-items-text" class="title tooltips">Upload</span>
+		            </a>
+		        </li> -->
+		        <li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <span id="menu-items-text" class="title tooltips">Download</span>
+		            </a>
+		        </li>
+		        <li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Settings"></i>
+		              <span id="menu-items-text" class="title tooltips">Settings</span>
+		            </a>
+		        </li>
+				<li class="dropdown dropdown-user">
+					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+		              <img alt="{{ user.first_name }}" class="img-circle" src="{{ user.extendeduser.get_profile_pic_url }}" />
+		              <span class="username username-hide-on-mobile">{{ user.username }}</span>
+		              <i class="fa fa-angle-down"></i>
+		            </a>
+		            <ul class="dropdown-menu dropdown-menu-default">
+		              <li class="my-index-logout">
+		                <a href="{% url 'login:logout' %}"> <i class="icon-key"></i> Log Out </a>
+		              </li>
+		            </ul>
+				</li>
+				<!-- END USER LOGIN DROPDOWN -->
+			</ul>
+		</div>
+		<!-- END TOP NAVIGATION MENU -->
+	</div>
+	<!-- END HEADER INNER -->
+</div>
+{% endif %}
+<!-- END HEADER -->
+<div class="clearfix">
+</div>
+<!-- BEGIN CONTAINER -->
+<div class="page-container">
+	<!-- BEGIN SIDEBAR -->
+	{% if user.extendeduser.is_admin %}
+		<div class="page-sidebar-wrapper">
+			<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+			<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+			<div class="page-sidebar navbar-collapse collapse">
+				<!-- BEGIN SIDEBAR MENU -->
+				<!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+				<!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+				<!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+				<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+				<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+				<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+					<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+					<li class="sidebar-toggler-wrapper">
+						<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+						<div class="sidebar-toggler">
+						</div>
+						<!-- END SIDEBAR TOGGLER BUTTON -->
+					</li>
+					<li class="start ">
+						<a href="{% url 'evaluationapp:index' %}">
+							<i class="icon-home"></i>
+							<span class="title">Home</span>
+							<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:create-form' %}">
+								<i class="icon-home"></i>
+								Create</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:edit_evaluations' %}">
+								<i class="icon-basket"></i>
+								Edit</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:view_active' %}">
+								<i class="icon-home"></i>
+								Active</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:view_inactive' %}">
+								<i class="icon-basket"></i>
+								InActive</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="{% url 'evaluationapp:evaluation_home' %}">
+						<i class="icon-basket"></i>
+						<span class="title">Evaluations</span>
+						<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:evaluation_assign' %}">
+								<i class="icon-home"></i>
+								Assign Evaluation</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:evaluation_ongoing' %}">
+								<i class="icon-basket"></i>
+								Ongoing Evaluations</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:evaluation_submitted' %}">
+								<i class="icon-tag"></i>
+								Submitted Evaluations</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:evaluation_home' %}">
+								<i class="icon-handbag"></i>
+								Reviewed Evaluations</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:evaluation_home' %}">
+								<i class="icon-pencil"></i>
+								Completed Evaluations</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="javascript:;">
+							<i class="icon-rocket"></i>
+							<span class="title">Analytics</span>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:;">
+							<i class="icon-diamond"></i>
+							<span class="title">Uploads</span>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:;">
+							<i class="icon-puzzle"></i>
+							<span class="title">Downloads</span>
+						</a>
+					</li>
+					<li class="last ">
+						<a href="javascript:;">
+						<i class="icon-puzzle"></i>
+						<span class="title">Settings</span>
+					</li>
+				</ul>
+				<!-- END SIDEBAR MENU -->
+			</div>
+		</div>
+	{% else %}
+		<div class="page-sidebar-wrapper">
+			<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+			<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+			<div class="page-sidebar navbar-collapse collapse">
+				<!-- BEGIN SIDEBAR MENU -->
+				<!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+				<!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+				<!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+				<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+				<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+				<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+					<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+					<li class="sidebar-toggler-wrapper">
+						<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+						<div class="sidebar-toggler">
+						</div>
+						<!-- END SIDEBAR TOGGLER BUTTON -->
+					</li>
+					<li class="start ">
+						<a href="javascript:;">
+							<i class="icon-home"></i>
+							<span class="title">Home</span>
+							<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:evaluation_under_me' %}">
+								<i class="icon-basket"></i>
+								Evaluator Profile</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:my_evaluations' %}">
+								<i class="icon-basket"></i>
+								Evaluatee Profile</a>
+							</li>
+							<!-- <li>
+								<a href="#">
+								<i class="icon-home"></i>
+								Active</a>
+							</li>
+							<li>
+								<a href="#">
+								<i class="icon-basket"></i>
+								InActive</a>
+							</li> -->
+						</ul>
+					</li>
+					<!-- <li>
+						<a href="{% url 'evaluationapp:evaluation_home' %}">
+						<i class="icon-basket"></i>
+						<span class="title">Evaluations</span>
+						<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:evaluation_assign' %}">
+								<i class="icon-home"></i>
+								Assign Evaluation</a>
+							</li>
+							<li>
+								<a href="#">
+								<i class="icon-basket"></i>
+								Ongoing Evaluations</a>
+							</li>
+							<li>
+								<a href="#">
+								<i class="icon-tag"></i>
+								Submitted Evaluations</a>
+							</li>
+							<li>
+								<a href="#">
+								<i class="icon-handbag"></i>
+								Reviewed Evaluations</a>
+							</li>
+							<li>
+								<a href="#">
+								<i class="icon-pencil"></i>
+								Completed Evaluations</a>
+							</li>
+						</ul>
+					</li> -->
+					<!-- <li>
+						<a href="javascript:;">
+							<i class="icon-rocket"></i>
+							<span class="title">Analytics</span>
+						</a>
+					</li> -->
+					<!-- <li>
+						<a href="javascript:;">
+							<i class="icon-diamond"></i>
+							<span class="title">Uploads</span>
+						</a>
+					</li> -->
+					<li>
+						<a href="javascript:;">
+							<i class="icon-puzzle"></i>
+							<span class="title">Downloads</span>
+						</a>
+					</li>
+					<li class="last ">
+						<a href="javascript:;">
+						<i class="icon-puzzle"></i>
+						<span class="title">Settings</span>
+					</li>
+				</ul>
+				<!-- END SIDEBAR MENU -->
+			</div>
+		</div>
+	{% endif %}
+	<!-- END SIDEBAR -->
+	<!-- BEGIN CONTENT -->
+	<div class="page-content-wrapper">
+		<div class="page-content">
+			<!-- BEGIN PAGE HEADER-->
+			<h3 class="page-title">
+			Evaluation
+			</h3>
+			<div class="page-bar">
+				<ul class="page-breadcrumb">
+					<li>
+						<i class="fa fa-home"></i>
+						<a href="#">Evaluations</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
+					<li>
+						<i class="fa fa-home"></i>
+						<a href="#">{{ data.nav_val }}</a>
+					</li>
+				</ul>
+			</div>
+			<!-- END PAGE HEADER-->
+			<!-- BEGIN PAGE CONTENT-->
+			<div class="row">
+				{% for evaluation in data.evaluations %}
+					<div class="col-md-4">
+						<!-- BEGIN Portlet PORTLET-->
+						<div class="portlet box blue-hoki">
+							<div class="portlet-title">
+								<div class="caption">
+									<i class="fa fa-gift"></i>Evaluation
+								</div>
+								<div class="actions">
+									{% if request.path == '/evaluation-ongoing' %}
+										<a href="{% url 'evaluationapp:send_evaluation_reminder' %}?action=evaluationremider&id={{ evaluation.id }}" class="btn blue btn-sm">
+										<i class="fa fa-pencil"></i> Send Reminder </a>
+									{% endif %}
+									{% if request.path == '/evaluation-reviewed' %}
+										<a href="{% url 'evaluationapp:evaluation_form_vote' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View</button></a>
+									{% endif %}
+								</div>
+							</div>
+							<div class="portlet-body">
+								<div class="scroller">
+									<p>
+										Evaluation By : {{ evaluation.evaluator.first_name }} {{ evaluation.evaluator.last_name }} - {{ evaluation.evaluator.username }}
+									</p>
+									<p>
+										On
+									</p>
+									<p>
+										Evaluatee : {{ evaluation.evaluatee.first_name }} {{ evaluation.evaluatee.last_name }} - {{ evaluation.evaluatee.username }}
+									</p>
+									<p>
+										Using
+									</p>
+									<p>
+										{{ evaluation.evaluation_form.form_name }}
+									</p>
+									{% if request.path == '/my-evaluations' %}
+										<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View Evaluation</button></a>
+									{% elif request.path == '/evaluation-under-me' %}
+										<a href="{% url 'evaluationapp:evaluation_form_vote' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View Evaluation</button></a>
+									{% endif %}
+									{% if request.path == '/evaluation-ongoing' %}
+										<a href="{% url 'evaluationapp:send_evaluation_reminder' %}?action=evaluationremider&id={{ evaluation.id }}"><button type="button" class="btn btn-primary">Send Reminder</button></a>
+									{% endif %}
+									{% if request.path == '/evaluation-reviewed' %}
+										<a href="{% url 'evaluationapp:evaluation_form_vote' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View</button></a>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+						<!-- END Portlet PORTLET-->
+					</div>
+				{% endfor %}
+			</div>
+			<!-- END PAGE CONTENT-->
+		</div>
+	</div>
+	<!-- END CONTENT -->
+</div>
+<!-- END CONTAINER -->
+<!-- BEGIN FOOTER -->
+<div class="page-footer">
+	<div class="page-footer-inner">
+		 2016 &copy; Eduzen <a href="http://educationzen.com/" title="Eduzen" target="_blank">Eduzen Private Limited</a>
+	</div>
+	<div class="scroll-to-top">
+		<i class="icon-arrow-up"></i>
+	</div>
+</div>
+<!-- END FOOTER -->
+<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+<!-- BEGIN CORE PLUGINS -->
+<!--[if lt IE 9]>
+<script src="../../assets/global/plugins/respond.min.js"></script>
+<script src="../../assets/global/plugins/excanvas.min.js"></script> 
+<![endif]-->
+<script src="{% static 'assets/global/plugins/jquery.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/jquery-migrate.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/jquery-ui/jquery-ui.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/jquery.blockui.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/jquery.cokie.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/uniform/jquery.uniform.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/scripts/metronic.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/admin/layout/scripts/layout.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/admin/layout/scripts/quick-sidebar.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/admin/layout/scripts/demo.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}" type="text/javascript"></script>
+{% block page-scripts %}
+{% endblock %}
+<script>
+      jQuery(document).ready(function() {    
+         	Metronic.init(); // init metronic core components
+			Layout.init(); // init current layout
+			QuickSidebar.init(); // init quick sidebar
+			Demo.init(); // init demo features
+			{% block document-ready-script %}
+			{% endblock %}
+      });
+</script>
+<!-- END JAVASCRIPTS -->
+</body>
+<!-- END BODY -->
+</html>

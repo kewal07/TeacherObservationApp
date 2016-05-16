@@ -1,0 +1,62 @@
+{% include 'evaluationapp/commons/base_index.html' %}
+{% block navigation_bar_li %}
+	<h3 class="page-title">
+	Evaluation
+	</h3>
+	<div class="page-bar">
+		<ul class="page-breadcrumb">
+			<li>
+				<i class="fa fa-home"></i>
+				<a href="#">Evaluations</a>
+				<i class="fa fa-angle-right"></i>
+			</li>
+			<li>
+				<i class="fa fa-home"></i>
+				<a href="#">{{ data.nav_val }}</a>
+			</li>
+		</ul>
+	</div>
+{% endblock %}
+{% block page_main_content %}
+	{% for evaluation in data.evaluations %}
+		<div class="col-md-4">
+			<!-- BEGIN Portlet PORTLET-->
+			<div class="portlet box blue-hoki">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-gift"></i>Evaluation
+					</div>
+					<div class="actions">
+						{% if request.path == 'evaluation-ongoing' %}
+							<a href="{% url 'evaluationapp:send_evaluation_reminder' %}" class="btn blue btn-sm">
+							<i class="fa fa-pencil"></i> Send Reminder </a>
+						{% endif %}
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div class="scroller" style="height:150px">
+						<p>
+							Evaluation By : {{ evaluation.evaluator.first_name }} {{ evaluation.evaluator.last_name }} - {{ evaluation.evaluator.username }}
+						</p>
+						<p>
+							On
+						</p>
+						<p>
+							Evaluatee : {{ evaluation.evaluatee.first_name }} {{ evaluation.evaluatee.last_name }} - {{ evaluation.evaluatee.username }}
+						</p>
+						<p>
+							Using
+						</p>
+						<p>
+							{{ evaluation.evaluation_form.form_name }}
+						</p>
+						{% if request.path == 'evaluation-ongoing' %}
+							<a href="{% url 'evaluationapp:send_evaluation_reminder' %}"><button type="button" class="btn btn-primary">Send Reminder</button></a>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+			<!-- END Portlet PORTLET-->
+		</div>
+	{% endfor %}
+{% endblock %}
