@@ -32,7 +32,8 @@ class Form(models.Model):
 	created_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 	thanks_msg = models.CharField(max_length=400,null=True,blank=True, default="Thank You for Completing the Assessment!!!")
 	number_sections = models.IntegerField(blank=True,null=True,default=0)
-	is_active = models.BooleanField(default=0)
+	is_active = models.BooleanField(default=1)
+	is_public = models.BooleanField(default=1)
 
 	def __str__(self):
 		return self.form_name
@@ -63,6 +64,7 @@ class Evaluation(models.Model):
 	evaluator = models.ForeignKey(settings.AUTH_USER_MODEL,blank=True,null=True,related_name='user_evaluator')
 	created_at = models.DateTimeField(auto_now_add=True)
 	scheduled_at = models.DateTimeField(blank=True, null=True, auto_now_add=False)
+	completed_on = models.DateTimeField(blank=True, null=True, auto_now_add=False)
 	last_day = models.DateTimeField(blank=True, null=True, auto_now_add=False)
 	is_peer = models.BooleanField(default=1)
 	is_external = models.BooleanField(default=0)

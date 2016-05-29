@@ -49,6 +49,28 @@ License: You must have a valid license purchased only from themeforest(the above
 	<link href="{% static 'assets/admin/layout/css/index_teacher.css' %}" rel="stylesheet" type="text/css" />
 	<!-- End Page Level -->
 	<link rel="shortcut icon" href="{% static 'favicon.png' %}" />
+	<style>
+		#tab3{
+			position: relative;
+		}
+		p.add-q{
+			/*font-size:2rem;*/
+			cursor:pointer;
+			position: absolute;
+			bottom: -40px;
+			padding:0 1rem;
+		}
+		.add-q .fa-plus-circle{
+			/*font-size:2rem;*/
+		}
+		div[class^='choiceDiv']{ 
+			position: relative;
+		}
+		.add-choice{
+			position: absolute;
+			bottom:30px;
+		}
+	</style>
 </head>
 <!-- END HEAD -->
 <!-- END HEAD -->
@@ -303,7 +325,7 @@ License: You must have a valid license purchased only from themeforest(the above
 												<span class="number">
 												1 </span>
 												<span class="desc">
-												<i class="fa fa-check"></i> Evaluation F	orm Setup </span>
+												<i class="fa fa-check"></i> Evaluation Form Setup </span>
 												</a>
 											</li>
 											<li>
@@ -377,6 +399,8 @@ License: You must have a valid license purchased only from themeforest(the above
 														<div class="input-group">
 															<div class="icheck-inline">
 																<label>
+																<input type="checkbox" id="pubpri" class="icheck" name="pubpri"> Private Form </label>
+																<label>
 																<input type="checkbox" id="mandatory" class="icheck" name="mandatory"> All Questions Mandatory </label>
 																<label>
 																<input type="checkbox" id="horizontalOptions" class="icheck" name="horizontal-options"> Arrange Options Horizontaly</label>
@@ -422,7 +446,7 @@ License: You must have a valid license purchased only from themeforest(the above
 											</div>
 											<div class="tab-pane" id="tab3">
 												<h3 class="block">Add Questions</h3>
-												<p class="add-q"><i class="fa fa-plus-circle"></i> Add New Question</p>	
+												<p class="add-q btn blue"><i class="fa fa-plus-circle"></i> Add New Question</p>	
 											</div>
 										</div>
 									</div>
@@ -624,7 +648,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		  		if(selectedType != "text" && selectedType != "rating"){
 		  			var add_another_choice_elem = '<div id="'+choice_elem_div+'"></div>';
 		  			$("#"+question_div+" .portlet-body .scroller").append(add_another_choice_elem);
-		  			$("#"+choice_elem_div).append('<i id="' +question_count_select+'---'+selectedType +'" class="fa fa-plus-circle add-choice"> Add Another Choice</i>'); 
+		  			$("#"+choice_elem_div).append('<i id="' +question_count_select+'---'+selectedType +'" class="fa fa-plus-circle add-choice btn blue"> Add Another Choice</i>'); 
 					add_another_choice(question_count_select,selectedType);
 				}
 				if(selectedType == "rating"){

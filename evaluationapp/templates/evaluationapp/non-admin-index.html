@@ -80,10 +80,22 @@ License: You must have a valid license purchased only from themeforest(the above
 			<ul class="nav navbar-nav pull-right">
 				<li>
 		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Home"></i>
+		              <i class="icon-home tooltips" data-placement="bottom" data-original-title="Home"></i>
 		              <span id="menu-items-text" class="title tooltips">Home</span>
 		            </a>
 		        </li>
+		        <li>
+					<a href="{% url 'evaluationapp:evaluation_under_me' %}">
+						<i class=" fa fa-check-square-o tooltips" data-placement="bottom" data-original-title="Evaluate Others"></i>
+					 	<span id="menu-items-text" class="title tooltips">Evaluate Others</span>
+					</a>
+				</li>
+				<li>
+					<a href="{% url 'evaluationapp:my_evaluations' %}">
+						<i class="fa fa-thumbs-o-up tooltips" data-placement="bottom" data-original-title="My Feedback"></i>
+						<span id="menu-items-text" class="title tooltips">My Feedback</span>
+					</a>
+				</li>
 		        <!-- <li>
 		            <a href="{% url 'evaluationapp:evaluation_home' %}">
 		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
@@ -158,14 +170,26 @@ License: You must have a valid license purchased only from themeforest(the above
 					</div>
 					<!-- END SIDEBAR TOGGLER BUTTON -->
 				</li>
-				<li class="start ">
+				<li class="start active">
 					<a href="javascript:;">
 						<i class="icon-home"></i>
 						<span class="title">Home</span>
-						<span class="arrow "></span>
 					</a>
-					<ul class="sub-menu">
-						<li>
+				</li>
+				<li>
+					<a href="{% url 'evaluationapp:evaluation_under_me' %}">
+						<i class=" fa fa-check-square-o"></i>
+						<span class="title">Evaluate Others</span>
+					</a>
+				</li>
+				<li>
+					<a href="{% url 'evaluationapp:my_evaluations' %}">
+						<i class="fa fa-thumbs-o-up"></i>
+						<span class="title">My Feedback</span>
+					</a>
+				</li>
+					<!-- <ul class="sub-menu"> -->
+						<!-- <li>
 							<a href="{% url 'evaluationapp:evaluation_under_me' %}">
 							<i class="icon-basket"></i>
 							Evaluator Profile</a>
@@ -174,7 +198,7 @@ License: You must have a valid license purchased only from themeforest(the above
 							<a href="{% url 'evaluationapp:my_evaluations' %}">
 							<i class="icon-basket"></i>
 							Evaluatee Profile</a>
-						</li>
+						</li> -->
 						<!-- <li>
 							<a href="#">
 							<i class="icon-home"></i>
@@ -185,8 +209,8 @@ License: You must have a valid license purchased only from themeforest(the above
 							<i class="icon-basket"></i>
 							InActive</a>
 						</li> -->
-					</ul>
-				</li>
+					<!-- </ul> -->
+				<!-- </li> -->
 				<!-- <li>
 					<a href="{% url 'evaluationapp:evaluation_home' %}">
 					<i class="icon-basket"></i>
@@ -273,7 +297,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					<div class="portlet box blue-hoki">
 						<div class="portlet-title">
 							<div class="caption">
-								<i class="fa fa-gift"></i>Me as an Evaluator
+								<i class="fa fa-gift"></i>Evaluate Others
 							</div>
 							<div class="actions">
 								<a href="{% url 'evaluationapp:evaluation_under_me' %}" class="btn blue btn-sm">
@@ -283,7 +307,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						<div class="portlet-body">
 							<div class="scroller" style="height:150px">
 								<p>
-									By Clicking on Create you would be taken to an interface where you can create new evaluation forms. The forms can either be active, i.e., can be used for evaluation by teacher or inactive, i.e. , cannot be used for evaluations. Go Ahead and
+									By Clicking on the below button you would be taken to an interface where you can evaluate others.  Go Ahead and
 								</p> 
 								<a href="{% url 'evaluationapp:evaluation_under_me' %}"><button type="button" class="btn btn-primary">See Evaluations Under Me</button> </a>
 							</div>
@@ -296,19 +320,19 @@ License: You must have a valid license purchased only from themeforest(the above
 					<div class="portlet box blue-hoki">
 						<div class="portlet-title">
 							<div class="caption">
-								<i class="fa fa-gift"></i>Me as an Evaluatee
+								<i class="fa fa-gift"></i>My Feedback
 							</div>
 							<div class="actions">
 								<a href="{% url 'evaluationapp:my_evaluations' %}" class="btn blue btn-sm">
-								<i class="fa fa-pencil"></i> See My Evaluations </a>
+								<i class="fa fa-pencil"></i> See My Feedback </a>
 							</div>
 						</div>
 						<div class="portlet-body">
 							<div class="scroller" style="height:150px">
 								<p>
-									You can edit any existing evaluation forms. Once edited you will again have to make the form active for use in evaluations. You may declare the form as inactive and it won't be shown in the list of forms available to be used for evaluation. Go Ahead and
+									You can view what others have to say about you in their examinations. Go Ahead and
 								</p> 
-								<a href="{% url 'evaluationapp:my_evaluations' %}"><button type="button" class="btn btn-primary">See My Evaluations</button></a>
+								<a href="{% url 'evaluationapp:my_evaluations' %}"><button type="button" class="btn btn-primary">See My Feedback</button></a>
 							</div>
 						</div>
 					</div>

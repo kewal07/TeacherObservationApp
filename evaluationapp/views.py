@@ -635,9 +635,16 @@ class EvaluationListView(ListView):
 		elif path.endswith("evaluation-under-me"):
 			context["evaluations"] = Evaluation.objects.filter(evaluator_id= user)
 			context["nav_val"] = "Evaluations Under Me"
+			# Ideally status should be in evaluation model...do the change asap
+			evaluations_list_under_me = Evaluation.objects.filter(evaluator_id= user).values_list('id', flat=True)
+			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=evaluations_list_under_me)
+			# context["status"] = Status.objects.filter(status_id__in = ev_status)
 		elif path.endswith("my-evaluations"):
 			context["evaluations"] = Evaluation.objects.filter(evaluatee_id= user)
 			context["nav_val"] = "My Evaluations"
+			# Ideally status should be in evaluation model...do the change asap
+			my_evals = Evaluation.objects.filter(evaluatee_id= user).values_list('id', flat=True)
+			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=my_evals)
 		return context
 
 class SendMail(ListView):
