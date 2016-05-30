@@ -475,9 +475,11 @@ License: You must have a valid license purchased only from themeforest(the above
 		  														<label class="control-label col-md-3">Section</label>
 		  														<div class="col-md-4">
 		  															<select id="question-section-select" name="question-section{{ forloop.counter }}" class="bs-select form-control">
-		  																{% for fs in form.formsection_set.all %}
-		  																	<option value="{{ fs.sectionName }}" {{ fs.sectionName|getSelected:form_que.section.sectionName }}>{{ fs.sectionName }}</option>
-		  																{% endfor %}
+		  																{% if form.formsection_set.count > 0 %}
+			  																{% for fs in form.formsection_set.all %}
+			  																	<option value="{{ fs.sectionName }}" {{ fs.sectionName|getSelected:form_que.section.sectionName }}>{{ fs.sectionName }}</option>
+			  																{% endfor %}
+			  															{% endif %}
 		  															</select>
 		  														</div>
 		  													</div>

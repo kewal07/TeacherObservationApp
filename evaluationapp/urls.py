@@ -30,4 +30,5 @@ urlpatterns = [
 	# url(r'^view-evaluation$',login_required(views.ViewEvaluationView.as_view()),name='view_evaluation'),
 	url(r'^view-evaluation/(?P<pk>\d+)/(?P<form_slug>[\w\-]+)/(?P<evaluation_id>[\d+]+)$$',login_required(views.EvaluationFormVoteView.as_view()),name='view_evaluation'),
 	url(r'^accept-reject/(?P<pk>\d+)$',login_required(views.AcceptRejectView.as_view()),name='evaluation_form_vote'),
+	url(r'^forms-home$',login_required(views.FormsHomeView.as_view()),name='view_forms_home'),
 ]

@@ -33,7 +33,23 @@ class IndexView(ListView):
 		if self.request.user.extendeduser.is_admin:
 			template_name = 'evaluationapp/index.html'
 		else:
-			template_name = 'evaluationapp/non-admin-index.html'
+			template_name = 'evaluationapp/extra_404_option2.html'
+		return [template_name]
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		return context
+
+
+class FormsHomeView(ListView):
+	context_object_name = 'data'
+
+	def get_template_names(self):
+		request = self.request
+		if self.request.user.extendeduser.is_admin:
+			template_name = 'evaluationapp/forms-home.html'
+		else:
+			template_name = 'evaluationapp/404.html'
 		return [template_name]
 
 	def get_queryset(self, **kwargs):
