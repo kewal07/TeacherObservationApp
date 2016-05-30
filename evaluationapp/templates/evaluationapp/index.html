@@ -267,98 +267,71 @@ License: You must have a valid license purchased only from themeforest(the above
 			</div>
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN PAGE CONTENT-->
-			<div class="row">
-				<div class="col-md-4">
-					<!-- BEGIN Portlet PORTLET-->
-					<div class="portlet box blue-hoki">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-gift"></i>Create Evaluation Form
-							</div>
-							<div class="actions">
-								<a href="{% url 'evaluationapp:create-form' %}" class="btn blue btn-sm">
-								<i class="fa fa-pencil"></i> Create a New Evaluation Form </a>
-							</div>
-						</div>
-						<div class="portlet-body">
-							<div class="scroller" style="height:150px">
-								<p>
-									By Clicking on Create you would be taken to an interface where you can create new evaluation forms. The forms can either be active, i.e., can be used for evaluation by teacher or inactive, i.e. , cannot be used for evaluations. Go Ahead and
-								</p> 
-								<button type="button" class="btn btn-primary">Create a New Evaluation Form</button> 
-							</div>
+			<div class="tiles">
+				<div class="tile double-down bg-blue-hoki">
+					<div class="tile-body">
+						<i class="fa fa-check-square-o"></i>
+					</div>
+					<div class="tile-object">
+						<div class="name">
+							 Evaluations
 						</div>
 					</div>
-					<!-- END Portlet PORTLET-->
 				</div>
-				<div class="col-md-4">
-					<!-- BEGIN Portlet PORTLET-->
-					<div class="portlet box blue-hoki">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-gift"></i>Edit Evaluation Forms
-							</div>
-							<div class="actions">
-								<a href="{% url 'evaluationapp:edit_evaluations' %}" class="btn blue btn-sm">
-								<i class="fa fa-pencil"></i> Edit Evaluation Forms </a>
-							</div>
-						</div>
-						<div class="portlet-body">
-							<div class="scroller" style="height:150px">
-								<p>
-									You can edit any existing evaluation forms. Once edited you will again have to make the form active for use in evaluations. You may declare the form as inactive and it won't be shown in the list of forms available to be used for evaluation. Go Ahead and
-								</p> 
-								<a href="{% url 'evaluationapp:edit_evaluations' %}"><button type="button" class="btn btn-primary">Edit Evaluation Forms</button></a>
-							</div>
+				<div class="tile bg-red-sunglo">
+					<div class="tile-body">
+						<i class="fa fa-file-text-o"></i>
+					</div>
+					<div class="tile-object">
+						<div class="name">
+							 Forms
 						</div>
 					</div>
-					<!-- END Portlet PORTLET-->
 				</div>
-				<div class="col-md-4">
-					<!-- BEGIN Portlet PORTLET-->
-					<div class="portlet box blue-hoki">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-gift"></i>Active Forms
-							</div>
-							<div class="actions">
-								<a href="{% url 'evaluationapp:view_active' %}" class="btn blue btn-sm">
-								<i class="fa fa-pencil"></i> View All Active Forms </a>
-							</div>
-						</div>
-						<div class="portlet-body">
-							<div class="scroller" style="height:150px">
-								<p>
-									You can view all the active forms by clicking the button below. The display would show all the forms and how many times they have used for evaluation and some statistics associated with them.Go Ahead and
-								</p> 
-								<a href="{% url 'evaluationapp:view_active' %}"><button type="button" class="btn btn-primary">View All Active Forms</button></a>
-							</div>
+				<div class="tile selected bg-yellow-saffron">
+					<div class="corner">
+					</div>
+					<div class="tile-body">
+						<i class="fa fa-bar-chart-o"></i>
+					</div>
+					<div class="tile-object">
+						<div class="name">
+							 Analytics
 						</div>
 					</div>
-					<!-- END Portlet PORTLET-->
 				</div>
-				<div class="col-md-4">
-					<!-- BEGIN Portlet PORTLET-->
-					<div class="portlet box blue-hoki">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-gift"></i>Inactive Forms
-							</div>
-							<div class="actions">
-								<a href="{% url 'evaluationapp:view_inactive' %}" class="btn blue btn-sm">
-								<i class="fa fa-pencil"></i> View All Inactive Forms </a>
-							</div>
-						</div>
-						<div class="portlet-body">
-							<div class="scroller" style="height:150px">
-								<p>
-									You can view all the inacactive forms by clicking the button below. The display would show all the forms which are inactive. You can change the state of such forms directly from the display by toggling the active/inactive switch. Go Ahead and
-								</p> 
-								<a href="{% url 'evaluationapp:view_inactive' %}"><button type="button" class="btn btn-primary">View All Inactive Forms</button></a>
-							</div>
+				<div class="tile double bg-grey-cascade selected">
+					<div class="tile-body">
+						<i class="fa fa-cloud-download"></i>
+					</div>
+					<div class="tile-object">
+						<div class="name">
+							Export Data
 						</div>
 					</div>
-					<!-- END Portlet PORTLET-->
+				</div>
+				<div class="tile bg-blue-steel selected">
+					<div class="corner">
+					</div>
+					<div class="check">
+					</div>
+					<div class="tile-body">
+						<i class="fa fa-cogs"></i>
+					</div>
+					<div class="tile-object">
+						<div class="name">
+							 Settings
+						</div>
+					</div>
+				</div>
+				<div class="tile bg-red-sunglo">
+					<div class="tile-body">
+						<i class="fa fa-cloud-upload"></i>
+					</div>
+					<div class="tile-object">
+						<div class="name">
+							 Uploads
+						</div>
 				</div>
 			</div>
 			<!-- END PAGE CONTENT-->

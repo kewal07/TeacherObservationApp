@@ -30,3 +30,6 @@
 .survey-question textarea{
 	width:100%;
 }
+.tiles .tile{
+    width:300px!important;
+}
