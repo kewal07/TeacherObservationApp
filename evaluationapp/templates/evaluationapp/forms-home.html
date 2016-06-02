@@ -76,7 +76,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		</a>
 		<!-- END RESPONSIVE MENU TOGGLER -->
 		<!-- BEGIN TOP NAVIGATION MENU -->
-		<div class="top-menu">
+	<div class="top-menu">
 			<ul class="nav navbar-nav pull-right">
 				<li>
 		            <a href="{% url 'evaluationapp:index' %}">
@@ -91,7 +91,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		            </a>
 		        </li>
 		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
+		            <a href="{% url 'evaluationapp:view_forms_home' %}">
 		              <i class="fa fa-file-text-o tooltips" data-placement="bottom" data-original-title="Forms"></i>
 		              <span id="menu-items-text" class="title tooltips">Forms</span>
 		            </a>
@@ -156,7 +156,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
 			<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
 			<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-			<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+		<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
 				<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
 				<li class="sidebar-toggler-wrapper">
 					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
@@ -180,28 +180,19 @@ License: You must have a valid license purchased only from themeforest(the above
 						<li>
 							<a href="{% url 'evaluationapp:evaluation_assign' %}">
 							<i class="icon-home"></i>
-							Assign Evaluation</a>
+							Assign</a>
 						</li>
 						<li>
-							<a href="#">
+							<a href="{% url 'evaluationapp:evaluation_review' %}">
 							<i class="icon-basket"></i>
-							Ongoing Evaluations</a>
+							Review</a>
 						</li>
 						<li>
-							<a href="#">
+							<a href="{% url 'evaluationapp:evaluation_archive' %}">
 							<i class="icon-tag"></i>
-							Submitted Evaluations</a>
+							Archive</a>
 						</li>
-						<li>
-							<a href="#">
-							<i class="icon-handbag"></i>
-							Reviewed Evaluations</a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="icon-pencil"></i>
-							Completed Evaluations</a>
-						</li>
+						
 					</ul>
 				</li>
 				<li>
@@ -232,7 +223,7 @@ License: You must have a valid license purchased only from themeforest(the above
 							InActive</a>
 						</li>
 						<li>
-							<a href="#">
+							<a href="{% url 'evaluationapp:evaluation_archive' %}">
 							<i class="fa fa-lock"></i>
 							Archived</a>
 						</li>
@@ -275,6 +266,11 @@ License: You must have a valid license purchased only from themeforest(the above
 			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
+					<li>
+						<i class="fa fa-home"></i>
+						<a href="#">Home</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
 					<li>
 						<i class="fa fa-file-text-o"></i>
 						<a href="#">Forms</a>
@@ -333,7 +329,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					</a>
 				</div>
 				<div class="tile double bg-blue-steel">
-					<a href="#">
+					<a href="{% url 'evaluationapp:evaluation_archive' %}">
 						<div class="tile-body">
 							<i class="fa fa-lock"></i>
 						</div>
@@ -344,7 +340,6 @@ License: You must have a valid license purchased only from themeforest(the above
 						</div>
 					</a>
 				</div>
-				
 			</div>
 			<!-- END PAGE CONTENT-->
 		</div>

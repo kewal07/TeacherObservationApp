@@ -98,23 +98,23 @@ License: You must have a valid license purchased only from themeforest(the above
 			<ul class="nav navbar-nav pull-right">
 				<li>
 		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-home tooltips" data-placement="bottom" data-original-title="Home"></i>
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Home"></i>
 		              <span id="menu-items-text" class="title tooltips">Home</span>
 		            </a>
 		        </li>
 		        <li>
-					<a href="{% url 'evaluationapp:evaluation_under_me' %}">
-						<i class=" fa fa-check-square-o tooltips" data-placement="bottom" data-original-title="Evaluate Others"></i>
-					 	<span id="menu-items-text" class="title tooltips">Evaluate Others</span>
-					</a>
-				</li>
-				<li>
-					<a href="{% url 'evaluationapp:my_evaluations' %}">
-						<i class="fa fa-thumbs-o-up tooltips" data-placement="bottom" data-original-title="My Feedback"></i>
-						<span id="menu-items-text" class="title tooltips">My Feedback</span>
-					</a>
-				</li>
-		         <li>
+		            <a href="{% url 'evaluationapp:evaluation_home' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <span id="menu-items-text" class="title tooltips">Evaluations</span>
+		            </a>
+		        </li>
+		        <li>
+		            <a href="{% url 'evaluationapp:view_forms_home' %}">
+		              <i class="fa fa-file-text-o tooltips" data-placement="bottom" data-original-title="Forms"></i>
+		              <span id="menu-items-text" class="title tooltips">Forms</span>
+		            </a>
+		        </li>
+		        <li>
 		            <a href="{% url 'evaluationapp:index' %}">
 		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
 		              <span id="menu-items-text" class="title tooltips">Analytics</span>
@@ -122,14 +122,14 @@ License: You must have a valid license purchased only from themeforest(the above
 		        </li>
 		        <li>
 		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Upload</span>
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Export"></i>
+		              <span id="menu-items-text" class="title tooltips">Export Data</span>
 		            </a>
 		        </li>
 		        <li>
 		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Download</span>
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Upload"></i>
+		              <span id="menu-items-text" class="title tooltips">Upload</span>
 		            </a>
 		        </li>
 		        <li>
@@ -265,100 +265,102 @@ License: You must have a valid license purchased only from themeforest(the above
 				<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
 				<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
 				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-					<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
-					<li class="sidebar-toggler-wrapper">
-						<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
-						<div class="sidebar-toggler">
-						</div>
-						<!-- END SIDEBAR TOGGLER BUTTON -->
-					</li>
-					<li class="start ">
-						<a href="{% url 'evaluationapp:index' %}">
+				<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+				<li class="sidebar-toggler-wrapper">
+					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+					<div class="sidebar-toggler">
+					</div>
+					<!-- END SIDEBAR TOGGLER BUTTON -->
+				</li>
+				<li class="start ">
+					<a href="javascript:;">
+						<i class="icon-home"></i>
+						<span class="title">Home</span>
+					</a>
+				</li>
+				<li>
+					<a href="{% url 'evaluationapp:evaluation_home' %}">
+					<i class="icon-basket"></i>
+					<span class="title">Evaluations</span>
+					<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="{% url 'evaluationapp:evaluation_assign' %}">
 							<i class="icon-home"></i>
-							<span class="title">Home</span>
-							<span class="arrow "></span>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a href="{% url 'evaluationapp:create-form' %}">
-								<i class="icon-home"></i>
-								Create</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:edit_evaluations' %}">
-								<i class="icon-basket"></i>
-								Edit</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:view_active' %}">
-								<i class="icon-home"></i>
-								Active</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:view_inactive' %}">
-								<i class="icon-basket"></i>
-								InActive</a>
-							</li>
-						</ul>
-					</li>
-					<li>
-						<a href="{% url 'evaluationapp:evaluation_home' %}">
-						<i class="icon-basket"></i>
-						<span class="title">Evaluations</span>
+							Assign</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:evaluation_review' %}">
+							<i class="icon-basket"></i>
+							Review</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:evaluation_archive' %}">
+							<i class="icon-tag"></i>
+							Archive</a>
+						</li>
+						
+					</ul>
+				</li>
+				<li>
+					<a href="javascript:;">
+						<i class="fa-file-text-o"></i>
+						<span class="title">Forms</span>
 						<span class="arrow "></span>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a href="{% url 'evaluationapp:evaluation_assign' %}">
-								<i class="icon-home"></i>
-								Assign Evaluation</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:evaluation_ongoing' %}">
-								<i class="icon-basket"></i>
-								Ongoing Evaluations</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:evaluation_submitted' %}">
-								<i class="icon-tag"></i>
-								Submitted Evaluations</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:evaluation_home' %}">
-								<i class="icon-handbag"></i>
-								Reviewed Evaluations</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:evaluation_home' %}">
-								<i class="icon-pencil"></i>
-								Completed Evaluations</a>
-							</li>
-						</ul>
-					</li>
-					<li>
-						<a href="javascript:;">
-							<i class="icon-rocket"></i>
-							<span class="title">Analytics</span>
-						</a>
-					</li>
-					<li>
-						<a href="javascript:;">
-							<i class="icon-diamond"></i>
-							<span class="title">Uploads</span>
-						</a>
-					</li>
-					<li>
-						<a href="javascript:;">
-							<i class="icon-puzzle"></i>
-							<span class="title">Downloads</span>
-						</a>
-					</li>
-					<li class="last ">
-						<a href="javascript:;">
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="{% url 'evaluationapp:create-form' %}">
+							<i class="fa fa-plus"></i>
+							Create</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:edit_evaluations' %}">
+							<i class="fa fa-edit"></i>
+							Edit</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:view_active' %}">
+							<i class="fa fa-check-square"></i>
+							Active</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:view_inactive' %}">
+							<i class="fa fa-square-o"></i>
+							InActive</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="fa fa-lock"></i>
+							Archived</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="javascript:;">
+						<i class="icon-rocket"></i>
+						<span class="title">Analytics</span>
+					</a>
+				</li>
+				<li>
+					<a href="javascript:;">
+						<i class="icon-diamond"></i>
+						<span class="title">Uploads</span>
+					</a>
+				</li>
+				<li>
+					<a href="javascript:;">
 						<i class="icon-puzzle"></i>
-						<span class="title">Settings</span>
-					</li>
-				</ul>
+						<span class="title">Downloads</span>
+					</a>
+				</li>
+				<li class="last ">
+					<a href="javascript:;">
+					<i class="icon-puzzle"></i>
+					<span class="title">Settings</span>
+				</li>
+			</ul>
 				<!-- END SIDEBAR MENU -->
 			</div>
 		</div>
@@ -491,14 +493,20 @@ License: You must have a valid license purchased only from themeforest(the above
 		<div class="page-content">
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
-				{% if request.path == '/my-evaluations' %}
+				<!-- {% if request.path == '/my-evaluations' %}
 					My Feedback
 				{% elif request.path == '/evaluation-under-me' %}
 					Evaluate Others
-				{% endif %}
+				{% endif %} -->
+				{{ data.nav_val|title }}
 			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
+					<li>
+						<i class="fa fa-check-square-o"></i>
+						<a href="#">Evaluations</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
 					<li>
 						<a href="#">
 							{% if request.path == '/my-evaluations' %}
@@ -507,6 +515,9 @@ License: You must have a valid license purchased only from themeforest(the above
 							{% elif request.path == '/evaluation-under-me' %}
 								<i class="fa fa-check-square-o"></i>
 								Evaluate Others
+							{% elif request.path == '/evaluation-review' %}
+								<i class="fa fa-search"></i>
+								Review Evaluations
 							{% endif %}
 						</a>
 					</li>
@@ -524,78 +535,192 @@ License: You must have a valid license purchased only from themeforest(the above
 						</div>	
 					</div>
 					<div class="portlet-body">
-						<table class="table table-striped table-bordered table-hover" id="sample_3">
-						<thead>
-						<tr>
-							<th>
-								 User Image 
-							</th>
-							<th>
-								 Evaluatee 
-							</th>
-							<th>
-								 Scheduled On
-							</th>
-							<th>
-								 Completed On
-							</th>
-							<th>
-								 Category
-							</th>
-							<th>
-								 Form
-							</th>
-							<th>
-								Status
-							</th>
-							<th>
-								 View
-							</th>
-						</tr>
-						</thead>
-						<tbody>
-						{% for evaluation in data.evaluations %}
-							<tr class="odd gradeX">
-								<td>
-									{% if request.path == '/my-evaluations' %}
-									 	<img class="evaluatee-pic-table" src="{{ evaluation.evaluator.extendeduser.get_profile_pic_url }}">
-									{% elif request.path == '/evaluation-under-me' %}
-									 	<img class="evaluatee-pic-table" src="{{ evaluation.evaluatee.extendeduser.get_profile_pic_url }}">
-									{% endif %}
-								</td>
-								<td>
-									{% if request.path == '/my-evaluations' %}
-										{{ evaluation.evaluator.first_name }} {{ evaluation.evaluator.last_name }}
-									{% elif request.path == '/evaluation-under-me' %}
-										{{ evaluation.evaluatee.first_name }} {{ evaluation.evaluatee.last_name }}
-									{% endif %}
-								</td>
-								<td>
-									{{ evaluation.scheduled_at }}
-								</td>
-								<td>
-									{{ evaluation.completed_on }}
-								</td>
-								<td>
-									{{ evaluation.evaluation_form.form_name }}
-								</td>
-								<td>
-									In-Class Observation
-								</td>
-								<td>
-									{% for s in data.status %}
-										{% if s.evaluation_id.id == evaluation.id %}
-									 		{{ s.evaluation_status_id.status_state }}
-									 	{% endif %}
+						{% if user.extendeduser.is_admin %}
+							<table class="table table-striped table-bordered table-hover" id="sample_3">
+								<thead>
+									<tr>
+										<th>
+											Evaluation Name
+										</th>
+										<th>
+											Evaluation Form
+										</th>
+										<th>
+											Evaluator Image
+										</th>
+										<th>
+											Evaluator Name
+										</th>
+										<th>
+											Evaluatee Image
+										</th>
+										<th>
+											Evaluatee Name
+										</th>
+										<th>
+											 Scheduled On
+										</th>
+										<th>
+											 Completed On
+										</th>
+										<th>
+											 Category
+										</th>
+										<th>
+											Status
+										</th>
+										<th>
+											 View
+										</th>
+										{% if not request.path == '/evaluation-archive' %}
+											<th>
+												 Send Reminder
+											</th>
+										{% endif %}
+									</tr>
+								</thead>
+								<tbody>
+									{% for evaluation in data.evaluations %}
+										<tr class="odd gradeX">
+											<td>
+												{{ evaluation.evaluation_name }}
+											</td>
+											<td>
+												{{ evaluation.evaluation_form.form_name }}
+											</td>
+											<td>
+												<img class="evaluatee-pic-table" src="{{ evaluation.evaluator.extendeduser.get_profile_pic_url }}">
+											</td>
+											<td>
+												{{ evaluation.evaluator.first_name }} {{ evaluation.evaluator.last_name }}
+												</td>
+											<td>
+												<img class="evaluatee-pic-table" src="{{ evaluation.evaluatee.extendeduser.get_profile_pic_url }}">
+											</td>
+											<td>
+												{{ evaluation.evaluator.first_name }} {{ evaluation.evaluator.last_name }}
+												{{ evaluation.evaluatee.first_name }} {{ evaluation.evaluatee.last_name }}
+											</td>
+											<td>
+												{{ evaluation.scheduled_at }}
+											</td>
+											<td>
+												{{ evaluation.completed_on }}
+											</td>
+											<td>
+												In-Class Observation
+											</td>
+											<td>
+												{% if request.path == '/evaluation-archive' %}
+													Archived
+												{% else %}
+													{% for s in data.status %}
+														{% if s.evaluation_id.id == evaluation.id %}
+													 		{{ s.evaluation_status_id.status_state }}
+													 	{% endif %}
+													{% endfor %}
+												{% endif %}
+											</td>
+											<td>	
+												<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View Evaluation</button></a>
+												
+											</td>
+											{% if not request.path == '/evaluation-archive' %}
+												<td>
+													<a href="{% url 'evaluationapp:send_evaluation_reminder' %}?action=evaluationremider&id={{ evaluation.id }}" class="btn blue btn-sm">
+													<i class="fa fa-pencil"></i> Send Reminder </a>
+												</td>
+											{% endif %}
+										</tr>
 									{% endfor %}
-								</td>
-								<td>
-									<a href="{% url 'evaluationapp:evaluation_form_vote' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View Evaluation</button></a>
-								</td>
-							</tr>
-						{% endfor %}
-						</tbody>
-						</table>
+								</tbody>
+							</table>
+						{% else %}
+							<table class="table table-striped table-bordered table-hover" id="sample_3">
+								<thead>
+									<tr>
+										<th>
+											{% if request.path == '/my-evaluations' %}
+											 Evaluator Image
+											{% elif request.path == '/evaluation-under-me' %}
+											 Evaluatee Image
+											{% endif %}
+										</th>
+										<th>
+											{% if request.path == '/my-evaluations' %}
+											 Evaluators
+											{% elif request.path == '/evaluation-under-me' %}
+											 Evaluatees
+											{% endif %}
+										</th>
+										<th>
+											 Scheduled On
+										</th>
+										<th>
+											 Completed On
+										</th>
+										<th>
+											 Category
+										</th>
+										<th>
+											 Form
+										</th>
+										<th>
+											Status
+										</th>
+										<th>
+											 View
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for evaluation in data.evaluations %}
+										<tr class="odd gradeX">
+											<td>
+												{% if request.path == '/my-evaluations' %}
+												 	<img class="evaluatee-pic-table" src="{{ evaluation.evaluator.extendeduser.get_profile_pic_url }}">
+												{% elif request.path == '/evaluation-under-me' %}
+												 	<img class="evaluatee-pic-table" src="{{ evaluation.evaluatee.extendeduser.get_profile_pic_url }}">
+												{% endif %}
+											</td>
+											<td>
+												{% if request.path == '/my-evaluations' %}
+													{{ evaluation.evaluator.first_name }} {{ evaluation.evaluator.last_name }}
+												{% elif request.path == '/evaluation-under-me' %}
+													{{ evaluation.evaluatee.first_name }} {{ evaluation.evaluatee.last_name }}
+												{% endif %}
+											</td>
+											<td>
+												{{ evaluation.scheduled_at }}
+											</td>
+											<td>
+												{{ evaluation.completed_on }}
+											</td>
+											<td>
+												{{ evaluation.evaluation_form.form_name }}
+											</td>
+											<td>
+												In-Class Observation
+											</td>
+											<td>
+												{% for s in data.status %}
+													{% if s.evaluation_id.id == evaluation.id %}
+												 		{{ s.evaluation_status_id.status_state }}
+												 	{% endif %}
+												{% endfor %}
+											</td>
+											<td>
+												{% if request.path == '/my-evaluations' %}
+													<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View Evaluation</button></a>
+												{% elif request.path == '/evaluation-under-me' %}
+													<a href="{% url 'evaluationapp:evaluation_form_vote' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View Evaluation</button></a>
+												{% endif %}
+											</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						{% endif %}
 					</div>
 				</div>
 				<!-- END EXAMPLE TABLE PORTLET-->

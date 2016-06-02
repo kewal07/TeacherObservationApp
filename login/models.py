@@ -3,6 +3,7 @@ from datetime import date
 from django.conf import settings
 from django.template.defaultfilters import slugify
 import hashlib, hmac, os
+# from evaluationapp.models import School
 
 # Create your models here.
 
@@ -60,6 +61,7 @@ class ExtendedUser(models.Model):
 	is_admin = models.BooleanField(default=0)
 	bio = models.CharField(max_length=1024,blank=True,null=True)
 	gender = models.CharField(max_length=1,blank=True,null=True)
+	# school = models.ForeignKey(School,blank=True,null=True)
 
 	def __str__(self):
 		return self.user.username

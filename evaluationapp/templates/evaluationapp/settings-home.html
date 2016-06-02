@@ -40,27 +40,8 @@ License: You must have a valid license purchased only from themeforest(the above
 	<link href="{% static 'assets/global/css/plugins.css' %}" rel="stylesheet" type="text/css" />
 	<link href="{% static 'assets/admin/layout/css/layout.css' %}" rel="stylesheet" type="text/css" />
 	<link id="style_color" href="{% static 'assets/admin/layout/css/themes/darkblue.css' %}" rel="stylesheet" type="text/css" />
-	<!-- END THEME STYLES -->
-	<!-- Page Level -->
-	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-select/bootstrap-select.min.css' %}"/>
-	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/select2/select2.css' %}"/>
-	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/jquery-multi-select/css/multi-select.css' %}"/>
-	<link href="{% static 'assets/global/plugins/icheck/skins/all.css' %}" rel="stylesheet"/>
 	<link href="{% static 'assets/admin/layout/css/index_teacher.css' %}" rel="stylesheet" type="text/css" />
-	<link href="{% static 'assets/global/plugins/ion.rangeslider/css/ion.rangeSlider.css' %}" rel="stylesheet" type="text/css"/>
-	<link href="{% static 'assets/global/plugins/ion.rangeslider/css/ion.rangeSlider.Metronic.css' %}" rel="stylesheet" type="text/css"/>
-	<style type="text/css">
-		.form-horizontal .form-group {
-		    margin-right: 0;
-		    margin-left: 0;
-		}
-		.form-horizontal .icheck-inline {
-		    margin-top: 8px;
-		    display: inline-block;
-		    padding: 0 1rem;
-		}
-	</style>
-	<!-- End Page Level -->
+	<!-- END THEME STYLES -->
 	<link rel="shortcut icon" href="{% static 'favicon.png' %}" />
 </head>
 <!-- END HEAD -->
@@ -104,12 +85,18 @@ License: You must have a valid license purchased only from themeforest(the above
 		            </a>
 		        </li>
 		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
+		            <a href="{% url 'evaluationapp:evaluation_home' %}">
 		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
 		              <span id="menu-items-text" class="title tooltips">Evaluations</span>
 		            </a>
 		        </li>
-		         <li>
+		        <li>
+		            <a href="{% url 'evaluationapp:view_forms_home' %}">
+		              <i class="fa fa-file-text-o tooltips" data-placement="bottom" data-original-title="Forms"></i>
+		              <span id="menu-items-text" class="title tooltips">Forms</span>
+		            </a>
+		        </li>
+		        <li>
 		            <a href="{% url 'evaluationapp:index' %}">
 		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
 		              <span id="menu-items-text" class="title tooltips">Analytics</span>
@@ -117,19 +104,19 @@ License: You must have a valid license purchased only from themeforest(the above
 		        </li>
 		        <li>
 		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Export"></i>
+		              <span id="menu-items-text" class="title tooltips">Export Data</span>
+		            </a>
+		        </li>
+		        <li>
+		            <a href="{% url 'evaluationapp:index' %}">
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Upload"></i>
 		              <span id="menu-items-text" class="title tooltips">Upload</span>
 		            </a>
 		        </li>
 		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Download</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Settings"></i>
+		            <a href="{% url 'evaluationapp:view_settings' %}">
+		              <i class="icon-gear tooltips" data-placement="bottom" data-original-title="Settings"></i>
 		              <span id="menu-items-text" class="title tooltips">Settings</span>
 		            </a>
 		        </li>
@@ -181,62 +168,64 @@ License: You must have a valid license purchased only from themeforest(the above
 					<a href="javascript:;">
 						<i class="icon-home"></i>
 						<span class="title">Home</span>
-						<span class="arrow "></span>
 					</a>
-					<ul class="sub-menu">
-						<li>
-							<a href="#">
-							<i class="icon-home"></i>
-							Create</a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="icon-basket"></i>
-							Edit</a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="icon-home"></i>
-							Active</a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="icon-basket"></i>
-							InActive</a>
-						</li>
-					</ul>
 				</li>
 				<li>
-					<a href="javascript:;">
+					<a href="{% url 'evaluationapp:evaluation_home' %}">
 					<i class="icon-basket"></i>
 					<span class="title">Evaluations</span>
 					<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
 						<li>
-							<a href="#">
+							<a href="{% url 'evaluationapp:evaluation_assign' %}">
 							<i class="icon-home"></i>
-							Assign Evaluation</a>
+							Assign</a>
 						</li>
 						<li>
-							<a href="#">
+							<a href="{% url 'evaluationapp:evaluation_review' %}">
 							<i class="icon-basket"></i>
-							Ongoing Evaluations</a>
+							Review</a>
 						</li>
 						<li>
-							<a href="#">
+							<a href="{% url 'evaluationapp:evaluation_archive' %}">
 							<i class="icon-tag"></i>
-							Submitted Evaluations</a>
+							Archive</a>
+						</li>
+						
+					</ul>
+				</li>
+				<li>
+					<a href="javascript:;">
+						<i class="fa-file-text-o"></i>
+						<span class="title">Forms</span>
+						<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="{% url 'evaluationapp:create-form' %}">
+							<i class="fa fa-plus"></i>
+							Create</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:edit_evaluations' %}">
+							<i class="fa fa-edit"></i>
+							Edit</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:view_active' %}">
+							<i class="fa fa-check-square"></i>
+							Active</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:view_inactive' %}">
+							<i class="fa fa-square-o"></i>
+							InActive</a>
 						</li>
 						<li>
 							<a href="#">
-							<i class="icon-handbag"></i>
-							Reviewed Evaluations</a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="icon-pencil"></i>
-							Completed Evaluations</a>
+							<i class="fa fa-lock"></i>
+							Archived</a>
 						</li>
 					</ul>
 				</li>
@@ -259,8 +248,8 @@ License: You must have a valid license purchased only from themeforest(the above
 					</a>
 				</li>
 				<li class="last ">
-					<a href="javascript:;">
-					<i class="icon-puzzle"></i>
+					<a href="{% url 'evaluationapp:view_settings' %}">
+					<i class="icon-gear"></i>
 					<span class="title">Settings</span>
 				</li>
 			</ul>
@@ -273,155 +262,82 @@ License: You must have a valid license purchased only from themeforest(the above
 		<div class="page-content">
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
-			Preview Evaluation Form 
+			Settings
 			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
 					<li>
-						<i class="fa fa-home"></i>
-						<a href="#">Home</a>
-						<i class="fa fa-angle-right"></i>
-					</li>
-					<li>
-						<i class="fa fa-home"></i>
-						<a href="#">Preview Forms</a>
-						<i class="fa fa-angle-right"></i>
-					</li>
-					<li>
-						<i class="fa fa-home"></i>
-						<a href="#">{{ form.form_name|title }}</a>
+						<i class="fa fa-gear"></i>
+						<a href="#">Setttings</a>
 					</li>
 				</ul>
 			</div>
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN PAGE CONTENT-->
-			<div class="row">
-				<div class="col-md-12">
-					<div class="portlet box blue" id="form_wizard_1">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-gift"></i> {{ form.form_name|title }} - <span class="step-title">
-								Section 1 of {{ no_of_sections }} </span>
+			<div class="tiles">
+				{% if user.extendeduser.is_admin %}
+					<div class="tile double-down bg-blue-hoki">
+						<a href="{% url 'evaluationapp:school_view' %}">
+							<div class="tile-body">
+								<i class="fa fa-check-square-o"></i>
 							</div>
-							<div class="tools hidden-xs">
-								<a href="javascript:;" class="collapse">
-								</a>
-								<a href="javascript:;" class="reload">
-								</a>
-							</div>
-						</div>
-						<div class="portlet-body form create-form">
-							<form action="#" class="form-horizontal" id="submit_form" method="POST" enctype="multipart/form-data">
-								<input type="hidden" name="survey-id" value="{{ form.id }}" />
-								{% csrf_token %}
-								<div class="form-wizard">
-									<div class="form-body">
-										<ul class="nav nav-pills nav-justified steps">
-											{% for key,value in questions_section_dict.items %}
-												<li>
-													<a href="#tab{{ forloop.counter }}" data-toggle="tab" class="step">
-														<span class="number">{{ forloop.counter }}</span>
-														<span class="desc">
-															<i class="fa fa-check"></i> 
-															{% if key != 'NULL' %}
-																Section : {{ key|title }}
-															{% else %}
-																Section : Common/Overall
-															{% endif %} 
-														</span>
-													</a>
-												</li>
-											{% endfor %}
-										</ul>
-										<div id="bar" class="progress progress-striped" role="progressbar">
-											<div class="progress-bar progress-bar-success">
-											</div>
-										</div>
-										<div class="tab-content">
-											<div class="alert alert-danger display-none">
-												<button class="close" data-dismiss="alert"></button>
-												You have some form errors. Please check below.
-											</div>
-											<div class="alert alert-success display-none">
-												<button class="close" data-dismiss="alert"></button>
-												Your form validation is successful!
-											</div>
-											{% for key,value in questions_section_dict.items %}
-												{% if forloopcounter == 1 %}
-													<script>
-														var d = document.getElementById("tab1");
-														d.className += " active";
-													</script>
-												{% endif %}
-												<div class="tab-pane" id="tab{{ forloop.counter }}">
-													<h3 class="block">Section : {{ key|title }}</h3>
-													{% for question in value %}
-														<div class="survey-question form-group" id="survey-question{{ question.question.id }}">
-															<div class=" portlet-title question-box-title">
-																<div class="caption">
-																	<i class="fa fa-question"></i>Question{{ forloop.counter }}
-																</div>
-															</div>
-															<div class="portlet-body">
-																<p class="que_text">{{ question.question.question_text }}</p>
-																{% if question.question.description %}
-																	<p class="question_description_header">
-																		<span class="question_description_header_span">Description: </span>
-																	</p>
-																	<p class="question_description">{{ question.question.description }}</p>
-																{% endif %}
-																{% if question.type == "text" %}
-																	<textarea id ="choiceText{{ question.question.id }}" class="text-ans" name="choice{{ question.question.id }}" placeholder="Enter Your Response in max 255 characters" maxlength="255">
-																		{{ question.answer }}
-																	</textarea>
-																{% elif question.type == "rating" %}
-																	<input id="range_2" type="text" name="range{{ question.question.id }}" value="{{ question.min_value }};{{ question.max_value }}"/>
-																{% else %}
-																	<div class="input-group">
-																		{% for choice in question.question.choice_set.all %}
-																			{% if question.horizontalOptions %}
-																				<div class="icheck-inline">
-																			{% else %}
-																				<div class="icheck-list">
-																			{% endif %}
-																				<label class="choice-text" for="choice{{ choice.id }}">
-																				<input class="choices icheck" type="{{ question.type }}" name="choice{{ question.question.id }}" id="choice{{ choice.id }}" value="{{ choice.id }}" />
-																				{{ choice.choice_text }}</label>
-																			</div>
-																		{% endfor %}
-																	</div>
-																{% endif %}
-																{% if question.addComment %}
-																	<p>Any Other Comments</p>
-																	<textarea id ="choiceText{{ question.question.id }}Comment" class="text-ans" name="choice{{ question.question.id }}Comment" placeholder="Enter Your Response in max 255 characters" maxlength="255">{{ question.answer }}</textarea>
-																{% endif %}
-															</div>
-														</div>
-														
-													{% endfor %}
-												</div>
-											{% endfor %}
-										</div>
-									</div>
-									<div class="form-actions">
-										<div class="row">
-											<div class="col-md-offset-3 col-md-9">
-												<a href="javascript:;" class="btn default button-previous">
-												<i class="m-icon-swapleft"></i> Back </a>
-												<a href="javascript:;" class="btn blue button-next">
-												Continue <i class="m-icon-swapright m-icon-white"></i>
-												</a>
-												<a href="javascript:;" class="btn disabled green button-submit voteSubmit surveySubmit" id="vote{{ survey.id }}">
-												Submit <i class="m-icon-swapright m-icon-white"></i>
-												</a>
-											</div>
-										</div>
-									</div>
+							<div class="tile-object">
+								<div class="name">
+									 School
 								</div>
-							</form>
-						</div>
+							</div>
+						</a>
 					</div>
-				</div>
+					<div class="tile double bg-red-sunglo">
+						<a href="{% url 'evaluationapp:classes_view' %}">
+							<div class="tile-body">
+								<i class="fa fa-file-text-o"></i>
+							</div>
+							<div class="tile-object">
+								<div class="name">
+									 Class
+								</div>
+							</div>
+						</a>
+					</div>
+					<div class="tile bg-yellow-saffron">
+						<a href="{% url 'evaluationapp:subjects_view' %}">
+							<div class="tile-body">
+								<i class="fa fa-bar-chart-o"></i>
+							</div>
+							<div class="tile-object">
+								<div class="name">
+									 Subject
+								</div>
+							</div>
+						</a>
+					</div>
+					<div class="tile bg-blue">
+						<a href="{% url 'login:view_change_password' %}">
+							<div class="tile-body">
+								<i class="fa fa-bar-chart-o"></i>
+							</div>
+							<div class="tile-object">
+								<div class="name">
+									 Change Password
+								</div>
+							</div>
+						</a>
+					</div>
+				{% else %}
+					<div class="tile bg-blue">
+						<a href="{% url 'login:view_change_password' %}">
+							<div class="tile-body">
+								<i class="fa fa-bar-chart-o"></i>
+							</div>
+							<div class="tile-object">
+								<div class="name">
+									 Change Password
+								</div>
+							</div>
+						</a>
+					</div>
+				{% endif %}
 			</div>
 			<!-- END PAGE CONTENT-->
 		</div>
@@ -459,57 +375,15 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="{% static 'assets/admin/layout/scripts/layout.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/quick-sidebar.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/demo.js' %}" type="text/javascript"></script>
-<!-- BEGIN PAGE LEVEL PLUGINS -->
-<script src="{% static 'assets/global/plugins/jquery-validation/js/jquery.validate.min.js' %}"></script>
-<script src="{% static 'assets/global/plugins/jquery-validation/js/additional-methods.min.js' %}"></script>
-<script src="{% static 'assets/global/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'assets/global/plugins/bootstrap-select/bootstrap-select.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'assets/global/plugins/select2/select2.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js' %}"></script>
-<script src="{% static 'assets/global/plugins/icheck/icheck.min.js' %}"></script>
-<!-- END PAGE LEVEL PLUGINS -->
-<!-- Page Level Scripts -->
-<script src="{% static 'assets/admin/pages/scripts/components-dropdowns.js' %}"></script>
-<script src="{% static 'assets/admin/pages/scripts/form-wizard.js' %}"></script>
-<script src="{% static 'assets/admin/pages/scripts/components-dropdowns.js' %}"></script>
-<script src="{% static 'assets/admin/pages/scripts/form-icheck.js ' %}"></script>
-<script src="{% static 'assets/admin/pages/scripts/form-samples.js ' %}"></script>
-<script src="{% static 'assets/global/plugins/ion.rangeslider/js/ion-rangeSlider/ion.rangeSlider.min.js' %}"></script>
-<script src="{% static 'assets/admin/pages/scripts/components-ion-sliders.js' %}"></script>
-<!-- End Page Level Scripts -->
 <script>
-	jQuery(document).ready(function() {    
-     	Metronic.init(); // init metronic core components
-		Layout.init(); // init current layout
-		QuickSidebar.init(); // init quick sidebar
-		Demo.init(); // init demo features
-		ComponentsIonSliders.init();
-		FormSamples.init();
-		FormWizard.init();
-		ComponentsDropdowns.init();
-		$('.surveySubmit').click(function(){
-			var subButElem = $(this);
-			subButElem.attr("disabled","disabled");
-			$(".errorlist").remove();
-			var form_data = $("#submit_form").serialize();
-			$.ajax({
-				type: 'POST',
-				url:'',
-				data:form_data,
-				success:function(response)
-				{
-					if("success" in response){
-					}else{
-						for(key in response){
-							$("#survey-question"+key).append('<span class="errorlist">'+response[key]+'</span>');
-						}
-					}
-					subButElem.removeAttr("disabled");
-				}
-			});
-		});
-	});
+      jQuery(document).ready(function() {    
+         	Metronic.init(); // init metronic core components
+			Layout.init(); // init current layout
+			QuickSidebar.init(); // init quick sidebar
+			Demo.init(); // init demo features
+      });
 </script>
+<!-- END JAVASCRIPTS -->
 </body>
 <!-- END BODY -->
 </html>

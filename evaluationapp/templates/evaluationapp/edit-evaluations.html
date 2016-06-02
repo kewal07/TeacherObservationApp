@@ -169,40 +169,17 @@ License: You must have a valid license purchased only from themeforest(the above
 					<a href="javascript:;">
 						<i class="icon-home"></i>
 						<span class="title">Home</span>
-						<span class="arrow "></span>
 					</a>
-					<ul class="sub-menu">
-						<li>
-							<a href="#">
-							<i class="icon-home"></i>
-							Create</a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="icon-basket"></i>
-							Edit</a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="icon-home"></i>
-							Active</a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="icon-basket"></i>
-							InActive</a>
-						</li>
-					</ul>
 				</li>
 				<li>
-					<a href="javascript:;">
+					<a href="{% url 'evaluationapp:evaluation_home' %}">
 					<i class="icon-basket"></i>
 					<span class="title">Evaluations</span>
 					<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
 						<li>
-							<a href="#">
+							<a href="{% url 'evaluationapp:evaluation_assign' %}">
 							<i class="icon-home"></i>
 							Assign Evaluation</a>
 						</li>
@@ -225,6 +202,40 @@ License: You must have a valid license purchased only from themeforest(the above
 							<a href="#">
 							<i class="icon-pencil"></i>
 							Completed Evaluations</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="javascript:;">
+						<i class="fa-file-text-o"></i>
+						<span class="title">Forms</span>
+						<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="{% url 'evaluationapp:create-form' %}">
+							<i class="fa fa-plus"></i>
+							Create</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:edit_evaluations' %}">
+							<i class="fa fa-edit"></i>
+							Edit</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:view_active' %}">
+							<i class="fa fa-check-square"></i>
+							Active</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:view_inactive' %}">
+							<i class="fa fa-square-o"></i>
+							InActive</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="fa fa-lock"></i>
+							Archived</a>
 						</li>
 					</ul>
 				</li>

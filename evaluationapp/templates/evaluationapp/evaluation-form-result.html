@@ -598,6 +598,11 @@ License: You must have a valid license purchased only from themeforest(the above
 												Continue <i class="m-icon-swapright m-icon-white"></i>
 												</a>
 												{% if view_ev %}
+													{% if archive %}
+														<a href="javascript:;" class="btn green button-submit accept-reject" id="archive---{{ evaluation.id }}">
+														Archive <i class="m-icon-swapright m-icon-white"></i>
+														</a>
+													{% endif %}
 													{% if ac_re %}
 														<a href="javascript:;" class="btn green button-submit accept-reject" id="accept---{{ evaluation.id }}">
 														Accept <i class="m-icon-swapright m-icon-white"></i>

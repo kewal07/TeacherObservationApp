@@ -91,7 +91,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		            </a>
 		        </li>
 		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
+		            <a href="{% url 'evaluationapp:view_forms_home' %}">
 		              <i class="fa fa-file-text-o tooltips" data-placement="bottom" data-original-title="Forms"></i>
 		              <span id="menu-items-text" class="title tooltips">Forms</span>
 		            </a>
@@ -115,8 +115,8 @@ License: You must have a valid license purchased only from themeforest(the above
 		            </a>
 		        </li>
 		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Settings"></i>
+		            <a href="{% url 'evaluationapp:view_settings' %}">
+		              <i class="fa fa-gear tooltips" data-placement="bottom" data-original-title="Settings"></i>
 		              <span id="menu-items-text" class="title tooltips">Settings</span>
 		            </a>
 		        </li>
@@ -180,28 +180,19 @@ License: You must have a valid license purchased only from themeforest(the above
 						<li>
 							<a href="{% url 'evaluationapp:evaluation_assign' %}">
 							<i class="icon-home"></i>
-							Assign Evaluation</a>
+							Assign</a>
 						</li>
 						<li>
-							<a href="#">
+							<a href="{% url 'evaluationapp:evaluation_review' %}">
 							<i class="icon-basket"></i>
-							Ongoing Evaluations</a>
+							Review</a>
 						</li>
 						<li>
-							<a href="#">
+							<a href="{% url 'evaluationapp:evaluation_archive' %}">
 							<i class="icon-tag"></i>
-							Submitted Evaluations</a>
+							Archive</a>
 						</li>
-						<li>
-							<a href="#">
-							<i class="icon-handbag"></i>
-							Reviewed Evaluations</a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="icon-pencil"></i>
-							Completed Evaluations</a>
-						</li>
+						
 					</ul>
 				</li>
 				<li>
@@ -251,14 +242,14 @@ License: You must have a valid license purchased only from themeforest(the above
 					</a>
 				</li>
 				<li>
-					<a href="javascript:;">
-						<i class="icon-puzzle"></i>
+					<a href="{% url 'evaluationapp:view_download' %}">
+						<i class="fa fa-cloud-download"></i>
 						<span class="title">Downloads</span>
 					</a>
 				</li>
 				<li class="last ">
-					<a href="javascript:;">
-					<i class="icon-puzzle"></i>
+					<a href="{% url 'evaluationapp:view_settings' %}">
+					<i class="fa fa-gear"></i>
 					<span class="title">Settings</span>
 				</li>
 			</ul>
@@ -286,14 +277,16 @@ License: You must have a valid license purchased only from themeforest(the above
 			<!-- BEGIN PAGE CONTENT-->
 			<div class="tiles">
 				<div class="tile double-down bg-blue-hoki">
-					<div class="tile-body">
-						<i class="fa fa-check-square-o"></i>
-					</div>
-					<div class="tile-object">
-						<div class="name">
-							 Evaluations
+					<a href="{% url 'evaluationapp:evaluation_home' %}">
+						<div class="tile-body">
+							<i class="fa fa-check-square-o"></i>
 						</div>
-					</div>
+						<div class="tile-object">
+							<div class="name">
+								 Evaluations
+							</div>
+						</div>
+					</a>
 				</div>
 				<div class="tile bg-red-sunglo">
 					<a href="{% url 'evaluationapp:view_forms_home' %}">
@@ -307,9 +300,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						</div>
 					</a>
 				</div>
-				<div class="tile selected bg-yellow-saffron">
-					<div class="corner">
-					</div>
+				<div class="tile bg-yellow-saffron">
 					<div class="tile-body">
 						<i class="fa fa-bar-chart-o"></i>
 					</div>
@@ -319,7 +310,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						</div>
 					</div>
 				</div>
-				<div class="tile double bg-grey-cascade selected">
+				<div class="tile double bg-grey-cascade">
 					<div class="tile-body">
 						<i class="fa fa-cloud-download"></i>
 					</div>
@@ -329,11 +320,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						</div>
 					</div>
 				</div>
-				<div class="tile bg-blue-steel selected">
-					<div class="corner">
-					</div>
-					<div class="check">
-					</div>
+				<div class="tile bg-blue-steel">
 					<div class="tile-body">
 						<i class="fa fa-cogs"></i>
 					</div>

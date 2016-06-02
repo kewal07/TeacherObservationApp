@@ -291,52 +291,30 @@ License: You must have a valid license purchased only from themeforest(the above
 			</div>
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN PAGE CONTENT-->
-			<div class="row">
-				<div class="col-md-4">
-					<!-- BEGIN Portlet PORTLET-->
-					<div class="portlet box blue-hoki">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-gift"></i>Evaluate Others
-							</div>
-							<div class="actions">
-								<a href="{% url 'evaluationapp:evaluation_under_me' %}" class="btn blue btn-sm">
-								<i class="fa fa-pencil"></i> See Evaluations Under Me </a>
+			<div class="tiles">
+				<div class="tile double-down bg-blue-hoki">
+					<a href="{% url 'evaluationapp:evaluation_under_me' %}">
+						<div class="tile-body">
+							<i class="fa fa-check-square-o"></i>
+						</div>
+						<div class="tile-object">
+							<div class="name">
+								 Evaluate Others
 							</div>
 						</div>
-						<div class="portlet-body">
-							<div class="scroller" style="height:150px">
-								<p>
-									By Clicking on the below button you would be taken to an interface where you can evaluate others.  Go Ahead and
-								</p> 
-								<a href="{% url 'evaluationapp:evaluation_under_me' %}"><button type="button" class="btn btn-primary">See Evaluations Under Me</button> </a>
-							</div>
-						</div>
-					</div>
-					<!-- END Portlet PORTLET-->
+					</a>
 				</div>
-				<div class="col-md-4">
-					<!-- BEGIN Portlet PORTLET-->
-					<div class="portlet box blue-hoki">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-gift"></i>My Feedback
-							</div>
-							<div class="actions">
-								<a href="{% url 'evaluationapp:my_evaluations' %}" class="btn blue btn-sm">
-								<i class="fa fa-pencil"></i> See My Feedback </a>
+				<div class="tile double bg-red-sunglo">
+					<a href="{% url 'evaluationapp:my_evaluations' %}">
+						<div class="tile-body">
+							<i class="fa fa-thumbs-o-up"></i>
+						</div>
+						<div class="tile-object">
+							<div class="name">
+								 My Feedback
 							</div>
 						</div>
-						<div class="portlet-body">
-							<div class="scroller" style="height:150px">
-								<p>
-									You can view what others have to say about you in their examinations. Go Ahead and
-								</p> 
-								<a href="{% url 'evaluationapp:my_evaluations' %}"><button type="button" class="btn btn-primary">See My Feedback</button></a>
-							</div>
-						</div>
-					</div>
-					<!-- END Portlet PORTLET-->
+					</a>
 				</div>
 			</div>
 			<!-- END PAGE CONTENT-->

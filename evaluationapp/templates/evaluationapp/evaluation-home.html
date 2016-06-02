@@ -85,12 +85,18 @@ License: You must have a valid license purchased only from themeforest(the above
 		            </a>
 		        </li>
 		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
+		            <a href="{% url 'evaluationapp:evaluation_home' %}">
 		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
 		              <span id="menu-items-text" class="title tooltips">Evaluations</span>
 		            </a>
 		        </li>
-		         <li>
+		        <li>
+		            <a href="{% url 'evaluationapp:view_forms_home' %}">
+		              <i class="fa fa-file-text-o tooltips" data-placement="bottom" data-original-title="Forms"></i>
+		              <span id="menu-items-text" class="title tooltips">Forms</span>
+		            </a>
+		        </li>
+		        <li>
 		            <a href="{% url 'evaluationapp:index' %}">
 		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
 		              <span id="menu-items-text" class="title tooltips">Analytics</span>
@@ -98,14 +104,14 @@ License: You must have a valid license purchased only from themeforest(the above
 		        </li>
 		        <li>
 		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Upload</span>
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Export"></i>
+		              <span id="menu-items-text" class="title tooltips">Export Data</span>
 		            </a>
 		        </li>
 		        <li>
 		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Download</span>
+		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Upload"></i>
+		              <span id="menu-items-text" class="title tooltips">Upload</span>
 		            </a>
 		        </li>
 		        <li>
@@ -162,62 +168,64 @@ License: You must have a valid license purchased only from themeforest(the above
 					<a href="javascript:;">
 						<i class="icon-home"></i>
 						<span class="title">Home</span>
-						<span class="arrow "></span>
 					</a>
-					<ul class="sub-menu">
-						<li>
-							<a href="#">
-							<i class="icon-home"></i>
-							Create</a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="icon-basket"></i>
-							Edit</a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="icon-home"></i>
-							Active</a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="icon-basket"></i>
-							InActive</a>
-						</li>
-					</ul>
 				</li>
 				<li>
-					<a href="javascript:;">
+					<a href="{% url 'evaluationapp:evaluation_home' %}">
 					<i class="icon-basket"></i>
 					<span class="title">Evaluations</span>
 					<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
 						<li>
-							<a href="#">
+							<a href="{% url 'evaluationapp:evaluation_assign' %}">
 							<i class="icon-home"></i>
-							Assign Evaluation</a>
+							Assign</a>
 						</li>
 						<li>
-							<a href="#">
+							<a href="{% url 'evaluationapp:evaluation_review' %}">
 							<i class="icon-basket"></i>
-							Ongoing Evaluations</a>
+							Review</a>
 						</li>
 						<li>
-							<a href="#">
+							<a href="{% url 'evaluationapp:evaluation_archive' %}">
 							<i class="icon-tag"></i>
-							Submitted Evaluations</a>
+							Archive</a>
+						</li>
+						
+					</ul>
+				</li>
+				<li>
+					<a href="javascript:;">
+						<i class="fa-file-text-o"></i>
+						<span class="title">Forms</span>
+						<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="{% url 'evaluationapp:create-form' %}">
+							<i class="fa fa-plus"></i>
+							Create</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:edit_evaluations' %}">
+							<i class="fa fa-edit"></i>
+							Edit</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:view_active' %}">
+							<i class="fa fa-check-square"></i>
+							Active</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:view_inactive' %}">
+							<i class="fa fa-square-o"></i>
+							InActive</a>
 						</li>
 						<li>
 							<a href="#">
-							<i class="icon-handbag"></i>
-							Reviewed Evaluations</a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="icon-pencil"></i>
-							Completed Evaluations</a>
+							<i class="fa fa-lock"></i>
+							Archived</a>
 						</li>
 					</ul>
 				</li>
@@ -260,128 +268,53 @@ License: You must have a valid license purchased only from themeforest(the above
 				<ul class="page-breadcrumb">
 					<li>
 						<i class="fa fa-home"></i>
-						<a href="#">Evaluations</a>
+						<a href="#">Home</a>
 						<i class="fa fa-angle-right"></i>
+					</li>
+					<li>
+						<i class="fa fa-check-square-o"></i>
+						<a href="#">Evaluations</a>
 					</li>
 				</ul>
 			</div>
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN PAGE CONTENT-->
-			<div class="row">
-				<div class="col-md-4">
-					<!-- BEGIN Portlet PORTLET-->
-					<div class="portlet box blue-hoki">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-gift"></i>Assign Evaluation
-							</div>
-							<div class="actions">
-								<a href="{% url 'evaluationapp:evaluation_assign' %}" class="btn blue btn-sm">
-								<i class="fa fa-pencil"></i> Assign a new Evaluation </a>
+			<div class="tiles">
+				<div class="tile double-down bg-blue-hoki">
+					<a href="{% url 'evaluationapp:evaluation_assign' %}">
+						<div class="tile-body">
+							<i class="fa fa-plus"></i>
+						</div>
+						<div class="tile-object">
+							<div class="name">
+								 Assign
 							</div>
 						</div>
-						<div class="portlet-body">
-							<div class="scroller" style="height:150px">
-								<p>
-									By Clicking on Assign Evaluation you would be taken to an interface where you can assign new evaluations to teachers. You can select an evaluator, and evaluatee, and the form on which to be evaluated. Go Ahead and
-								</p> 
-								<a href="{% url 'evaluationapp:evaluation_assign' %}"><button type="button" class="btn btn-primary">Assign Evaluation</button></a>
-							</div>
-						</div>
-					</div>
-					<!-- END Portlet PORTLET-->
+					</a>
 				</div>
-				<div class="col-md-4">
-					<!-- BEGIN Portlet PORTLET-->
-					<div class="portlet box blue-hoki">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-gift"></i>Ongoing Evaluations
-							</div>
-							<div class="actions">
-								<a href="{% url 'evaluationapp:evaluation_ongoing' %}" class="btn blue btn-sm">
-								<i class="fa fa-pencil"></i> View Ongoing Evaluations </a>
+				<div class="tile double bg-red-sunglo">
+					<a href="{% url 'evaluationapp:evaluation_review' %}">
+						<div class="tile-body">
+							<i class="fa fa-search"></i>
+						</div>
+						<div class="tile-object">
+							<div class="name">
+								 Review
 							</div>
 						</div>
-						<div class="portlet-body">
-							<div class="scroller" style="height:150px">
-								<p>
-									You can edit any existing evaluation forms. Once edited you will again have to make the form active for use in evaluations. You may declare the form as inactive and it won't be shown in the list of forms available to be used for evaluation. Go Ahead and
-								</p> 
-								<a href="{% url 'evaluationapp:evaluation_ongoing' %}"><button type="button" class="btn btn-primary">View Ongoing Evaluations</button></a>
-							</div>
-						</div>
-					</div>
-					<!-- END Portlet PORTLET-->
+					</a>
 				</div>
-				<div class="col-md-4">
-					<!-- BEGIN Portlet PORTLET-->
-					<div class="portlet box blue-hoki">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-gift"></i>Submitted Evaluations
-							</div>
-							<div class="actions">
-								<a href="{% url 'evaluationapp:evaluation_submitted' %}" class="btn blue btn-sm">
-								<i class="fa fa-pencil"></i> View Submitted Evaluations </a>
+				<div class="tile double bg-yellow-saffron">
+					<a href="{% url 'evaluationapp:evaluation_archive' %}">
+						<div class="tile-body">
+							<i class="fa fa-archive"></i>
+						</div>
+						<div class="tile-object">
+							<div class="name">
+								 Archived
 							</div>
 						</div>
-						<div class="portlet-body">
-							<div class="scroller" style="height:150px">
-								<p>
-									You can view all the active forms by clicking the button below. The display would show all the forms and how many times they have used for evaluation and some statistics associated with them.Go Ahead and
-								</p> 
-								<a href="{% url 'evaluationapp:evaluation_submitted' %}"><button type="button" class="btn btn-primary">View Submitted Evaluations</button></a>
-							</div>
-						</div>
-					</div>
-					<!-- END Portlet PORTLET-->
-				</div>
-				<div class="col-md-4">
-					<!-- BEGIN Portlet PORTLET-->
-					<div class="portlet box blue-hoki">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-gift"></i>Reviewed Evaluations
-							</div>
-							<div class="actions">
-								<a href="{% url 'evaluationapp:evaluation_reviewed' %}" class="btn blue btn-sm">
-								<i class="fa fa-pencil"></i> View Reviewed Evaluations</a>
-							</div>
-						</div>
-						<div class="portlet-body">
-							<div class="scroller" style="height:150px">
-								<p>
-									You can view all the inacactive forms by clicking the button below. The display would show all the forms which are inactive. You can change the state of such forms directly from the display by toggling the active/inactive switch. Go Ahead and
-								</p> 
-								<a href="{% url 'evaluationapp:evaluation_reviewed' %}"><button type="button" class="btn btn-primary">View Reviewed Evaluations</button></a>
-							</div>
-						</div>
-					</div>
-					<!-- END Portlet PORTLET-->
-				</div>
-				<div class="col-md-4">
-					<!-- BEGIN Portlet PORTLET-->
-					<div class="portlet box blue-hoki">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-gift"></i>Completed Evaluations
-							</div>
-							<div class="actions">
-								<a href="{% url 'evaluationapp:evaluation_completed' %}" class="btn blue btn-sm">
-								<i class="fa fa-pencil"></i> View Completed Evaluations</a>
-							</div>
-						</div>
-						<div class="portlet-body">
-							<div class="scroller" style="height:150px">
-								<p>
-									You can view all the inacactive forms by clicking the button below. The display would show all the forms which are inactive. You can change the state of such forms directly from the display by toggling the active/inactive switch. Go Ahead and
-								</p> 
-								<a href="{% url 'evaluationapp:evaluation_completed' %}"><button type="button" class="btn btn-primary">View Completed Evaluations</button></a>
-							</div>
-						</div>
-					</div>
-					<!-- END Portlet PORTLET-->
+					</a>
 				</div>
 			</div>
 			<!-- END PAGE CONTENT-->

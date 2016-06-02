@@ -12,10 +12,24 @@ from django.core.urlresolvers import resolve,reverse
 
 # Create your models here.
 
+class School(models.Model):
+	school_name = models.CharField(max_length=512,blank=True,null=True)
+	number_students = models.IntegerField(blank=True,null=True,default=0)
+	number_teachers = models.IntegerField(blank=True,null=True,default=0)
+	number_boys = models.IntegerField(blank=True,null=True,default=0)
+	number_girls = models.IntegerField(blank=True,null=True,default=0)
+	number_emirati =  models.IntegerField(blank=True,null=True,default=0)
+	number_nonemirati = models.IntegerField(blank=True,null=True,default=0)
+
 class Grade(models.Model):
 	grade_id = models.IntegerField(blank=True,null=True,default=0)
 	grade_name = models.CharField(max_length=512,blank=True,null=True)
 	students_count = models.IntegerField(blank=True,null=True,default=0)
+	number_emirati =  models.IntegerField(blank=True,null=True,default=0)
+	number_nonemirati = models.IntegerField(blank=True,null=True,default=0)
+	number_boys = models.IntegerField(blank=True,null=True,default=0)
+	number_girls = models.IntegerField(blank=True,null=True,default=0)
+	school = models.ForeignKey(School,blank=True,null=True)
 
 class Subject(models.Model):
 	subject_id = models.IntegerField(blank=True,null=True,default=0)
@@ -100,7 +114,7 @@ class Question(models.Model):
 	description = models.CharField(max_length=400,null=True,blank=True)
 	que_slug = models.SlugField(null=True,blank=True)
 	created_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
-	horizontal_options = models.BooleanField(default=0)
+	horizontal_options = models.BooleanField(default=1)
 
 	def __str__(self):
 		return self.question_text

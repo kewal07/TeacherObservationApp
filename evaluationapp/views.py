@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic import ListView,DetailView
-from evaluationapp.models import Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, EvaluationStatus
+from evaluationapp.models import Grade,School,Subject,Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, EvaluationStatus
 from evaluationapp import evappconstants
 # import evaluationapp.evappconstants
 from django.contrib.auth import login
@@ -40,7 +40,6 @@ class IndexView(ListView):
 		context = {}
 		return context
 
-
 class FormsHomeView(ListView):
 	context_object_name = 'data'
 
@@ -54,6 +53,71 @@ class FormsHomeView(ListView):
 
 	def get_queryset(self, **kwargs):
 		context = {}
+		return context
+
+class SettingsHomeView(ListView):
+	context_object_name = 'data'
+
+	def get_template_names(self):
+		template_name = 'evaluationapp/settings-home.html'
+		return [template_name]
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		return context
+
+
+# class SchoolHomeView(ListView):
+# 	context_object_name = 'data'
+
+# 	def get_template_names(self):
+# 		template_name = 'evaluationapp/school-home.html'
+# 		return [template_name]
+
+# 	def get_queryset(self, **kwargs):
+# 		context = {}
+# 		schools = School.objects.filter(id=user.extendedUser.school)
+# 		context["school"] = school
+# 		return context
+
+class SubjectHomeView(ListView):
+	context_object_name = 'data'
+
+	def get_template_names(self):
+		template_name = 'evaluationapp/subject-home.html'
+		return [template_name]
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		user = self.request.user
+		path = self.request.path
+		if path.endswith("subjects-home"):
+			subjects = Subject.objects.all()
+			context["subjects"] = subjects
+			context["nav_val"] = "Subjects"
+		elif path.endswith("classes-home"):
+			grades = Grade.objects.all()
+			context["classes"] = grades
+			context["nav_val"] = "Classes"
+		elif path.endswith("school-home"):
+			# schools = School.objects.filter(id=user.extendedUser.school)
+			schools = School.objects.all()
+			# Replace all 2nd line by 1st line
+			context["school"] = schools
+			context["nav_val"] = "School"
+		return context
+
+class DownloadHomeView(ListView):
+	context_object_name = 'data'
+
+	def get_template_names(self):
+		template_name = 'evaluationapp/download-home.html'
+		return [template_name]
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		context['teachers'] = ExtendedUser.objects.filter(is_admin=0)
+		context['forms'] = Form.objects.filter(is_public=1)
 		return context
 
 class EvaluationEditableFormsView(ListView):
@@ -398,6 +462,10 @@ class EvaluationFormVoteView(DetailView):
 		if path.startswith('/view-evaluation'):
 			context["view_ev"] = True
 			context["ac_re"] = False
+			if user.extendeduser.is_admin:
+				context["archive"] = True
+				if EvaluationStatus.objects.filter(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("completed")):
+					context["archive"] = False
 			if user_already_voted and EvaluationStatus.objects.filter(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("submitted")):
 				context["ac_re"] = True			
 		context['DOMAIN_URL'] = settings.DOMAIN_URL
@@ -573,7 +641,7 @@ class AssignEvaluationView(ListView):
 		context = {}
 		teachers = ExtendedUser.objects.filter(is_admin = 0)
 		context['teachers'] = teachers
-		forms = Form.objects.filter(is_active = 1)
+		forms = Form.objects.filter(is_active = 1, is_public =1)
 		context['forms'] = forms
 		return context
 
@@ -632,8 +700,12 @@ class EvaluationListView(ListView):
 		user = self.request.user
 		voted_evaluations = FormVoted.objects.values_list('evaluation_id', flat=True)
 		voted_evaluations = list(filter(bool, voted_evaluations))
+		completed_evaluations_list = []
 		reviewed_status = [evappconstants.getEvStatus("accepted"), evappconstants.getEvStatus("reviewed"), evappconstants.getEvStatus("rejected")]
 		completed_status = [evappconstants.getEvStatus("completed")]
+		completed_evaluations = EvaluationStatus.objects.filter(evaluation_status_id__in=completed_status).values_list('evaluation_id', flat=True)
+		ce = Evaluation.objects.filter(id__in=completed_evaluations).values_list('id', flat=True)
+		completed_evaluations_list = ce
 		if path.endswith("evaluation-ongoing"):
 			context["evaluations"] = Evaluation.objects.exclude(id__in=voted_evaluations)
 			context["nav_val"] = "Ongoing Evaluations"
@@ -646,7 +718,9 @@ class EvaluationListView(ListView):
 			context["nav_val"] = "Reviewd Evaluations"
 		elif path.endswith("evaluation-completed"):
 			completed_evaluations = EvaluationStatus.objects.filter(evaluation_status_id__in=completed_status).values_list('evaluation_id', flat=True)
-			context["evaluations"] = Evaluation.objects.filter(id__in=completed_evaluations)
+			ce = Evaluation.objects.filter(id__in=completed_evaluations)
+			context["evaluations"] = ce
+			completed_evaluations_list = list(filter(bool, ce))
 			context["nav_val"] = "Completed Evaluations"
 		elif path.endswith("evaluation-under-me"):
 			context["evaluations"] = Evaluation.objects.filter(evaluator_id= user)
@@ -661,6 +735,16 @@ class EvaluationListView(ListView):
 			# Ideally status should be in evaluation model...do the change asap
 			my_evals = Evaluation.objects.filter(evaluatee_id= user).values_list('id', flat=True)
 			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=my_evals)
+		elif path.endswith("evaluation-review"):
+			evr = Evaluation.objects.exclude(id__in=completed_evaluations_list)
+			context["evaluations"] = evr
+			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=evr)
+			context["nav_val"] = "Review Evaluations"
+		elif path.endswith("evaluation-archive"):
+			completed_evaluations = EvaluationStatus.objects.filter(evaluation_status_id__in=completed_status).values_list('evaluation_id', flat=True)
+			ce = Evaluation.objects.filter(id__in=completed_evaluations)
+			context["evaluations"] = ce
+			context["nav_val"] = "Archived Evaluations"
 		return context
 
 class SendMail(ListView):
@@ -723,5 +807,9 @@ class AcceptRejectView(DetailView):
 		if action == "reject":
 			ev_status = EvaluationStatus.objects.filter(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("submitted"))[0]
 			ev_status.evaluation_status_id = evappconstants.getEvStatus("rejected")
+			ev_status.save()
+		if action == "archive":
+			ev_status = EvaluationStatus.objects.filter(evaluation_id=evaluation)[0]
+			ev_status.evaluation_status_id = evappconstants.getEvStatus("completed")
 			ev_status.save()
 		return context
