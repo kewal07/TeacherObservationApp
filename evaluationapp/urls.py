@@ -38,4 +38,5 @@ urlpatterns = [
 	url(r'^subjects-home$',login_required(views.SubjectHomeView.as_view()),name='subjects_view'),
 	url(r'^classes-home$',login_required(views.SubjectHomeView.as_view()),name='classes_view'),
 	url(r'^download-home$',login_required(views.DownloadHomeView.as_view()),name='view_download'),
+	url(r'^exportexcel',views.excel_view,name="exportexcel"),
 ]

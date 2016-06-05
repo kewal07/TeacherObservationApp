@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.views.generic import ListView,DetailView
 from evaluationapp.models import Grade,School,Subject,Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, EvaluationStatus
 from evaluationapp import evappconstants
@@ -813,3 +813,172 @@ class AcceptRejectView(DetailView):
 			ev_status.evaluation_status_id = evappconstants.getEvStatus("completed")
 			ev_status.save()
 		return context
+
+import xlwt
+
+normal_style = xlwt.easyxf(
+	"""
+	font:name Verdana
+	"""
+)
+
+border_style = xlwt.easyxf(
+	"""
+	font:name Verdana;
+	border: top thin, right thin, bottom thin, left thin;
+	align: vert centre, horiz left;
+	"""
+)
+
+def excel_view(request):
+	if not request.user.is_authenticated():
+		errors['notloggedin'] = "User not logged In"
+		return HttpResponseNotFound(errors,content_type="application/json")
+	post_data = request.GET
+	print(post_data)
+	export_type = post_data.get("export_type","")
+	teacher_id = int(post_data.get("teacher-select",-1))
+	form_id = int(post_data.get("form-select",-1))
+	print(export_type, teacher_id, form_id)
+	response = HttpResponse(content_type='application/ms-excel')
+	wb = xlwt.Workbook()
+	ws0 = wb.add_sheet('Definitions', cell_overwrite_ok=True)
+	ws1 = wb.add_sheet('Raw Data', cell_overwrite_ok=True)
+	errors = {}
+	try:
+		if export_type == "evaluation_per_teacher_per_form":
+			teacher = User.objects.get(pk=teacher_id)
+			form = None
+			evaluation = None
+			ev_status = ""
+			try:
+				form = Form.objects.get(pk=form_id)
+				print(form)
+				evaluation = Evaluation.objects.get(evaluation_form=form, evaluatee=teacher)
+				print(evaluation)
+				ev_status = EvaluationStatus.objects.filter(evaluation_id=evaluation)[0].evaluation_status_id.status_state
+				print(ev_status)
+			except:
+				return HttpResponseNotFound("This Evaluation has not been done yet")
+			# raw data sheet 
+			ws1.write(0,0,"Evaluator",normal_style)
+			ws1.write(0,1,"Evaluatee",normal_style)
+			ws1.write(0,2,"Evaluation Form",normal_style)
+			ws1.write(0,3,"Evaluation Name",normal_style)
+			ws1.write(0,4,"Status",normal_style)
+			i = 1
+			j = 1
+			form_question_list = FormQuestion.objects.filter(form_id = form_id)
+			# write to the description sheet
+			write_on_sheet1(ws0, form_question_list)
+			voted_list = FormVoted.objects.filter(evaluation = evaluation)
+			for voted in voted_list:
+				vote_user = voted.user
+				addVal = 0
+				ws1.write(i,0,vote_user.first_name+" "+vote_user.last_name+" ( "+vote_user.username+" )",normal_style)
+				ws1.write(i,1,teacher.first_name+" "+teacher.last_name+" ( "+teacher.username+" )",normal_style)
+				ws1.write(i,2,form.form_name,normal_style)
+				ws1.write(i,3,evaluation.evaluation_name,normal_style)
+				ws1.write(i,4,ev_status,normal_style)
+				j = 5
+				for index,form_question in enumerate(form_question_list):
+					question = form_question.question
+					question_type = form_question.question_type
+					excel_text = ""
+					choice_list = Choice.objects.filter(question_id=question.id)
+					excel_text = "Q"+str(index+1)
+					answer_text = ""
+					answer_texts = []
+					excel_texts = []
+					if question_type in ["text", "rating"]:
+						vote_text = VoteText.objects.filter(user_id=vote_user.id,question_id=question.id)
+						if vote_text:
+							answer_text = vote_text[0].answer_text
+					elif question_type == "radio":
+						for c_index,choice in enumerate(choice_list):
+							vote = Vote.objects.filter(user_id=vote_user.id,choice=choice)
+							if vote:
+								answer_text = str(c_index+1)
+						if answer_text:
+							answer_texts.append(answer_text)
+						else:
+							answer_texts.append(0)
+						excel_texts.append(excel_text)
+					elif question_type == "checkbox":
+						for c_index,choice in enumerate(choice_list):
+							excel_text = "Q"+str(index+1)+"_"+str(c_index+1)
+							answer_text = 0
+							vote = Vote.objects.filter(user_id=vote_user.id,choice=choice)
+							if vote:
+								answer_text = 1
+							answer_texts.append(answer_text)
+							excel_texts.append(excel_text)
+					if form_question.add_comment and question_type not in ["text", "rating"]:
+						excel_texts.append("Q"+str(index+1)+"_Comments")
+						additionalComment = VoteText.objects.filter(user=voted.user, question=question)
+						if additionalComment:
+							answer_texts.append(additionalComment[0].answer_text)
+						else:
+							answer_texts.append("No Comments")
+					if answer_texts:
+						for ans_index,answer in enumerate(answer_texts):
+							write_result_into_excel(ws1,excel_texts[ans_index],answer,i,j+index+ans_index+addVal)
+						addVal += ans_index
+					else:
+						write_result_into_excel(ws1,excel_text,answer_text,i,j+index+addVal)
+				i += 1		
+			fname = "%s %s_Evaluated_on_%s.xls"%(teacher.first_name,teacher.last_name,form.form_name)
+			response['Content-Disposition'] = 'attachment; filename=%s' % fname
+			wb.save(response)
+			return response
+		errors['notfound'] = "No data provided"
+		return HttpResponseNotFound("<h1>Evaluation not found</h1>",content_type="application/json")
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
+		exc_type, exc_obj, tb = sys.exc_info()
+		f = tb.tb_frame
+		lineno = tb.tb_lineno
+		filename = f.f_code.co_filename
+		linecache.checkcache(filename)
+		line = linecache.getline(filename, lineno, f.f_globals)
+		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+		errors['notfound'] = "Form provided not found"
+		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+def write_result_into_excel(ws1,excel_text,answer_text,i,j):
+	ws1.write(0,j,excel_text,normal_style)
+	ws1.write(i,j,answer_text,normal_style)
+	return i,j
+
+def write_on_sheet1(ws0, form_question_list):
+	try:
+		ws0.col(0).width = 25*256
+		i = 0
+		ws0.write(i,0,"Single Select Questions Have 1 as lowest & 5 as highest Rating",normal_style)
+		i += 1
+		ws0.write(i,0,"Multi Select Questions are displayed as Q_Choice No & its respective rating",normal_style)
+		i += 2
+		j = 0
+		for index,form_que in enumerate(form_question_list):
+			ws0.write(i,1,"Q"+str(index+1),normal_style)
+			ws0.write(i,2,form_que.question.question_text,normal_style)
+			i += 1
+			if form_que.question_type in ["radio", "checkbox"]:
+				for c_index,choice in enumerate(form_que.question.choice_set.all()):
+					if form_que.question_type == "radio":
+						ws0.write(i,3,c_index+1,normal_style)
+					elif form_que.question_type == "checkbox":
+						ws0.write(i,3,"Q"+str(index+1)+"_"+str(c_index+1),normal_style)
+					ws0.write(i,4,choice.choice_text,normal_style)
+					i += 1
+				i += 1
+	except Exception as e:
+		exc_type, exc_obj, tb = sys.exc_info()
+		f = tb.tb_frame
+		lineno = tb.tb_lineno
+		filename = f.f_code.co_filename
+		linecache.checkcache(filename)
+		line = linecache.getline(filename, lineno, f.f_globals)
+		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
