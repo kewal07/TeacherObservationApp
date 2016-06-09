@@ -51,6 +51,11 @@ License: You must have a valid license purchased only from themeforest(the above
 	<!-- End Page Level -->
 	<!-- END THEME STYLES -->
 	<link rel="shortcut icon" href="{% static 'favicon.png' %}" />
+	<style>
+		.errorlist{
+			color:red;
+		}
+	</style>
 </head>
 <!-- END HEAD -->
 <!-- END HEAD -->
@@ -419,7 +424,7 @@ License: You must have a valid license purchased only from themeforest(the above
 													<label class="control-label col-md-3">Scheduled Date</label>
 													<div class="col-md-3">
 														<div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
-															<input type="text" class="form-control" name="scheduled" readonly>
+															<input type="text" class="scheduled form-control" name="scheduled" readonly>
 															<span class="input-group-btn">
 															<button class="btn default" type="button"><i class="fa fa-calendar"></i></button>
 															</span>
@@ -433,7 +438,7 @@ License: You must have a valid license purchased only from themeforest(the above
 													<label class="control-label col-md-3">Complete By</label>
 													<div class="col-md-3">
 														<div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
-															<input type="text" class="form-control" name="lastday" readonly>
+															<input type="text" class=" lastday form-control" name="lastday" readonly>
 															<span class="input-group-btn">
 															<button class="btn default" type="button"><i class="fa fa-calendar"></i></button>
 															</span>
@@ -518,6 +523,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="{% static 'assets/admin/pages/scripts/components-dropdowns.js' %}"></script>
 <script src="{% static 'assets/admin/pages/scripts/form-icheck.js ' %}"></script>
 <script src="{% static 'assets/admin/pages/scripts/components-pickers.js' %}"></script>
+<script src="{% static 'assets/global/plugins/bootbox/bootbox.min.js' %}"></script>
+<script src="{% static 'assets/admin/pages/scripts/ui-alert-dialog-api.js' %}"></script>
 <!-- End Page Level Scripts -->
 <script>
       jQuery(document).ready(function() {    
@@ -528,7 +535,24 @@ License: You must have a valid license purchased only from themeforest(the above
 			FormWizard.init();
 			ComponentsDropdowns.init();
 			ComponentsPickers.init();
+			UIAlertDialogApi.init();
 
+			
+			var myDate = new Date();
+			var prettyDate =myDate.getDate() + '-' +(myDate.getMonth()+1) + '-' + 
+			        myDate.getFullYear();
+			$(".lastday").val(prettyDate);
+			$(".scheduled").val(prettyDate);
+
+			// $("#evaluatee-select").change(function(){
+			// 	var evaluatee = ("#evaluatee-select option:selected").val();
+			// 	var evaluator = ("#evaluator-select option:selected").val();
+			// 	// var evaluatee = ("#evaluatee-select").val();
+			// 	// var evaluator = ("#evaluator-select").val();
+			// 	console.log(evaluatee,evaluator);
+			// 	if(evaluator == evaluatee)
+			// 		bootbox.alert("Evaluator and Evaluatee cannot be the same person.");
+			// });
 			// Form Submit
 			$("#assignEvaluationSubmit").click(function(event){
 				event.preventDefault();
@@ -547,7 +571,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						{
 							$(".errorlist").remove();
 							if(obj.hasOwnProperty("success")){
-								window.location = "{{ DOMAIN_URL }}";
+								window.location = "{% url 'evaluationapp:evaluation_home' %}";
 							}
 							else{
 								for(var key in obj){
@@ -564,7 +588,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						}
 					});
 				{% else %}
-					$(location).attr('href',create_url);
+					$(location).attr('href',{% url 'evaluationapp:evaluation_home' %});
 				{% endif %}
 			});
 			// End Form Submit
