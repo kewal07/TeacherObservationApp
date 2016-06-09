@@ -654,8 +654,12 @@ class AssignEvaluationView(ListView):
 			evaluator = User.objects.get(pk=post_data.get("selected-evaluator"))
 			evaluatee = User.objects.get(pk=post_data.get("selected-evaluatee"))
 			evaluation_name = evaluatee.username +" evaluated by "+evaluator.username+" on "+form.form_name
-			scheduled_at = datetime.datetime.strptime(post_data.get("scheduled"), "%d-%m-%Y")
-			last_day = datetime.datetime.strptime(post_data.get("lastday"), "%d-%m-%Y")
+			scheduled_at = None
+			last_day = None
+			if post_data.get("scheduled"):
+				scheduled_at = datetime.datetime.strptime(post_data.get("scheduled"), "%d-%m-%Y")
+			if post_data.get("lastday"):
+				last_day = datetime.datetime.strptime(post_data.get("lastday"), "%d-%m-%Y")
 			is_peer = post_data.get("ispeer",False)
 			is_surprised = post_data.get("issurprised",False)
 			tab3error = ""

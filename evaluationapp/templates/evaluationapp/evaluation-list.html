@@ -533,6 +533,10 @@ License: You must have a valid license purchased only from themeforest(the above
 						<div class="caption">
 							<i class="fa fa-check-square-o"></i>Evaluations
 						</div>	
+						<div class="actions">
+							<a href="{% url 'evaluationapp:evaluation_assign' %}" class="btn btn-default btn-sm">
+							<i class="fa fa-plus"></i> New Evaluation </a>
+						</div>
 					</div>
 					<div class="portlet-body">
 						{% if user.extendeduser.is_admin %}
