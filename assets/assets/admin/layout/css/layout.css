@@ -2795,8 +2795,8 @@ ul.central-library-book-list-search{
 }
 .fa-check-circle,.fa-times-circle{
   position: absolute;
-  font-size: 2rem !important;
-  color: green;
+  font-size: 1.5rem !important;
+  color: red;
   top: 7px;
   left: 0rem;
   z-index:1000;

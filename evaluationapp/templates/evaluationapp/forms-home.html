@@ -86,7 +86,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		        </li>
 		        <li>
 		            <a href="{% url 'evaluationapp:evaluation_home' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <fa class="fa fa-check-square-o" data-placement="bottom" data-original-title="Evaluations"></fa>
 		              <span id="menu-items-text" class="title tooltips">Evaluations</span>
 		            </a>
 		        </li>
@@ -98,25 +98,25 @@ License: You must have a valid license purchased only from themeforest(the above
 		        </li>
 		        <li>
 		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+		              <fa class="fa fa-bar-chart" data-placement="bottom" data-original-title="Evaluations"></fa>
 		              <span id="menu-items-text" class="title tooltips">Analytics</span>
 		            </a>
 		        </li>
 		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Export"></i>
-		              <span id="menu-items-text" class="title tooltips">Export Data</span>
+		            <a href="{% url 'evaluationapp:view_download' %}">
+		              <fa class="fa fa-cloud-download" data-placement="bottom" data-original-title="Export"></fa>
+		              <span id="menu-items-text" class="title tooltips">Download</span>
 		            </a>
 		        </li>
 		        <li>
 		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Upload"></i>
+		              <fa class="fa fa-cloud-upload" data-placement="bottom" data-original-title="Upload"></fa>
 		              <span id="menu-items-text" class="title tooltips">Upload</span>
 		            </a>
 		        </li>
 		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Settings"></i>
+		            <a href="{% url 'evaluationapp:view_settings' %}">
+		              <i class="fa fa-gear tooltips" data-placement="bottom" data-original-title="Settings"></i>
 		              <span id="menu-items-text" class="title tooltips">Settings</span>
 		            </a>
 		        </li>
@@ -172,24 +172,24 @@ License: You must have a valid license purchased only from themeforest(the above
 				</li>
 				<li>
 					<a href="{% url 'evaluationapp:evaluation_home' %}">
-					<i class="icon-basket"></i>
+					<fa class="fa fa-check-square-o"></fa>
 					<span class="title">Evaluations</span>
 					<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
 						<li>
 							<a href="{% url 'evaluationapp:evaluation_assign' %}">
-							<i class="icon-home"></i>
+							<fa class="fa fa-plus"></fa>
 							Assign</a>
 						</li>
 						<li>
 							<a href="{% url 'evaluationapp:evaluation_review' %}">
-							<i class="icon-basket"></i>
+							<i class="fa fa-search"></i>
 							Review</a>
 						</li>
 						<li>
 							<a href="{% url 'evaluationapp:evaluation_archive' %}">
-							<i class="icon-tag"></i>
+							<i class="fa fa-archive"></i>
 							Archive</a>
 						</li>
 						
@@ -223,33 +223,33 @@ License: You must have a valid license purchased only from themeforest(the above
 							InActive</a>
 						</li>
 						<li>
-							<a href="{% url 'evaluationapp:evaluation_archive' %}">
-							<i class="fa fa-lock"></i>
+							<a href="#">
+							<i class="fa fa-archive"></i>
 							Archived</a>
 						</li>
 					</ul>
 				</li>
 				<li>
-					<a href="javascript:;">
-						<i class="icon-rocket"></i>
+					<a href="{% url 'evaluationapp:index' %}">
+						<i class="fa fa-bar-chart"></i>
 						<span class="title">Analytics</span>
 					</a>
 				</li>
 				<li>
-					<a href="javascript:;">
-						<i class="icon-diamond"></i>
+					<a href="{% url 'evaluationapp:index' %}">
+						<i class="fa fa-cloud-upload"></i>
 						<span class="title">Uploads</span>
 					</a>
 				</li>
 				<li>
-					<a href="javascript:;">
-						<i class="icon-puzzle"></i>
+					<a href="{% url 'evaluationapp:view_download' %}">
+						<i class="fa fa-cloud-download"></i>
 						<span class="title">Downloads</span>
 					</a>
 				</li>
 				<li class="last ">
-					<a href="javascript:;">
-					<i class="icon-puzzle"></i>
+					<a href="{% url 'evaluationapp:view_settings' %}">
+					<i class="fa fa-gear"></i>
 					<span class="title">Settings</span>
 				</li>
 			</ul>
@@ -268,12 +268,12 @@ License: You must have a valid license purchased only from themeforest(the above
 				<ul class="page-breadcrumb">
 					<li>
 						<i class="fa fa-home"></i>
-						<a href="#">Home</a>
+						<a href="{% url 'evaluationapp:index' %}">Home</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
 						<i class="fa fa-file-text-o"></i>
-						<a href="#">Forms</a>
+						<a href="{% url 'evaluationapp:view_forms_home' %}">Forms</a>
 					</li>
 				</ul>
 			</div>
@@ -328,7 +328,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						</div>
 					</a>
 				</div>
-				<div class="tile double bg-blue-steel">
+				<!-- <div class="tile double bg-blue-steel">
 					<a href="{% url 'evaluationapp:evaluation_archive' %}">
 						<div class="tile-body">
 							<i class="fa fa-lock"></i>
@@ -339,7 +339,7 @@ License: You must have a valid license purchased only from themeforest(the above
 							</div>
 						</div>
 					</a>
-				</div>
+				</div> -->
 			</div>
 			<!-- END PAGE CONTENT-->
 		</div>

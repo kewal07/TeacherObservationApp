@@ -30,6 +30,7 @@ class Grade(models.Model):
 	number_boys = models.IntegerField(blank=True,null=True,default=0)
 	number_girls = models.IntegerField(blank=True,null=True,default=0)
 	school = models.ForeignKey(School,blank=True,null=True)
+	grade_section = models.CharField(max_length=10,blank=True,null=True)
 
 class Subject(models.Model):
 	subject_id = models.IntegerField(blank=True,null=True,default=0)
@@ -47,7 +48,7 @@ class Form(models.Model):
 	thanks_msg = models.CharField(max_length=400,null=True,blank=True, default="Thank You for Completing the Assessment!!!")
 	number_sections = models.IntegerField(blank=True,null=True,default=0)
 	is_active = models.BooleanField(default=1)
-	is_public = models.BooleanField(default=1)
+	is_public = models.BooleanField(default=0)
 
 	def __str__(self):
 		return self.form_name

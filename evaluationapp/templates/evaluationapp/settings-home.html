@@ -77,63 +77,129 @@ License: You must have a valid license purchased only from themeforest(the above
 		<!-- END RESPONSIVE MENU TOGGLER -->
 		<!-- BEGIN TOP NAVIGATION MENU -->
 		<div class="top-menu">
-			<ul class="nav navbar-nav pull-right">
-				<li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Home"></i>
-		              <span id="menu-items-text" class="title tooltips">Home</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:evaluation_home' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Evaluations</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:view_forms_home' %}">
-		              <i class="fa fa-file-text-o tooltips" data-placement="bottom" data-original-title="Forms"></i>
-		              <span id="menu-items-text" class="title tooltips">Forms</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Analytics</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Export"></i>
-		              <span id="menu-items-text" class="title tooltips">Export Data</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Upload"></i>
-		              <span id="menu-items-text" class="title tooltips">Upload</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:view_settings' %}">
-		              <i class="icon-gear tooltips" data-placement="bottom" data-original-title="Settings"></i>
-		              <span id="menu-items-text" class="title tooltips">Settings</span>
-		            </a>
-		        </li>
-				<li class="dropdown dropdown-user">
-					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-		              <img alt="{{ user.first_name }}" class="img-circle" src="{{ user.extendeduser.get_profile_pic_url }}" />
-		              <span class="username username-hide-on-mobile">{{ user.username }}</span>
-		              <i class="fa fa-angle-down"></i>
-		            </a>
-		            <ul class="dropdown-menu dropdown-menu-default">
-		              <li class="my-index-logout">
-		                <a href="{% url 'login:logout' %}"> <i class="icon-key"></i> Log Out </a>
-		              </li>
-		            </ul>
-				</li>
+			{% if user.extendeduser.is_admin %}
+				<ul class="nav navbar-nav pull-right">
+					<li>
+			            <a href="{% url 'evaluationapp:index' %}">
+			              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Home"></i>
+			              <span id="menu-items-text" class="title tooltips">Home</span>
+			            </a>
+			        </li>
+			        <li>
+			            <a href="{% url 'evaluationapp:evaluation_home' %}">
+			              <fa class="fa fa-check-square-o" data-placement="bottom" data-original-title="Evaluations"></fa>
+			              <span id="menu-items-text" class="title tooltips">Evaluations</span>
+			            </a>
+			        </li>
+			        <li>
+			            <a href="{% url 'evaluationapp:view_forms_home' %}">
+			              <i class="fa fa-file-text-o tooltips" data-placement="bottom" data-original-title="Forms"></i>
+			              <span id="menu-items-text" class="title tooltips">Forms</span>
+			            </a>
+			        </li>
+			        <li>
+			            <a href="{% url 'evaluationapp:index' %}">
+			              <fa class="fa fa-bar-chart" data-placement="bottom" data-original-title="Evaluations"></fa>
+			              <span id="menu-items-text" class="title tooltips">Analytics</span>
+			            </a>
+			        </li>
+			        <li>
+			            <a href="{% url 'evaluationapp:view_download' %}">
+			              <fa class="fa fa-cloud-download" data-placement="bottom" data-original-title="Export"></fa>
+			              <span id="menu-items-text" class="title tooltips">Download</span>
+			            </a>
+			        </li>
+			        <li>
+			            <a href="{% url 'evaluationapp:index' %}">
+			              <fa class="fa fa-cloud-upload" data-placement="bottom" data-original-title="Upload"></fa>
+			              <span id="menu-items-text" class="title tooltips">Upload</span>
+			            </a>
+			        </li>
+			        <li>
+			            <a href="{% url 'evaluationapp:view_settings' %}">
+			              <i class="fa fa-gear tooltips" data-placement="bottom" data-original-title="Settings"></i>
+			              <span id="menu-items-text" class="title tooltips">Settings</span>
+			            </a>
+			        </li>
+					<li class="dropdown dropdown-user">
+						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+			              <img alt="{{ user.first_name }}" class="img-circle" src="{{ user.extendeduser.get_profile_pic_url }}" />
+			              <span class="username username-hide-on-mobile">{{ user.username }}</span>
+			              <i class="fa fa-angle-down"></i>
+			            </a>
+			            <ul class="dropdown-menu dropdown-menu-default">
+			              <li class="my-index-logout">
+			                <a href="{% url 'login:logout' %}"> <i class="icon-key"></i> Log Out </a>
+			              </li>
+			            </ul>
+					</li>
+					<!-- END USER LOGIN DROPDOWN -->
+				</ul>
+			{% else %}
+				<ul class="nav navbar-nav pull-right">
+					<li>
+			            <a href="{% url 'evaluationapp:index' %}">
+			              <i class="icon-home tooltips" data-placement="bottom" data-original-title="Home"></i>
+			              <span id="menu-items-text" class="title tooltips">Home</span>
+			            </a>
+			        </li>
+			        <li>
+						<a href="{% url 'evaluationapp:evaluation_under_me' %}">
+							<i class=" fa fa-check-square-o tooltips" data-placement="bottom" data-original-title="Evaluate Others"></i>
+						 	<span id="menu-items-text" class="title tooltips">Evaluate Others</span>
+						</a>
+					</li>
+					<li>
+						<a href="{% url 'evaluationapp:my_evaluations' %}">
+							<i class="fa fa-thumbs-o-up tooltips" data-placement="bottom" data-original-title="My Feedback"></i>
+							<span id="menu-items-text" class="title tooltips">My Feedback</span>
+						</a>
+					</li>
+			        <!-- <li>
+			            <a href="{% url 'evaluationapp:evaluation_home' %}">
+			              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+			              <span id="menu-items-text" class="title tooltips">Evaluations</span>
+			            </a>
+			        </li> -->
+			        <!-- <li>
+			            <a href="{% url 'evaluationapp:index' %}">
+			              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+			              <span id="menu-items-text" class="title tooltips">Analytics</span>
+			            </a>
+			        </li> -->
+			       <!--  <li>
+			            <a href="{% url 'evaluationapp:index' %}">
+			              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+			              <span id="menu-items-text" class="title tooltips">Upload</span>
+			            </a>
+			        </li> -->
+			        <li>
+			            <a href="{% url 'evaluationapp:index' %}">
+			              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
+			              <span id="menu-items-text" class="title tooltips">Download</span>
+			            </a>
+			        </li>
+			        <li>
+			            <a href="{% url 'evaluationapp:view_settings' %}">
+			              <i class="fa fa-gear tooltips" data-placement="bottom" data-original-title="Settings"></i>
+			              <span id="menu-items-text" class="title tooltips">Settings</span>
+			            </a>
+			        </li>
+					<li class="dropdown dropdown-user">
+						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+			              <img alt="{{ user.first_name }}" class="img-circle" src="{{ user.extendeduser.get_profile_pic_url }}" />
+			              <span class="username username-hide-on-mobile">{{ user.username }}</span>
+			              <i class="fa fa-angle-down"></i>
+			            </a>
+			            <ul class="dropdown-menu dropdown-menu-default">
+			              <li class="my-index-logout">
+			                <a href="{% url 'login:logout' %}"> <i class="icon-key"></i> Log Out </a>
+			              </li>
+			            </ul>
+					</li>
 				<!-- END USER LOGIN DROPDOWN -->
-			</ul>
+				</ul>
+			{% endif %}
 		</div>
 		<!-- END TOP NAVIGATION MENU -->
 	</div>
@@ -156,7 +222,106 @@ License: You must have a valid license purchased only from themeforest(the above
 			<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
 			<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
 			<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-			<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+			{% if user.extendeduser.is_admin %}
+				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+					<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+					<li class="sidebar-toggler-wrapper">
+						<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+						<div class="sidebar-toggler">
+						</div>
+						<!-- END SIDEBAR TOGGLER BUTTON -->
+					</li>
+					<li class="start ">
+						<a href="javascript:;">
+							<i class="icon-home"></i>
+							<span class="title">Home</span>
+						</a>
+					</li>
+					<li>
+						<a href="{% url 'evaluationapp:evaluation_home' %}">
+						<fa class="fa fa-check-square-o"></fa>
+						<span class="title">Evaluations</span>
+						<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:evaluation_assign' %}">
+								<fa class="fa fa-plus"></fa>
+								Assign</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:evaluation_review' %}">
+								<i class="fa fa-search"></i>
+								Review</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:evaluation_archive' %}">
+								<i class="fa fa-archive"></i>
+								Archive</a>
+							</li>
+							
+						</ul>
+					</li>
+					<li>
+						<a href="javascript:;">
+							<i class="fa-file-text-o"></i>
+							<span class="title">Forms</span>
+							<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:create-form' %}">
+								<i class="fa fa-plus"></i>
+								Create</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:edit_evaluations' %}">
+								<i class="fa fa-edit"></i>
+								Edit</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:view_active' %}">
+								<i class="fa fa-check-square"></i>
+								Active</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:view_inactive' %}">
+								<i class="fa fa-square-o"></i>
+								InActive</a>
+							</li>
+							<li>
+								<a href="#">
+								<i class="fa fa-archive"></i>
+								Archived</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="{% url 'evaluationapp:index' %}">
+							<i class="fa fa-bar-chart"></i>
+							<span class="title">Analytics</span>
+						</a>
+					</li>
+					<li>
+						<a href="{% url 'evaluationapp:index' %}">
+							<i class="fa fa-cloud-upload"></i>
+							<span class="title">Uploads</span>
+						</a>
+					</li>
+					<li>
+						<a href="{% url 'evaluationapp:view_download' %}">
+							<i class="fa fa-cloud-download"></i>
+							<span class="title">Downloads</span>
+						</a>
+					</li>
+					<li class="last ">
+						<a href="{% url 'evaluationapp:view_settings' %}">
+						<i class="fa fa-gear"></i>
+						<span class="title">Settings</span>
+					</li>
+				</ul>
+			{% else %}
+				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
 				<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
 				<li class="sidebar-toggler-wrapper">
 					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
@@ -164,13 +329,48 @@ License: You must have a valid license purchased only from themeforest(the above
 					</div>
 					<!-- END SIDEBAR TOGGLER BUTTON -->
 				</li>
-				<li class="start ">
+				<li class="start active">
 					<a href="javascript:;">
 						<i class="icon-home"></i>
 						<span class="title">Home</span>
 					</a>
 				</li>
 				<li>
+					<a href="{% url 'evaluationapp:evaluation_under_me' %}">
+						<i class=" fa fa-check-square-o"></i>
+						<span class="title">Evaluate Others</span>
+					</a>
+				</li>
+				<li>
+					<a href="{% url 'evaluationapp:my_evaluations' %}">
+						<i class="fa fa-thumbs-o-up"></i>
+						<span class="title">My Feedback</span>
+					</a>
+				</li>
+					<!-- <ul class="sub-menu"> -->
+						<!-- <li>
+							<a href="{% url 'evaluationapp:evaluation_under_me' %}">
+							<i class="icon-basket"></i>
+							Evaluator Profile</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:my_evaluations' %}">
+							<i class="icon-basket"></i>
+							Evaluatee Profile</a>
+						</li> -->
+						<!-- <li>
+							<a href="#">
+							<i class="icon-home"></i>
+							Active</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="icon-basket"></i>
+							InActive</a>
+						</li> -->
+					<!-- </ul> -->
+				<!-- </li> -->
+				<!-- <li>
 					<a href="{% url 'evaluationapp:evaluation_home' %}">
 					<i class="icon-basket"></i>
 					<span class="title">Evaluations</span>
@@ -180,79 +380,55 @@ License: You must have a valid license purchased only from themeforest(the above
 						<li>
 							<a href="{% url 'evaluationapp:evaluation_assign' %}">
 							<i class="icon-home"></i>
-							Assign</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:evaluation_review' %}">
-							<i class="icon-basket"></i>
-							Review</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:evaluation_archive' %}">
-							<i class="icon-tag"></i>
-							Archive</a>
-						</li>
-						
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:;">
-						<i class="fa-file-text-o"></i>
-						<span class="title">Forms</span>
-						<span class="arrow "></span>
-					</a>
-					<ul class="sub-menu">
-						<li>
-							<a href="{% url 'evaluationapp:create-form' %}">
-							<i class="fa fa-plus"></i>
-							Create</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:edit_evaluations' %}">
-							<i class="fa fa-edit"></i>
-							Edit</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:view_active' %}">
-							<i class="fa fa-check-square"></i>
-							Active</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:view_inactive' %}">
-							<i class="fa fa-square-o"></i>
-							InActive</a>
+							Assign Evaluation</a>
 						</li>
 						<li>
 							<a href="#">
-							<i class="fa fa-lock"></i>
-							Archived</a>
+							<i class="icon-basket"></i>
+							Ongoing Evaluations</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="icon-tag"></i>
+							Submitted Evaluations</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="icon-handbag"></i>
+							Reviewed Evaluations</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="icon-pencil"></i>
+							Completed Evaluations</a>
 						</li>
 					</ul>
-				</li>
-				<li>
+				</li> -->
+				<!-- <li>
 					<a href="javascript:;">
 						<i class="icon-rocket"></i>
 						<span class="title">Analytics</span>
 					</a>
-				</li>
-				<li>
+				</li> -->
+				<!-- <li>
 					<a href="javascript:;">
 						<i class="icon-diamond"></i>
 						<span class="title">Uploads</span>
 					</a>
-				</li>
+				</li> -->
 				<li>
 					<a href="javascript:;">
-						<i class="icon-puzzle"></i>
+						<i class="fa fa-cloud-download"></i>
 						<span class="title">Downloads</span>
 					</a>
 				</li>
 				<li class="last ">
 					<a href="{% url 'evaluationapp:view_settings' %}">
-					<i class="icon-gear"></i>
+					<i class="fa fa-gear"></i>
 					<span class="title">Settings</span>
 				</li>
 			</ul>
+			{% endif %}
 			<!-- END SIDEBAR MENU -->
 		</div>
 	</div>
