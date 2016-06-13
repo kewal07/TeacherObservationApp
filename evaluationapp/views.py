@@ -323,6 +323,7 @@ def createFormQues(form,ques_list,curtime,user,edit):
 	try:
 		if edit:
 			form_ques = FormQuestion.objects.filter(form=form)
+			print(form_ques)
 			for que in form_ques:
 				question = que.question
 				question.delete()
@@ -640,6 +641,7 @@ class AssignEvaluationView(ListView):
 	def get_queryset(self, **kwargs):
 		context = {}
 		teachers = ExtendedUser.objects.filter(is_admin = 0)
+		print(teachers)
 		context['teachers'] = teachers
 		forms = Form.objects.filter(is_active = 1, is_public =1)
 		context['forms'] = forms

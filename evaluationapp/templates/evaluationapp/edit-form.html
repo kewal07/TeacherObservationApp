@@ -420,7 +420,7 @@ License: You must have a valid license purchased only from themeforest(the above
 													</div>
 												</div>
 												{% for fs in form.formsection_set.all %}
-													{% if forloop.counter > 2 %}
+													{% if forloop.counter > 1 %}
 														<div class="form-group extra-section-div">
 													{% else %}
 														<div class="form-group">
@@ -677,15 +677,26 @@ License: You must have a valid license purchased only from themeforest(the above
 			$("#tab2").on("change","select#section-select",function(){
 				$(".extra-section-div").remove();
 				noOfSections = $("select#section-select").val();
-				if(parseInt(noOfSections) > 2){
+				if(parseInt(noOfSections) > 1){
 					var i;
-					for (i = 1; i <= parseInt(noOfSections)-2; i++) { 
-						var element = '<div class="form-group extra-section-div"><label class="control-label col-md-3">Section'+(i+parseInt(2))+'</label><div class="col-md-4"><input type="text" id="sectionName---'+(i+parseInt(2))+'"  class="form-control" name="section'+(i+parseInt(2))+'"/></div></div>';
+					for (i = 1; i <= parseInt(noOfSections)-1; i++) { 
+						var element = '<div class="form-group extra-section-div"><label class="control-label col-md-3">Section'+(i+parseInt(1))+'</label><div class="col-md-4"><input type="text" id="sectionName---'+(i+parseInt(1))+'"  class="form-control" name="section'+(i+parseInt(1))+'"/></div></div>';
 						$("#tab2").append(element);
 					}
 				}
 			});
-			// End Sections
+
+			// $(".button-next").click(function(){
+			// 	console.log('ankit');
+			// 	var i;
+			//   	noOfSections = $("select#section-select").val();
+			//   	console.log($('#question-section-select'));
+			//   	console.log(noOfSections);
+			//   	for (i = 1; i <= parseInt(noOfSections); i++) { 
+			//   		$('select#question-section-select').append('<option value="'+$("#sectionName---"+i).val()+'">'+$("#sectionName---"+i).val()+'</option>');
+			//   	}
+			//   	sectionUpdated = 1;
+			// });
 
 			// Add Question
 			$("#tab3").on("click",".add-q",function(){
