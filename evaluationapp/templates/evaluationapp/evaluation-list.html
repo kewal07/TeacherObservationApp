@@ -640,7 +640,7 @@ License: You must have a valid license purchased only from themeforest(the above
 											</td>
 											{% if not request.path == '/evaluation-archive' %}
 												<td>
-													<a href="{% url 'evaluationapp:send_evaluation_reminder' %}?action=evaluationremider&id={{ evaluation.id }}" class="btn blue btn-sm">
+													<a href="#" class="btn blue btn-sm evaluation_reminder_button" id="{{ evaluation.id }}">
 													<i class="fa fa-pencil"></i> Send Reminder </a>
 												</td>
 											{% endif %}
@@ -780,11 +780,25 @@ License: You must have a valid license purchased only from themeforest(the above
 <script type="text/javascript" src="{% static 'assets/global/plugins/select2/select2.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/global/plugins/datatables/media/js/jquery.dataTables.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js' %}"></script>
+<script src="{% static 'assets/global/plugins/bootbox/bootbox.min.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/pages/scripts/table-managed.js' %}"></script>
 <!-- Page Level -->
 {% block page-scripts %}
 {% endblock %}
 <script>
+	$('.evaluation_reminder_button').click(function(){
+		var evaluationid = $(this).attr('id');
+		$.ajax({
+				type: 'GET',
+				url:"send-mail?action=evaluationremider&id="+evaluationid,
+				processData: false,
+				contentType: false,
+				success:function(response)
+				{
+					bootbox.alert("Reminder Sent Successfully");
+				}
+			});
+	});
       jQuery(document).ready(function() {    
          	Metronic.init(); // init metronic core components
 			Layout.init(); // init current layout

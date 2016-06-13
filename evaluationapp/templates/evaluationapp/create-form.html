@@ -72,7 +72,6 @@ License: You must have a valid license purchased only from themeforest(the above
 		}
 		.button-previous{
 			position: absolute;
-		    right: 12rem;
 		    padding: 0 1rem;
 		    bottom:2px;
 		}
@@ -84,6 +83,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		}
 		.button-next{
 			padding: 0 1rem;
+			margin-left: 10rem !important;
 		}
 	</style>
 </head>
@@ -445,6 +445,7 @@ License: You must have a valid license purchased only from themeforest(the above
 													<label class="control-label col-md-3">No Of Sections</label>
 													<div class="col-md-4">
 														<select id="section-select" name="no-of-section" class="bs-select form-control">
+															<option value="1">One</option>
 															<option value="2">Two</option>
 															<option value="3">Three</option>
 															<option value="4">Four</option>
@@ -464,13 +465,13 @@ License: You must have a valid license purchased only from themeforest(the above
 														<input type="text" id="sectionName---1" class="form-control" name="section1"/>
 													</div>
 												</div>
-												<div class="form-group">
+												<!-- <div class="form-group">
 													<label class="control-label col-md-3">Section2
 													</label>
 													<div class="col-md-4">
 														<input type="text" id="sectionName---2" class="form-control" name="section2"/>
 													</div>
-												</div>
+												</div> -->
 											</div>
 											<div class="tab-pane" id="tab3">
 												<h3 class="block">Add Questions</h3>
@@ -486,7 +487,7 @@ License: You must have a valid license purchased only from themeforest(the above
 												<a href="javascript:;" class="btn blue button-next">
 												Continue <i class="m-icon-swapright m-icon-white"></i>
 												</a>
-												<a href="javascript:;" class="btn green button-submit surveySubmit" id="createSurveySubmit">
+												<a href="javascript:;" class="btn green button-submit surveySubmit" id="createSurveySubmit" data-toggle="confirmation">
 												Submit <i class="m-icon-swapright m-icon-white"></i>
 												</a>
 											</div>
@@ -542,6 +543,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <script type="text/javascript" src="{% static 'assets/global/plugins/select2/select2.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js' %}"></script>
 <script src="{% static 'assets/global/plugins/icheck/icheck.min.js' %}"></script>
+<script src="{% static 'assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js' %}" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- Page Level Scripts -->
 <script src="{% static 'assets/admin/pages/scripts/components-dropdowns.js' %}"></script>
@@ -603,10 +605,10 @@ License: You must have a valid license purchased only from themeforest(the above
 			$("#tab2").on("change","select#section-select",function(){
 				$(".extra-section-div").remove();
 				noOfSections = $("select#section-select").val();
-				if(parseInt(noOfSections) > 2){
+				if(parseInt(noOfSections) > 1){
 					var i;
-					for (i = 1; i <= parseInt(noOfSections)-2; i++) { 
-						var element = '<div class="form-group extra-section-div"><label class="control-label col-md-3">Section'+(i+parseInt(2))+'</label><div class="col-md-4"><input type="text" id="sectionName---'+(i+parseInt(2))+'"  class="form-control" name="section'+(i+parseInt(2))+'"/></div></div>';
+					for (i = 1; i <= parseInt(noOfSections)-1; i++) { 
+						var element = '<div class="form-group extra-section-div"><label class="control-label col-md-3">Section'+(i+parseInt(1))+'</label><div class="col-md-4"><input type="text" id="sectionName---'+(i+parseInt(1))+'"  class="form-control" name="section'+(i+parseInt(1))+'"/></div></div>';
 						$("#tab2").append(element);
 					}
 				}
