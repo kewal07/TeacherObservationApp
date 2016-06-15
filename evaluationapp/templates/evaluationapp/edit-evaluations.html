@@ -217,17 +217,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						<li>
 							<a href="{% url 'evaluationapp:edit_evaluations' %}">
 							<i class="fa fa-edit"></i>
-							Edit</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:view_active' %}">
-							<i class="fa fa-check-square"></i>
-							Active</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:view_inactive' %}">
-							<i class="fa fa-square-o"></i>
-							InActive</a>
+							View</a>
 						</li>
 						<li>
 							<a href="#">
@@ -269,13 +259,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		<div class="page-content">
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
-				{% if data.inactive %}
-					InActive Forms
-				{% elif data.active %}
-					Active Forms
-				{% else %}
-					Edit Forms
-				{% endif %}
+				View Forms
 			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
@@ -289,22 +273,10 @@ License: You must have a valid license purchased only from themeforest(the above
 						<a href="{% url 'evaluationapp:view_forms_home' %}">Forms</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
-					{% if data.inactive %}
-						<li>
-							<i class="fa fa-square-o"></i>
-							<a href="#">InActive Forms</a>
-						</li>
-					{% elif data.active %}
-						<li>
-							<i class="fa fa-check-square"></i>
-							<a href="#">Active Forms</a>
-						</li>
-					{% else %}
-						<li>
-							<i class="fa fa-edit"></i>
-							<a href="#">Edit</a>
-						</li>
-					{% endif %}
+					<li>
+						<i class="fa fa-square-o"></i>
+						<a href="#">View Forms</a>
+					</li>
 				</ul>
 			</div>
 			<!-- END PAGE HEADER-->
@@ -316,13 +288,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						<div class="portlet-title">
 							<div class="caption">
 								<i class="fa fa-check-square-o"></i>
-								{% if data.inactive %}
-									InActive Forms
-								{% elif data.active %}
-									Active Forms
-								{% else %}
-									Edit
-								{% endif %}
+								View Forms
 							</div>	
 						</div>
 						<div class="portlet-body">
@@ -330,28 +296,31 @@ License: You must have a valid license purchased only from themeforest(the above
 							<thead>
 							<tr>
 								<th>
-									 Form Name 
+									Form Name 
 								</th>
 								<th>
-									 Description 
+									Description 
 								</th>
 								<th>
-									 Category 
+									Category 
 								</th>
 								<th>
-									 Author
+									Author
 								</th>
 								<th>
-									 Status
+									Status
 								</th>
 								<th>
-									 State
+									Visibility
 								</th>
 								<th>
-									 Action
+									State
 								</th>
 								<th>
-									 Preview
+									Edit
+								</th>
+								<th>
+									Preview
 								</th>
 							</tr>
 							</thead>
@@ -372,30 +341,35 @@ License: You must have a valid license purchased only from themeforest(the above
 									</td>
 									<td>
 										{% if form.is_active %}
-											Active Form
+											Active
 										{% else %}
-											InActive Form
+											InActive
 										{% endif %}
 									</td>
 									<td>
 										{% if form.is_public %}
-											Public Form
+											Public
 										{% else %}
-											Private Form
+											Private
 										{% endif %}
 									</td>
 									<td>
-										{% if data.inactive %}
-											<input type="checkbox" checked class="make-switch" data-size="normal" data-on-text="InActive" data-off-text="Active" id="{{ form.id }}---{{ form.form_slug }}">
-										{% elif data.active %}
-											<input type="checkbox" checked class="make-switch" data-size="normal" data-on-text="Active" data-off-text="InActive" id="{{ form.id }}---{{ form.form_slug }}">
+										{% if form.is_active %}
+											<input checked type="checkbox" checked class="make-switch" data-size="normal" data-on-text="Active" data-off-text="InActive" id="{{ form.id }}---{{ form.form_slug }}">
+										{% else %}
+											<input type="checkbox" class="make-switch" data-size="normal" data-on-text="Active" data-off-text="InActive" id="{{ form.id }}---{{ form.form_slug }}">
+										{% endif %}
+									</td>
+									<td>
+										{% if form.is_active %}
+											Can't Edit
 										{% else %}
 											<a href="{% url 'evaluationapp:edit_form' form.id form.form_slug %}" class="btn blue btn-sm">
 											<i class="fa fa-pencil"></i> Edit Form </a>
 										{% endif %}
 									</td>
 									<td>
-										<a href="{% url 'evaluationapp:evaluation_form_preview' form.id form.form_slug %}" class="btn green">Preview Form</a>
+										<a href="{% url 'evaluationapp:evaluation_form_preview' form.id form.form_slug %}" class="btn green">Preview</a>
 									</td>
 								</tr>
 							{% endfor %}
@@ -455,7 +429,6 @@ License: You must have a valid license purchased only from themeforest(the above
 			Demo.init(); // init demo features
 			TableManaged.init();
 			$('.make-switch').on('switchChange.bootstrapSwitch', function(event, state) {
-				alert(state);
 				var form_param = $(this)[0].id.split("---");
 				var form_id = form_param[0];
 				var form_slug =  form_param[1];
@@ -466,7 +439,6 @@ License: You must have a valid license purchased only from themeforest(the above
 						url:postUrl,
 						success:function(obj)
 						{
-							alert("State Changed");
 							location.reload();
 						}
 					});

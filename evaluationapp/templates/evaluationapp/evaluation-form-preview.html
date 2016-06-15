@@ -229,17 +229,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						<li>
 							<a href="{% url 'evaluationapp:edit_evaluations' %}">
 							<i class="fa fa-edit"></i>
-							Edit</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:view_active' %}">
-							<i class="fa fa-check-square"></i>
-							Active</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:view_inactive' %}">
-							<i class="fa fa-square-o"></i>
-							InActive</a>
+							View</a>
 						</li>
 						<li>
 							<a href="#">
@@ -315,6 +305,8 @@ License: You must have a valid license purchased only from themeforest(the above
 								<a href="javascript:;" class="collapse">
 								</a>
 								<a href="javascript:;" class="reload">
+								</a>
+								<a href="{% url 'evaluationapp:edit_evaluations' %}" class="remove">
 								</a>
 							</div>
 						</div>
@@ -495,6 +487,12 @@ License: You must have a valid license purchased only from themeforest(the above
 		FormSamples.init();
 		FormWizard.init();
 		ComponentsDropdowns.init();
+
+		$('.remove').click(function(event){
+			event.preventDefault();
+			window.location = "{% url 'evaluationapp:edit_evaluations' %}";
+		});
+
 		$('.surveySubmit').click(function(){
 			var subButElem = $(this);
 			subButElem.attr("disabled","disabled");

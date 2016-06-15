@@ -54,11 +54,9 @@ License: You must have a valid license purchased only from themeforest(the above
 			position: relative;
 		}
 		p.add-q{
-			/*font-size:2rem;*/
 			cursor:pointer;
 			position: absolute;
-			bottom: -56px;
-			padding:0 1rem;
+			bottom: -75px;
 		}
 		.add-q .fa-plus-circle{
 			/*font-size:2rem;*/
@@ -72,18 +70,21 @@ License: You must have a valid license purchased only from themeforest(the above
 		}
 		.button-previous{
 			position: absolute;
-		    padding: 0 1rem;
-		    bottom:2px;
+		    bottom:0.4px;
 		}
 		.surveySubmit{
 			position: absolute;
 		    right: 2rem;
-		    padding: 0 1rem;
 		    bottom:2px;
 		}
 		.button-next{
-			padding: 0 1rem;
 			margin-left: 10rem !important;
+		}
+		.remove-choice{
+			background: red;
+			color: white;
+			padding: 1rem;
+			cursor: pointer;
 		}
 	</style>
 </head>
@@ -253,17 +254,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						<li>
 							<a href="{% url 'evaluationapp:edit_evaluations' %}">
 							<i class="fa fa-edit"></i>
-							Edit</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:view_active' %}">
-							<i class="fa fa-check-square"></i>
-							Active</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:view_inactive' %}">
-							<i class="fa fa-square-o"></i>
-							InActive</a>
+							View</a>
 						</li>
 						<li>
 							<a href="#">
@@ -339,6 +330,8 @@ License: You must have a valid license purchased only from themeforest(the above
 								<a href="javascript:;" class="collapse">
 								</a>
 								<a href="javascript:;" class="reload">
+								</a>
+								<a href="{% url 'evaluationapp:view_forms_home' %}" class="remove">
 								</a>
 							</div>
 						</div>
@@ -475,7 +468,7 @@ License: You must have a valid license purchased only from themeforest(the above
 											</div>
 											<div class="tab-pane" id="tab3">
 												<h3 class="block">Add Questions</h3>
-												<p class="add-q btn blue"><i class="fa fa-plus-circle"></i> Add New Question</p>	
+												<p class="add-q btn blue"><i class="fa fa-plus-circle"></i> Add Question</p>	
 											</div>
 										</div>
 									</div>
@@ -572,7 +565,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			if(selectedType != "text"){
 				choice_elem = '<div id="'+choice_elem_div+'"></div>';
 				$("#"+question_div+" .portlet-body .scroller").append(choice_elem);
-				$("#"+choice_elem_div).append('<div class="form-group" id="questionDiv'+question_count_select+'choice'+question_choice_count+'Div"><label class="control-label col-md-3"></label><div class="col-md-4"><input type="text" class="form-control" name="'+choice_elem_id+'" id="'+choice_elem_id+'" placeholder="Enter Choice Value"/></div><div class="col-md-4"><i id="' +question_count_select+'---'+ question_choice_count+'---'+selectedType+ '" class="fa fa-times-circle remove-choice"> Remove</i></div></div>');
+				$("#"+choice_elem_div).append('<div class="form-group" id="questionDiv'+question_count_select+'choice'+question_choice_count+'Div"><label class="control-label col-md-3"></label><div class="col-md-4"><input type="text" class="form-control" name="'+choice_elem_id+'" id="'+choice_elem_id+'" placeholder="Enter Choice Value"/></div><div class="col-md-4"><i id="' +question_count_select+'---'+ question_choice_count+'---'+selectedType+ '" class="fa fa-minus remove-choice"></i></div></div>');
 			}
 			choice_count[question_count_select]+=1;
 		}
@@ -584,6 +577,11 @@ License: You must have a valid license purchased only from themeforest(the above
 			Demo.init(); // init demo features
 			FormWizard.init();
 			ComponentsDropdowns.init();
+
+			$('.remove').click(function(event){
+				event.preventDefault();
+				window.location = "{% url 'evaluationapp:view_forms_home' %}";
+			});
 
 			// Adding Value for Category
 			var value = '';
@@ -677,7 +675,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		  		if(selectedType != "text" && selectedType != "rating"){
 		  			var add_another_choice_elem = '<div id="'+choice_elem_div+'"></div>';
 		  			$("#"+question_div+" .portlet-body .scroller").append(add_another_choice_elem);
-		  			$("#"+choice_elem_div).append('<i id="' +question_count_select+'---'+selectedType +'" class="fa fa-plus-circle add-choice btn blue"> Add Another Choice</i>'); 
+		  			$("#"+choice_elem_div).append('Add <i id="' +question_count_select+'---'+selectedType +'" class="fa fa-plus add-choice btn blue"></i>'); 
 					add_another_choice(question_count_select,selectedType);
 				}
 				if(selectedType == "rating"){

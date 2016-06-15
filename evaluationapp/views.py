@@ -126,13 +126,13 @@ class EvaluationEditableFormsView(ListView):
 
 	def get_queryset(self,**kwargs):
 		context = {}
-		forms = Form.objects.filter(is_active=0)
-		if self.request.path.endswith("view-inactive-evaluation-forms"):
-			context["inactive"] = True
-			forms = Form.objects.filter(is_active=0)
-		if self.request.path.endswith("view-active-evaluation-forms"):
-			context["active"] = True
-			forms = Form.objects.filter(is_active=1)
+		forms = Form.objects.all()#filter(is_active=0)
+		# if self.request.path.endswith("view-inactive-evaluation-forms"):
+		# 	context["inactive"] = True
+		# 	forms = Form.objects.filter(is_active=0)
+		# if self.request.path.endswith("view-active-evaluation-forms"):
+		# 	context["active"] = True
+		# 	forms = Form.objects.filter(is_active=1)
 		context['forms'] =  forms
 		return context
 
