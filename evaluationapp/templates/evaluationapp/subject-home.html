@@ -273,7 +273,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					<!-- END SIDEBAR TOGGLER BUTTON -->
 				</li>
 				<li class="start ">
-					<a href="javascript:;">
+					<a href="{% url 'evaluationapp:index' %}">
 						<i class="icon-home"></i>
 						<span class="title">Home</span>
 					</a>
@@ -318,17 +318,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						<li>
 							<a href="{% url 'evaluationapp:edit_evaluations' %}">
 							<i class="fa fa-edit"></i>
-							Edit</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:view_active' %}">
-							<i class="fa fa-check-square"></i>
-							Active</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:view_inactive' %}">
-							<i class="fa fa-square-o"></i>
-							InActive</a>
+							View</a>
 						</li>
 						<li>
 							<a href="#">

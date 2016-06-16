@@ -96,24 +96,6 @@ License: You must have a valid license purchased only from themeforest(the above
 						<span id="menu-items-text" class="title tooltips">My Feedback</span>
 					</a>
 				</li>
-		        <!-- <li>
-		            <a href="{% url 'evaluationapp:evaluation_home' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Evaluations</span>
-		            </a>
-		        </li> -->
-		        <!-- <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Analytics</span>
-		            </a>
-		        </li> -->
-		       <!--  <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Upload</span>
-		            </a>
-		        </li> -->
 		        <li>
 		            <a href="{% url 'evaluationapp:index' %}">
 		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
@@ -171,7 +153,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					<!-- END SIDEBAR TOGGLER BUTTON -->
 				</li>
 				<li class="start active">
-					<a href="javascript:;">
+					<a href="{% url 'evaluationapp:index' %}">
 						<i class="icon-home"></i>
 						<span class="title">Home</span>
 					</a>
