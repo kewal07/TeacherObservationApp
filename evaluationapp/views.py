@@ -159,7 +159,8 @@ class CreateFormView(ListView):
 			user = request.user
 			post_data = request.POST
 			errors = {}
-			form_name = post_data.get("name").strip()
+			print(post_data)
+			form_name = post_data.get("fullname").strip()
 			form_desc = post_data.get("description").strip()
 			submit_text = post_data.get("submit-text")
 			fSection = post_data.get("no-of-section")
