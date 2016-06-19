@@ -448,7 +448,7 @@ License: You must have a valid license purchased only from themeforest(the above
 													<label class="control-label col-md-3">Section1
 													</label>
 													<div class="col-md-4">
-														<input type="text" id="sectionName---1" class="form-control" name="section1"/>
+														<input type="text" id="sectionName---1" class="form-control survey-section-text" name="section1"/>
 													</div>
 												</div>
 												<!-- <div class="form-group">
@@ -598,11 +598,31 @@ License: You must have a valid license purchased only from themeforest(the above
 				noOfSections = $("select#section-select").val();
 				if(parseInt(noOfSections) > 1){
 					var i;
-					for (i = 1; i <= parseInt(noOfSections)-1; i++) { 
-						var element = '<div class="form-group extra-section-div"><label class="control-label col-md-3">Section'+(i+parseInt(1))+'</label><div class="col-md-4"><input type="text" id="sectionName---'+(i+parseInt(1))+'"  class="form-control" name="section'+(i+parseInt(1))+'"/></div></div>';
-						$("#tab2").append(element);
+					for (i = 1; i <= parseInt(noOfSections); i++) { 
+						if (i<parseInt(noOfSections)){
+							var element = '<div class="form-group extra-section-div"><label class="control-label col-md-3">Section'+(i+parseInt(1))+'</label><div class="col-md-4"><input type="text" id="sectionName---'+(i+parseInt(1))+'"  class="form-control survey-section-text" name="section'+(i+parseInt(1))+'"/></div></div>';
+							$("#tab2").append(element);
+						}
+						var sectionName = $("#sectionName---"+i).val();
+						$(".question-section-option-"+i).remove();
+						$('.question-section-select-class').selectpicker('refresh');
+						$("select.question-section-select-class").append('<option value="'+sectionName+'" class="question-section-option-'+i+'">'+sectionName+'</option>');
+						// $(".question-section-select-class .selectpicker").append(sectionName);
+						$('.question-section-select-class').selectpicker('render');
+						$('.question-section-select-class').selectpicker('refresh');
+						// $('option[value="'+sectionName+'"]').hide();
 					}
 				}
+			});
+
+			$("#tab2").on("change",".survey-section-text",function(){
+				// console.log("input changed");
+				var sectionNme = $(this).val();
+				var loopIndex = $(this)[0].id.split("---")[1];
+				// console.log(sectionNme,loopIndex,$(".question-section-option-"+loopIndex));
+				$(".question-section-option-"+loopIndex).text(sectionNme);
+				$(".question-section-option-"+loopIndex).val(sectionNme);
+				// console.log(sectionNme,loopIndex,$(".question-section-option-"+loopIndex));
 			});
 			// End Sections
 
@@ -629,11 +649,11 @@ License: You must have a valid license purchased only from themeforest(the above
 		  		else
 		  			question_elem += '<label><input type="checkbox" id="horizontalOptions'+question_count_str+'" class="icheck" name="question-horizontal-options'+question_count_str+'"> Arrange Options Horizontaly</label>';
 			  	question_elem += '</div></div></div></div>';
-			  	question_elem += '<div class="form-group"><label class="control-label col-md-3">Section</label><div class="col-md-4"><select id="question-section-select" name="question-section'+question_count_str+'" class="bs-select form-control">';
+			  	question_elem += '<div class="form-group"><label class="control-label col-md-3">Section</label><div class="col-md-4"><select id="question-section-select" name="question-section'+question_count_str+'" class="bs-select form-control question-section-select-class">';
 			  	var i;
 			  	noOfSections = $("select#section-select").val();
 			  	for (i = 1; i <= parseInt(noOfSections); i++) { 
-			  		question_elem += '<option value="'+$("#sectionName---"+i).val()+'">'+$("#sectionName---"+i).val()+'</option>';
+			  		question_elem += '<option value="'+$("#sectionName---"+i).val()+'" class="question-section-option-'+i+'">'+$("#sectionName---"+i).val()+'</option>';
 			  	}
 			  	question_elem += '</select></div></div>';
 			  	question_elem += '<div class="form-group"><label class="control-label col-md-3">Question Type</label><div class="col-md-4"><select id="question-type-select---'+question_count_str+'" name="question-type'+question_count_str+'" class="bs-select form-control question-type-select"><option value="noselect">Select</option><option value="radio">Single Select</option><option value="checkbox">Multi Select</option><option value="rating">Rating</option><option value="text">Text</option>';
