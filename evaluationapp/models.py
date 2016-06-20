@@ -70,7 +70,7 @@ class FormSection(models.Model):
 	sectionOrder = models.IntegerField()
 	form = models.ForeignKey(Form)
 	def __str__(self):
-		return self.sectionName+"---"+self.sectionOrder
+		return self.sectionName+"---"+str(self.sectionOrder)
 
 class Evaluation(models.Model):
 	evaluation_name = models.CharField(max_length=512,blank=True,null=True)
