@@ -301,8 +301,8 @@ License: You must have a valid license purchased only from themeforest(the above
 					</div>
 					<!-- END SIDEBAR TOGGLER BUTTON -->
 				</li>
-				<li class="start active">
-					<a href="javascript:;">
+				<li class="start">
+					<a href="{% url 'evaluationapp:index' %}">
 						<i class="icon-home"></i>
 						<span class="title">Home</span>
 					</a>
@@ -325,7 +325,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						<span class="title">Downloads</span>
 					</a>
 				</li>
-				<li class="last ">
+				<li class="last active">
 					<a href="{% url 'evaluationapp:view_settings' %}">
 					<i class="fa fa-gear"></i>
 					<span class="title">Settings</span>
