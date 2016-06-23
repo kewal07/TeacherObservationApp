@@ -3,8 +3,6 @@ from datetime import date
 from django.conf import settings
 from django.template.defaultfilters import slugify
 import hashlib, hmac, os
-# from evaluationapp.models import School
-
 # Create your models here.
 
 def get_file_path(instance, filename):
@@ -48,7 +46,7 @@ class ExternalEvaluator(models.Model):
 				return "/media/profile/"+self.get_folder_day()+os.sep+self.get_profile_pic_name()
 		return default_pic_url
 
-
+from evaluationapp.models import School
 class ExtendedUser(models.Model):
 	user = models.OneToOneField(settings.AUTH_USER_MODEL)
 	user_pk = models.CharField(max_length=255)
@@ -61,8 +59,7 @@ class ExtendedUser(models.Model):
 	is_admin = models.BooleanField(default=0)
 	bio = models.CharField(max_length=1024,blank=True,null=True)
 	gender = models.CharField(max_length=1,blank=True,null=True)
-	# school = models.ForeignKey(School,blank=True,null=True)
-
+	school = models.ForeignKey(School,blank=True,null=True)
 	def __str__(self):
 		return self.user.username
 
@@ -105,4 +102,3 @@ class ExtendedUser(models.Model):
 			else:
 				return "/media/profile/"+self.get_folder_day()+os.sep+self.get_profile_pic_name()
 		return default_pic_url
-

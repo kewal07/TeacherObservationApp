@@ -182,24 +182,6 @@ License: You must have a valid license purchased only from themeforest(the above
 		              <span id="menu-items-text" class="title tooltips">Home</span>
 		            </a>
 		        </li>
-		        <!-- <li>
-		            <a href="{% url 'evaluationapp:evaluation_home' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Evaluations</span>
-		            </a>
-		        </li> -->
-		        <!-- <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Analytics</span>
-		            </a>
-		        </li> -->
-		       <!--  <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Upload</span>
-		            </a>
-		        </li> -->
 		        <li>
 		            <a href="{% url 'evaluationapp:index' %}">
 		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
@@ -476,12 +458,23 @@ License: You must have a valid license purchased only from themeforest(the above
 												Your form validation is successful!
 											</div>
 											{% for key,value in questions_section_dict.items %}
-												{% if forloopcounter == 1 %}
-													<script>
-														var d = document.getElementById("tab1");
-														d.className += " active";
-													</script>
-												{% endif %}
+												{% if forloop.counter == 1 %}
+													<div class="tab-pane" id="tab{{ forloop.counter }}">
+														<h3 class="block">Section : {{ key|title }}</h3>
+														<div class="form-group">
+															<label class="col-md-3 control-label" style="padding-top:0px;">Subject</label>
+															<div class="col-md-4">
+																{{ subject }}
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-md-3 control-label" style="padding-top:0px;">Class</label>
+															<div class="col-md-4">
+																{{ class }}
+															</div>
+														</div>
+													</div>
+												{% else %}
 												<div class="tab-pane" id="tab{{ forloop.counter }}">
 													<h3 class="block">Section : {{ key|title }}</h3>
 													{% for question in value %}
@@ -529,6 +522,7 @@ License: You must have a valid license purchased only from themeforest(the above
 														
 													{% endfor %}
 												</div>
+												{% endif %}
 											{% endfor %}
 										</div>
 									</div>

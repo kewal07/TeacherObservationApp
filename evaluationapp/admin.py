@@ -1,5 +1,5 @@
 from django.contrib import admin
-from evaluationapp.models import School,Grade,Subject,Form,Evaluation,Status,EvaluationStatus,Category,FormWithCategory,Question,Choice,Vote,Voted,VoteText,FormQuestion,FormVoted
+from evaluationapp.models import School,Grade,Subject,Form,Evaluation,Status,EvaluationStatus,Category,FormWithCategory,Question,Choice,Vote,Voted,VoteText,FormQuestion,FormVoted, TeacherSubject, TeacherClass
 
 # Register your models here.
 
@@ -26,3 +26,5 @@ admin.site.register(VoteText)
 admin.site.register(FormQuestion)
 admin.site.register(FormVoted)
 admin.site.register(School)
+admin.site.register(TeacherSubject)
+admin.site.register(TeacherClass)

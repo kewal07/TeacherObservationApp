@@ -4,12 +4,11 @@ from django.utils import timezone
 from django.conf import settings
 import os,sys,linecache
 from django.template.defaultfilters import slugify
-from login.models import ExtendedUser,ExternalEvaluator
 import hashlib
 import hmac
 from datetime import date
 from django.core.urlresolvers import resolve,reverse
-
+from login.models import ExternalEvaluator
 # Create your models here.
 
 class School(models.Model):
@@ -20,6 +19,9 @@ class School(models.Model):
 	number_girls = models.IntegerField(blank=True,null=True,default=0)
 	number_emirati =  models.IntegerField(blank=True,null=True,default=0)
 	number_nonemirati = models.IntegerField(blank=True,null=True,default=0)
+
+	def __str__(self):
+		return self.school_name
 
 class Grade(models.Model):
 	grade_id = models.IntegerField(blank=True,null=True,default=0)
@@ -32,11 +34,16 @@ class Grade(models.Model):
 	school = models.ForeignKey(School,blank=True,null=True)
 	grade_section = models.CharField(max_length=10,blank=True,null=True)
 
+	def __str__(self):
+		return self.grade_name + " " + self.grade_section
+
 class Subject(models.Model):
 	subject_id = models.IntegerField(blank=True,null=True,default=0)
 	subject_name = models.CharField(max_length=512,blank=True,null=True)
 	grade = models.ForeignKey(Grade)
-	user = models.ForeignKey(settings.AUTH_USER_MODEL)
+
+	def __str__(self):
+		return self.subject_name + " " + self.grade.grade_name
 
 class Form(models.Model):
 	form_name = models.CharField(max_length=200)
@@ -85,6 +92,18 @@ class Evaluation(models.Model):
 	is_external = models.BooleanField(default=0)
 	is_surprised = models.BooleanField(default=0)
 	external_evaluator = models.ForeignKey(ExternalEvaluator,blank=True,null=True)
+
+class TeacherSubject(models.Model):
+	evaluatee = models.ForeignKey(settings.AUTH_USER_MODEL)
+	subject = models.ForeignKey(Subject)
+	def __str__(self):
+		return self.evaluatee.first_name+ " " + self.subject.subject_name
+
+class TeacherClass(models.Model):
+	teacher = models.ForeignKey(settings.AUTH_USER_MODEL)
+	grade = models.ForeignKey(Grade)
+	def __str__(self):
+		return str(self.teacher.first_name) + " " + str(self.grade.grade_name) + " " + str(self.grade.grade_section)
 
 class Status(models.Model):
 	status_id = models.IntegerField(default=0)
@@ -190,6 +209,10 @@ class FormVoted(models.Model):
 	form_question_count = models.IntegerField(blank=True,null=True,default=0)
 	user_answer_count = models.IntegerField(blank=True,null=True,default=0)
 	evaluation = models.ForeignKey(Evaluation,blank=True,null=True)
+	subject = models.ForeignKey(Subject,blank=True,null=True)
+	grade = models.ForeignKey(Grade,blank=True,null=True)
+	section = models.CharField(max_length=20)
+	full_lesson_observation = models.BooleanField(default=0)
 	def __str__(self):
 		return self.form.form_name+" : "+self.user.username
 	def save(self, *args, **kwargs):

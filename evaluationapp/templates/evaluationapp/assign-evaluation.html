@@ -646,7 +646,12 @@ License: You must have a valid license purchased only from themeforest(the above
 						{
 							$(".errorlist").remove();
 							if(obj.hasOwnProperty("success")){
-								window.location = "{% url 'evaluationapp:evaluation_home' %}";
+								{% if user.extendeduser.is_admin %}
+									window.location = "{% url 'evaluationapp:evaluation_home' %}";
+								{% else %}
+									window.location = "{% url 'evaluationapp:index' %}";
+								{% endif %}
+								
 							}
 							else{
 								for(var key in obj){

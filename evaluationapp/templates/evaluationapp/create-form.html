@@ -64,7 +64,6 @@ License: You must have a valid license purchased only from themeforest(the above
 		}
 		.add-choice{
 			position: absolute;
-			bottom:30px;
 		}
 		.button-next{
 			margin-left: 15rem !important;
@@ -798,7 +797,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						{
 							$(".errorlist").remove();
 							if(obj.hasOwnProperty("success")){
-								window.location = "{{ DOMAIN_URL }}";
+								window.location = "{% url 'evaluationapp:edit_evaluations' %}";
 							}
 							else{
 								for(var key in obj){

@@ -1,9 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound
 from django.views.generic import ListView,DetailView
-from evaluationapp.models import Grade,School,Subject,Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, EvaluationStatus
+from evaluationapp.models import Grade,School,Subject,Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, EvaluationStatus, TeacherSubject, TeacherClass
 from evaluationapp import evappconstants
-# import evaluationapp.evappconstants
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from login.models import ExtendedUser
@@ -66,20 +65,6 @@ class SettingsHomeView(ListView):
 		context = {}
 		return context
 
-
-# class SchoolHomeView(ListView):
-# 	context_object_name = 'data'
-
-# 	def get_template_names(self):
-# 		template_name = 'evaluationapp/school-home.html'
-# 		return [template_name]
-
-# 	def get_queryset(self, **kwargs):
-# 		context = {}
-# 		schools = School.objects.filter(id=user.extendedUser.school)
-# 		context["school"] = school
-# 		return context
-
 class SubjectHomeView(ListView):
 	context_object_name = 'data'
 
@@ -100,9 +85,7 @@ class SubjectHomeView(ListView):
 			context["classes"] = grades
 			context["nav_val"] = "Classes"
 		elif path.endswith("school-home"):
-			# schools = School.objects.filter(id=user.extendedUser.school)
 			schools = School.objects.all()
-			# Replace all 2nd line by 1st line
 			context["school"] = schools
 			context["nav_val"] = "School"
 		return context
@@ -126,13 +109,7 @@ class EvaluationEditableFormsView(ListView):
 
 	def get_queryset(self,**kwargs):
 		context = {}
-		forms = Form.objects.all()#filter(is_active=0)
-		# if self.request.path.endswith("view-inactive-evaluation-forms"):
-		# 	context["inactive"] = True
-		# 	forms = Form.objects.filter(is_active=0)
-		# if self.request.path.endswith("view-active-evaluation-forms"):
-		# 	context["active"] = True
-		# 	forms = Form.objects.filter(is_active=1)
+		forms = Form.objects.all()
 		context['forms'] =  forms
 		return context
 
@@ -417,17 +394,29 @@ class EvaluationFormVoteView(DetailView):
 		except:
 			pass
 		user_already_voted = False
-		if FormVoted.objects.filter(evaluation_id = evaluation):
+		evaluatee = evaluation.evaluatee
+		evaluateeSchool = evaluatee.extendeduser.school
+		context['subject'] = TeacherSubject.objects.filter(evaluatee=evaluatee)
+		context['class'] = TeacherClass.objects.filter(teacher=evaluatee)
+		formVoted = FormVoted.objects.filter(evaluation_id = evaluation)
+		if formVoted:
 			user_already_voted = True
 		context['user_already_voted'] = user_already_voted
 		if user.is_authenticated():
 			createExtendedUser(user)
+		
+		if user_already_voted:
+			formVoted = formVoted[0]
+			context['subject'] = formVoted.subject.subject_name
+			context['class'] = formVoted.grade.grade_name + ' ' + formVoted.section
+
 		context['questions']=[]
 		sections = FormSection.objects.filter(form_id=context['form'].id).order_by('sectionOrder')
 		questions_section_dict = SortedDict()
+		questions_section_dict['Class Information'] = []
+		questions_section_dict['Common'] = []
 		for section in sections:
 			questions_section_dict[section.sectionName] = []
-		questions_section_dict['Common'] = []
 		for i,x in enumerate(FormQuestion.objects.filter(form_id=context['form'].id)):
 			tempSectionName = ''
 			if x.section:
@@ -477,7 +466,6 @@ class EvaluationFormVoteView(DetailView):
 
 	def post(self, request, *args, **kwargs):
 		try:
-			print(request.POST)
 			path = request.path
 			ev_id = path.split("/")[-1]
 			evaluation = None
@@ -489,6 +477,9 @@ class EvaluationFormVoteView(DetailView):
 			post_data = request.POST
 			form_id = int(post_data.get("survey-id"))
 			# form = Form.objects.get(pk=form_id)
+			subjectOfEvaluation = post_data.get('subject-of-evaluation')
+			classOfEvaluation = post_data.get('class-of-evaluation').split('---')[0]
+			sectionOfEvaluation = post_data.get('class-of-evaluation').split('---')[1]
 			form_voted = None
 			form_questions = FormQuestion.objects.filter(form_id = form_id)
 			votes_list = []
@@ -529,7 +520,7 @@ class EvaluationFormVoteView(DetailView):
 				votes_list.append(vote)
 			if not errors:
 				errors["success"] = "Successfull"
-				saveVotes(user,form_id,votes_list,evaluation)
+				saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEvaluation, sectionOfEvaluation)
 			return HttpResponse(json.dumps(errors),content_type='application/json')
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -577,9 +568,11 @@ def createExtendedUser(user):
 		extendedUser = ExtendedUser(user=user)
 		extendedUser.save()
 
-def saveVotes(user,form_id,votes_list,evaluation):
+def saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEvaluation, sectionOfEvaluation):
 	try:
 		user_voted = 0
+		subject = Subject.objects.get(pk=subjectOfEvaluation)
+		grade = Grade.objects.get(pk=classOfEvaluation)
 		for vote in votes_list:
 			if vote["type"] in ["text","rating"]:
 				if vote["answer"]:
@@ -599,7 +592,7 @@ def saveVotes(user,form_id,votes_list,evaluation):
 				if vote["answer"]:
 					votetext = VoteText(user=user, question_id=vote["id"], answer_text=vote["answer"], evaluation=evaluation)
 					votetext.save()
-		voted = FormVoted(user=user, form_id=form_id, form_question_count=len(votes_list), user_answer_count=user_voted, evaluation=evaluation)
+		voted = FormVoted(user=user, form_id=form_id, form_question_count=len(votes_list), user_answer_count=user_voted, evaluation=evaluation, subject=subject, grade=grade, section=sectionOfEvaluation)
 		voted.save()
 		ev_status = EvaluationStatus.objects.filter(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("ongoing"))[0]
 		ev_status.evaluation_status_id = evappconstants.getEvStatus("submitted")
