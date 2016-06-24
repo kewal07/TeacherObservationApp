@@ -39,4 +39,6 @@ urlpatterns = [
 	url(r'^classes-home$',login_required(views.SubjectHomeView.as_view()),name='classes_view'),
 	url(r'^download-home$',login_required(views.DownloadHomeView.as_view()),name='view_download'),
 	url(r'^exportexcel',views.excel_view,name="exportexcel"),
+	url(r'^termsofservice', TemplateView.as_view(template_name='termsofservice.html'), name='termsofservice'),
+    url(r'^privacypolicy', TemplateView.as_view(template_name='privacypolicy.html'), name='privacypolicy'),
 ]
