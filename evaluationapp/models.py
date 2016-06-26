@@ -92,6 +92,8 @@ class Evaluation(models.Model):
 	is_external = models.BooleanField(default=0)
 	is_surprised = models.BooleanField(default=0)
 	external_evaluator = models.ForeignKey(ExternalEvaluator,blank=True,null=True)
+	def __str__(self):
+		return self.evaluation_name
 
 class TeacherSubject(models.Model):
 	evaluatee = models.ForeignKey(settings.AUTH_USER_MODEL)

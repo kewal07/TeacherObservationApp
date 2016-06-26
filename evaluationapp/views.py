@@ -29,7 +29,7 @@ class IndexView(ListView):
 
 	def get_template_names(self):
 		request = self.request
-		if self.request.user.extendeduser.is_admin:
+		if request.user.extendeduser.is_admin:
 			template_name = 'evaluationapp/index.html'
 		else:
 			template_name = 'evaluationapp/non-admin-index.html'
