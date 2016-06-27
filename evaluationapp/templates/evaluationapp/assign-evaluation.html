@@ -57,19 +57,9 @@ License: You must have a valid license purchased only from themeforest(the above
 		}
 	</style>
 </head>
-<!-- END HEAD -->
-<!-- END HEAD -->
-<!-- BEGIN BODY -->
-<!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->
-<!-- DOC: Apply "page-sidebar-closed" class to the body and "page-sidebar-menu-closed" class to the sidebar menu element to hide the sidebar by default -->
-<!-- DOC: Apply "page-sidebar-hide" class to the body to make the sidebar completely hidden on toggle -->
-<!-- DOC: Apply "page-sidebar-closed-hide-logo" class to the body element to make the logo hidden on sidebar toggle -->
-<!-- DOC: Apply "page-sidebar-hide" class to body element to completely hide the sidebar on sidebar toggle -->
-<!-- DOC: Apply "page-sidebar-fixed" class to have fixed sidebar -->
-<!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
-<!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
-<!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 <body class="page-header-fixed page-quick-sidebar-over-content">
+<div id="loader">
+</div>
 <!-- BEGIN HEADER -->
 <div class="page-header navbar navbar-fixed-top">
 	<!-- BEGIN HEADER INNER -->
@@ -209,16 +199,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <div class="page-container">
 	<!-- BEGIN SIDEBAR -->
 	<div class="page-sidebar-wrapper">
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
 		<div class="page-sidebar navbar-collapse collapse">
-			<!-- BEGIN SIDEBAR MENU -->
-			<!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
-			<!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
-			<!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
-			<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-			<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
-			<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
 			{% if user.extendeduser.is_admin %}
 				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
 					<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
@@ -587,6 +568,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="{% static 'assets/admin/layout/scripts/layout.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/quick-sidebar.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/demo.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/admin/layout/scripts/spin.min.js' %}" type="text/javascript"></script>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <script src="{% static 'assets/global/plugins/jquery-validation/js/jquery.validate.min.js' %}"></script>
 <script src="{% static 'assets/global/plugins/jquery-validation/js/additional-methods.min.js' %}"></script>
@@ -607,6 +589,30 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="{% static 'assets/admin/pages/scripts/ui-alert-dialog-api.js' %}"></script>
 <!-- End Page Level Scripts -->
 <script>
+	  var opts = {
+			  lines: 13 // The number of lines to draw
+			, length: 28 // The length of each line
+			, width: 10 // The line thickness
+			, radius: 25 // The radius of the inner circle
+			, scale: 1 // Scales overall size of the spinner
+			, corners: 1 // Corner roundness (0..1)
+			, color: '#3598dc' // #rgb or #rrggbb or array of colors
+			, opacity: 0.25 // Opacity of the lines
+			, rotate: 0 // The rotation offset
+			, direction: 1 // 1: clockwise, -1: counterclockwise
+			, speed: 1 // Rounds per second
+			, trail: 60 // Afterglow percentage
+			, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+			, zIndex: 2e9 // The z-index (defaults to 2000000000)
+			, className: 'spinner' // The CSS class to assign to the spinner
+			, top: '50%' // Top position relative to parent
+			, left: '50%' // Left position relative to parent
+			, shadow: false // Whether to render a shadow
+			, hwaccel: false // Whether to use hardware acceleration
+			, position: 'absolute' // Element positioning
+	  }
+
+	  var target = document.getElementById('loader')
       jQuery(document).ready(function() {    
          	Metronic.init(); // init metronic core components
 			Layout.init(); // init current layout
@@ -630,6 +636,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			});
 
 			$("#assignEvaluationSubmit").click(function(event){
+				var spinner = new Spinner(opts).spin(target);
 				event.preventDefault();
 				var elemid = "#submit_form";
 				var form_data = new FormData($(elemid)[0]);
@@ -644,6 +651,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						contentType: false,
 						success:function(obj)
 						{
+							spinner.stop();
 							$(".errorlist").remove();
 							if(obj.hasOwnProperty("success")){
 								{% if user.extendeduser.is_admin %}
