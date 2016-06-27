@@ -517,9 +517,8 @@ License: You must have a valid license purchased only from themeforest(the above
 																	</p>
 																{% endif %}
 																{% if question.type == "text" %}
-																	<textarea id ="choiceText{{ question.question.id }}" class="text-ans" name="choice{{ question.question.id }}" placeholder="Enter Your Response in max 255 characters" maxlength="255">
-																		{{ question.answer }}
-																	</textarea>
+																{{ question.answer.strip }}
+																	<textarea id ="choiceText{{ question.question.id }}" class="text-ans" name="choice{{ question.question.id }}" placeholder="Enter Your Response in max 255 characters" maxlength="255">{{ question.answer }}</textarea>
 																{% elif question.type == "rating" %}
 																	<input id="range_2" type="text" name="range{{ question.question.id }}" value="{{ question.min_value }};{{ question.max_value }}"/>
 																{% else %}
@@ -529,7 +528,6 @@ License: You must have a valid license purchased only from themeforest(the above
 																				<div class="icheck-inline">
 																			{% else %}
 																				<div class="icheck-list">
-																				<!-- <div class="icheck-inline"> -->
 																			{% endif %}
 																				<label class="choice-text" for="choice{{ choice.id }}">
 																				<input class="choices icheck" type="{{ question.type }}" name="choice{{ question.question.id }}" id="choice{{ choice.id }}" value="{{ choice.id }}" />
