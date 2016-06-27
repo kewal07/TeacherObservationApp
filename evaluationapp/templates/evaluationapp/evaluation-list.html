@@ -528,12 +528,16 @@ License: You must have a valid license purchased only from themeforest(the above
 												<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View Evaluation</button></a>
 												
 											</td>
-											{% if not request.path == '/evaluation-archive' %}
-												<td>
-													<a href="#" class="btn blue btn-sm evaluation_reminder_button" id="{{ evaluation.id }}">
-													<i class="fa fa-pencil"></i> Send Reminder </a>
-												</td>
-											{% endif %}
+											<td>
+												{% if not request.path == '/evaluation-archive' %}
+													{% for s in data.status %}
+														{% if s.evaluation_id.id == evaluation.id and s.evaluation_status_id.status_state == 'Ongoing' %}
+																<a href="#" class="btn blue btn-sm evaluation_reminder_button" id="{{ evaluation.id }}">
+																<i class="fa fa-pencil"></i> Send Reminder </a>
+													 	{% endif %}
+													{% endfor %}
+												{% endif %}
+											</td>
 										</tr>
 									{% endfor %}
 								</tbody>
