@@ -649,7 +649,7 @@ License: You must have a valid license purchased only from themeforest(the above
 				contentType: false,
 				success:function(obj)
 				{
-					location.reload();
+					window.location = "{% url 'evaluationapp:evaluation_review' %}";
 				}
 			});
 		});

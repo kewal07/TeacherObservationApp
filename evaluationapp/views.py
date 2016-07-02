@@ -29,6 +29,7 @@ class IndexView(ListView):
 
 	def get_template_names(self):
 		request = self.request
+		createExtendedUser(request.user)
 		if request.user.extendeduser.is_admin:
 			template_name = 'evaluationapp/index.html'
 		else:
@@ -476,7 +477,6 @@ class EvaluationFormVoteView(DetailView):
 			user = request.user
 			post_data = request.POST
 			form_id = int(post_data.get("survey-id"))
-			# form = Form.objects.get(pk=form_id)
 			subjectOfEvaluation = post_data.get('subject-of-evaluation')
 			classOfEvaluation = post_data.get('class-of-evaluation').split('---')[0]
 			sectionOfEvaluation = post_data.get('class-of-evaluation').split('---')[1]
@@ -558,12 +558,6 @@ def createExtendedUser(user):
 					gender_data = 'D'
 				extendedUser = ExtendedUser(user=user, imageUrl = img_url, gender=gender_data)
 				extendedUser.save()
-			if social_set.provider == 'twitter':
-				twitter_data = social_set.extra_data
-				img_url = twitter_data.get('profile_image_url')
-				city_data = twitter_data.get('location','')
-				extendedUser = ExtendedUser(user=user, imageUrl = img_url, city=city_data)
-				extendedUser.save()
 	else:
 		extendedUser = ExtendedUser(user=user)
 		extendedUser.save()
@@ -643,7 +637,6 @@ class AssignEvaluationView(ListView):
 	def post(self,request,*args,**kwargs):
 		try:
 			post_data = request.POST
-			print(post_data)
 			errors = {}
 			form = Form.objects.get(pk=post_data.get("selected-form"))
 			evaluator = User.objects.get(pk=post_data.get("selected-evaluator"))
