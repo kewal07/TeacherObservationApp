@@ -716,19 +716,37 @@ class EvaluationListView(ListView):
 			context["nav_val"] = "Completed Evaluations"
 		elif path.endswith("evaluation-under-me"):
 			context["evaluations"] = Evaluation.objects.filter(evaluator_id= user)
+			for evaluation in context["evaluations"]:
+				status = EvaluationStatus.objects.get(evaluation_id=evaluation)
+				if status.evaluation_status_id.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
+					evaluation.dateCrossed = True
+				else:
+					evaluation.dateCrossed = False
+
+			for evaluation in context['evaluations']:
+				print(evaluation.dateCrossed)
 			context["nav_val"] = "Evaluations Under Me"
-			# Ideally status should be in evaluation model...do the change asap
 			evaluations_list_under_me = Evaluation.objects.filter(evaluator_id= user).values_list('id', flat=True)
 			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=evaluations_list_under_me)
-			# context["status"] = Status.objects.filter(status_id__in = ev_status)
 		elif path.endswith("my-evaluations"):
 			context["evaluations"] = Evaluation.objects.filter(evaluatee_id= user)
+			for evaluation in context["evaluations"]:
+				status = EvaluationStatus.objects.get(evaluation_id=evaluation)
+				if status.evaluation_status_id.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
+					evaluation.dateCrossed = True
+				else:
+					evaluation.dateCrossed = False
 			context["nav_val"] = "My Evaluations"
-			# Ideally status should be in evaluation model...do the change asap
 			my_evals = Evaluation.objects.filter(evaluatee_id= user).values_list('id', flat=True)
 			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=my_evals)
 		elif path.endswith("evaluation-review"):
 			evr = Evaluation.objects.exclude(id__in=completed_evaluations_list)
+			for evaluation in evr:
+				status = EvaluationStatus.objects.get(evaluation_id=evaluation)
+				if status.evaluation_status_id.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
+					evaluation.dateCrossed = True
+				else:
+					evaluation.dateCrossed = False
 			context["evaluations"] = evr
 			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=evr)
 			context["nav_val"] = "Review Evaluations"
