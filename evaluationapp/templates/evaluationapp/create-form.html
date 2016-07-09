@@ -465,7 +465,7 @@ License: You must have a valid license purchased only from themeforest(the above
 												<a href="javascript:;" class="btn blue button-next">
 												Continue <i class="m-icon-swapright m-icon-white"></i>
 												</a>
-												<a href="javascript:;" class="btn green button-submit surveySubmit" id="createSurveySubmit" data-toggle="confirmation" data-btn-ok-label="Yes" data-btn-ok-icon="icon-like" data-btn-ok-class="btn-success" data-btn-cancel-label="No" data-btn-cancel-icon="icon-close" data-btn-cancel-class="btn-danger">
+												<a href="javascript:;" class="btn green button-submit surveySubmit" id="createSurveySubmit" >
 												Submit <i class="m-icon-swapright m-icon-white"></i>
 												</a>
 											</div>
@@ -539,6 +539,9 @@ License: You must have a valid license purchased only from themeforest(the above
 			var mandatory = false;
 			var addComment = false;
 			var horizontalOptions = false;
+			var flag = 0;
+			var element =
+				'<div class="my-popover popover confirmation fade top in" id="confirmation644182" style="top: -7rem !important; left: 24rem !important; display: block;"><div class="arrow" style="left: 50%;"></div><h3 class="popover-title">Issue Book?</h3><div class="popover-content text-center"><div class="btn-group"><a class="btn btn-xs btn-success" data-apply="confirmation"><i class="glyphicon glyphicon-ok"></i> Yes</a><a class="btn btn-xs btn-danger" data-dismiss="confirmation"><i class="glyphicon glyphicon-remove"></i> No</a></div></div></div>';
 			// End Variables
 	  	function add_another_choice(question_count_select,selectedType){
 			var question_choice_count = choice_count[question_count_select];
@@ -773,7 +776,15 @@ License: You must have a valid license purchased only from themeforest(the above
 			// Form Submit
 			$(".surveySubmit").click(function(event){
 				event.preventDefault();
-				var elemid = "#submit_form";
+				if (flag == 0){
+					flag = 1;
+					var that = $(this);
+					$(this).append(element);
+					$(".btn-success").click(function(e) {
+						e.stopPropagation();
+						flag = 0;
+						$(".my-popover").remove();
+						var elemid = "#submit_form";
 				var form_data = new FormData($(elemid)[0]);
 				form_data.append('question_count', JSON.stringify(question_list));
 				form_data.append('choice_count', JSON.stringify(choice_list));
@@ -809,6 +820,13 @@ License: You must have a valid license purchased only from themeforest(the above
 				{% else %}
 					$(location).attr('href',create_url);
 				{% endif %}
+					});
+					$(".btn-danger").click(function(e){
+						e.stopPropagation();
+						$(".my-popover").remove();
+						flag = 0;
+					});
+				}
 			});
 			// End Form Submit
       });

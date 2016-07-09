@@ -729,7 +729,7 @@ class EvaluationListView(ListView):
 			evaluations_list_under_me = Evaluation.objects.filter(evaluator_id= user).values_list('id', flat=True)
 			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=evaluations_list_under_me)
 		elif path.endswith("my-evaluations"):
-			context["evaluations"] = Evaluation.objects.filter(evaluatee_id= user)
+			context["evaluations"] = Evaluation.objects.filter(evaluatee_id=user).filter(evaluation_form__is_active=1)
 			for evaluation in context["evaluations"]:
 				status = EvaluationStatus.objects.get(evaluation_id=evaluation)
 				if status.evaluation_status_id.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
@@ -740,7 +740,7 @@ class EvaluationListView(ListView):
 			my_evals = Evaluation.objects.filter(evaluatee_id= user).values_list('id', flat=True)
 			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=my_evals)
 		elif path.endswith("evaluation-review"):
-			evr = Evaluation.objects.exclude(id__in=completed_evaluations_list)
+			evr = Evaluation.objects.exclude(id__in=completed_evaluations_list  and not evaluation_form.is_active )
 			for evaluation in evr:
 				status = EvaluationStatus.objects.get(evaluation_id=evaluation)
 				if status.evaluation_status_id.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
