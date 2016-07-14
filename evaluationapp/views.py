@@ -362,6 +362,47 @@ def createFormSections(form, sectionList, edit):
 		line = linecache.getline(filename, lineno, f.f_globals)
 		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 
+class FormPreviewView(DetailView):
+	model = Form
+	def get_template_names(self):
+		template_name = 'evaluationapp/form-preview.html'
+		return [template_name]
+	
+	def get_context_data(self, **kwargs):
+		context = super(FormPreviewView, self).get_context_data(**kwargs)
+		user = self.request.user
+		path = self.request.path
+		form_id = int(path.split("/")[-3])
+
+		context['questions']=[]
+		sections = FormSection.objects.filter(form_id=form_id).order_by('sectionOrder')
+		questions_section_dict = SortedDict()
+		questions_section_dict['Common'] = []
+		for section in sections:
+			questions_section_dict[section.sectionName] = []
+		for i,x in enumerate(FormQuestion.objects.filter(form_id=form_id)):
+			tempSectionName = ''
+			if x.section:
+				tempSectionName = x.section.sectionName
+			else:
+				tempSectionName = None
+			question_dict = {"question":x.question,"type":x.question_type, "addComment":x.add_comment, "mandatory":x.mandatory, "min_value":x.min_value, "max_value":x.max_value,"horizontalOptions":x.question.horizontal_options,"section_name":tempSectionName}
+			question_dict['user_already_voted'] = False
+			question_user_vote = []
+			if tempSectionName:
+				questions_section_dict[tempSectionName].append(question_dict)
+			else:
+				questions_section_dict['Common'].append(question_dict)
+			context['questions'].append(question_dict)
+		if(not questions_section_dict['Common']):
+			questions_section_dict.pop('Common',None)
+		context['questions_section_dict'] = questions_section_dict		
+		context['DOMAIN_URL'] = settings.DOMAIN_URL
+		context['no_of_sections'] = len(questions_section_dict)
+		print(context)
+		return context
+
+
 class EvaluationFormVoteView(DetailView):
 	model = Form
 
@@ -375,9 +416,8 @@ class EvaluationFormVoteView(DetailView):
 			evaluation = Evaluation.objects.get(pk=ev_id)
 		except:
 			pass
-		if path.endswith('preview'):
-			template_name = 'evaluationapp/evaluation-form-preview.html'
-		elif FormVoted.objects.filter(evaluation_id = evaluation):
+		
+		if FormVoted.objects.filter(evaluation_id = evaluation):
 			template_name = 'evaluationapp/evaluation-form-result.html'
 		print(template_name)
 		return [template_name]
@@ -462,7 +502,6 @@ class EvaluationFormVoteView(DetailView):
 				context["ac_re"] = True			
 		context['DOMAIN_URL'] = settings.DOMAIN_URL
 		context['no_of_sections'] = len(questions_section_dict)
-		print(context)
 		return context
 
 	def post(self, request, *args, **kwargs):
@@ -740,7 +779,7 @@ class EvaluationListView(ListView):
 			my_evals = Evaluation.objects.filter(evaluatee_id= user).values_list('id', flat=True)
 			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=my_evals)
 		elif path.endswith("evaluation-review"):
-			evr = Evaluation.objects.exclude(id__in=completed_evaluations_list  and not evaluation_form.is_active )
+			evr = Evaluation.objects.exclude(id__in=completed_evaluations_list)
 			for evaluation in evr:
 				status = EvaluationStatus.objects.get(evaluation_id=evaluation)
 				if status.evaluation_status_id.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
@@ -798,7 +837,6 @@ class ViewEvaluationView(DetailView):
 		get_data = self.request.GET
 		evaluation_id = int(get_data.get("eid",""))
 		form_id = int(get_data.get("fid",""))
-		print(get_data)
 		return context
 
 class AcceptRejectView(DetailView):
