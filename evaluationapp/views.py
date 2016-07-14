@@ -754,16 +754,15 @@ class EvaluationListView(ListView):
 			completed_evaluations_list = list(filter(bool, ce))
 			context["nav_val"] = "Completed Evaluations"
 		elif path.endswith("evaluation-under-me"):
-			context["evaluations"] = Evaluation.objects.filter(evaluator_id= user)
+			activeForms = Form.objects.filter(is_active=1)
+			activeForms = list(activeForms)
+			context["evaluations"] = Evaluation.objects.filter(evaluator_id= user).filter(evaluation_form_id__in=activeForms)			
 			for evaluation in context["evaluations"]:
 				status = EvaluationStatus.objects.get(evaluation_id=evaluation)
 				if status.evaluation_status_id.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
 					evaluation.dateCrossed = True
 				else:
 					evaluation.dateCrossed = False
-
-			for evaluation in context['evaluations']:
-				print(evaluation.dateCrossed)
 			context["nav_val"] = "Evaluations Under Me"
 			evaluations_list_under_me = Evaluation.objects.filter(evaluator_id= user).values_list('id', flat=True)
 			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=evaluations_list_under_me)
