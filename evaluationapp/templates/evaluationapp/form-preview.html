@@ -59,36 +59,24 @@ License: You must have a valid license purchased only from themeforest(the above
 		    display: inline-block;
 		    padding: 0 1rem;
 		}
-		.page-breadcrumb,.page-title{
-			display: none !important;
-		}
-		@media (min-width: 992px){
-			.page-content-wrapper .page-content {
-			    padding: 0px 20px 0px 20px;
-			}
-		}
-		.progress{
-			height: 5px !important;
-		}
-		.form-wizard .steps {
-		     padding: 0; 
-		     margin-bottom: 0; 
-		}
-		.form-wizard .steps > li > a.step > .number{
-			font-size: 14px;
-			padding: 0px; 
-			height: 20px;
-			width:20px;
-		}
 	</style>
 	<!-- End Page Level -->
 	<link rel="shortcut icon" href="{% static 'favicon.png' %}" />
 </head>
+<!-- END HEAD -->
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->
+<!-- DOC: Apply "page-sidebar-closed" class to the body and "page-sidebar-menu-closed" class to the sidebar menu element to hide the sidebar by default -->
+<!-- DOC: Apply "page-sidebar-hide" class to the body to make the sidebar completely hidden on toggle -->
+<!-- DOC: Apply "page-sidebar-closed-hide-logo" class to the body element to make the logo hidden on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-hide" class to body element to completely hide the sidebar on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-fixed" class to have fixed sidebar -->
+<!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
+<!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
+<!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 <body class="page-header-fixed page-quick-sidebar-over-content">
-<div id="loader">
-</div>
 <!-- BEGIN HEADER -->
-{% if user.extendeduser.is_admin %}
 <div class="page-header navbar navbar-fixed-top">
 	<!-- BEGIN HEADER INNER -->
 	<div class="page-header-inner">
@@ -170,78 +158,30 @@ License: You must have a valid license purchased only from themeforest(the above
 	</div>
 	<!-- END HEADER INNER -->
 </div>
-{% else %}
-<div class="page-header navbar navbar-fixed-top">
-	<!-- BEGIN HEADER INNER -->
-	<div class="page-header-inner">
-		<!-- BEGIN LOGO -->
-		<div class="page-logo">
-			<a href="{% url 'evaluationapp:index' %}">
-          		<img src="{% static 'assets/admin/layout/img/logo-big.png' %}" alt="logo" class="logo-default" />
-        	</a>
-			<div class="menu-toggler sidebar-toggler hide">
-				<!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
-			</div>
-		</div>
-		<!-- END LOGO -->
-		<!-- BEGIN RESPONSIVE MENU TOGGLER -->
-		<a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
-		</a>
-		<!-- END RESPONSIVE MENU TOGGLER -->
-		<!-- BEGIN TOP NAVIGATION MENU -->
-		<div class="top-menu">
-			<ul class="nav navbar-nav pull-right">
-				<li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Home"></i>
-		              <span id="menu-items-text" class="title tooltips">Home</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Download</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Settings"></i>
-		              <span id="menu-items-text" class="title tooltips">Settings</span>
-		            </a>
-		        </li>
-				<li class="dropdown dropdown-user">
-					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-		              <img alt="{{ user.first_name }}" class="img-circle" src="{{ user.extendeduser.get_profile_pic_url }}" />
-		              <span class="username username-hide-on-mobile">{{ user.username }}</span>
-		              <i class="fa fa-angle-down"></i>
-		            </a>
-		            <ul class="dropdown-menu dropdown-menu-default">
-		              <li class="my-index-logout">
-		                <a href="{% url 'login:logout' %}"> <i class="icon-key"></i> Log Out </a>
-		              </li>
-		            </ul>
-				</li>
-				<!-- END USER LOGIN DROPDOWN -->
-			</ul>
-		</div>
-		<!-- END TOP NAVIGATION MENU -->
-	</div>
-	<!-- END HEADER INNER -->
-</div>
-{% endif %}
 <!-- END HEADER -->
 <div class="clearfix">
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
 	<!-- BEGIN SIDEBAR -->
-	{% if user.extendeduser.is_admin %}
-		<div class="page-sidebar-wrapper">
-			<div class="page-sidebar navbar-collapse collapse">
-				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+	<div class="page-sidebar-wrapper">
+		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+		<div class="page-sidebar navbar-collapse collapse">
+			<!-- BEGIN SIDEBAR MENU -->
+			<!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+			<!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+			<!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+			<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+			<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+			<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+			<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+				<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
 				<li class="sidebar-toggler-wrapper">
+					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
 					<div class="sidebar-toggler">
 					</div>
+					<!-- END SIDEBAR TOGGLER BUTTON -->
 				</li>
 				<li class="start ">
 					<a href="{% url 'evaluationapp:index' %}">
@@ -281,22 +221,22 @@ License: You must have a valid license purchased only from themeforest(the above
 						<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
-							<li>
-								<a href="{% url 'evaluationapp:create-form' %}">
-								<i class="fa fa-plus"></i>
-								Create</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:edit_evaluations' %}">
-								<i class="fa fa-edit"></i>
-								View</a>
-							</li>
-							<li>
-								<a href="#">
-								<i class="fa fa-archive"></i>
-								Archived</a>
-							</li>
-						</ul>
+						<li>
+							<a href="{% url 'evaluationapp:create-form' %}">
+							<i class="fa fa-plus"></i>
+							Create</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:edit_evaluations' %}">
+							<i class="fa fa-edit"></i>
+							View</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="fa fa-archive"></i>
+							Archived</a>
+						</li>
+					</ul>
 				</li>
 				<li>
 					<a href="{% url 'evaluationapp:index' %}">
@@ -322,54 +262,16 @@ License: You must have a valid license purchased only from themeforest(the above
 					<span class="title">Settings</span>
 				</li>
 			</ul>
-				<!-- END SIDEBAR MENU -->
-			</div>
+			<!-- END SIDEBAR MENU -->
 		</div>
-	{% else %}
-		<div class="page-sidebar-wrapper">
-			<div class="page-sidebar navbar-collapse collapse">
-				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-					<li class="sidebar-toggler-wrapper">
-						<div class="sidebar-toggler">
-						</div>
-					</li>
-					<li class="start active">
-						<a href="{% url 'evaluationapp:index' %}">
-							<i class="icon-home"></i>
-							<span class="title">Home</span>
-						</a>
-					</li>
-					<li>
-						<a href="{% url 'evaluationapp:evaluation_under_me' %}">
-							<i class=" fa fa-check-square-o"></i>
-							<span class="title">Evaluate Others</span>
-						</a>
-					</li>
-					<li>
-						<a href="{% url 'evaluationapp:my_evaluations' %}">
-							<i class="fa fa-thumbs-o-up"></i>
-							<span class="title">My Feedback</span>
-						</a>
-					</li>
-					<li>
-						<a href="javascript:;">
-							<i class="fa fa-cloud-download"></i>
-							<span class="title">Downloads</span>
-						</a>
-					</li>
-					<li class="last ">
-						<a href="{% url 'evaluationapp:view_settings' %}">
-						<i class="fa fa-gear"></i>
-						<span class="title">Settings</span>
-					</li>
-				</ul>
-			</div>
-		</div>
-	{% endif %}
+	</div>
+	<!-- END SIDEBAR -->
+	<!-- BEGIN CONTENT -->
 	<div class="page-content-wrapper">
 		<div class="page-content">
+			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
-			Evaluation Form 
+			Preview Form 
 			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
@@ -389,6 +291,8 @@ License: You must have a valid license purchased only from themeforest(the above
 					</li>
 				</ul>
 			</div>
+			<!-- END PAGE HEADER-->
+			<!-- BEGIN PAGE CONTENT-->
 			<div class="row">
 				<div class="col-md-12">
 					<div class="portlet box blue" id="form_wizard_1">
@@ -402,7 +306,7 @@ License: You must have a valid license purchased only from themeforest(the above
 								</a>
 								<a href="javascript:;" class="reload">
 								</a>
-								<a href="{% url 'evaluationapp:index' %}" class="remove" title="close">
+								<a href="{% url 'evaluationapp:edit_evaluations' %}" class="remove">
 								</a>
 							</div>
 						</div>
@@ -443,30 +347,30 @@ License: You must have a valid license purchased only from themeforest(the above
 												Your form validation is successful!
 											</div>
 											{% for key,value in questions_section_dict.items %}
-												{% if forloop.counter == 1 %}
-												<div class="tab-pane" id="tab{{ forloop.counter }}">
-													<h3 class="block">Section : {{ key|title }}</h3>
-													<div class="form-group">
-														<label class="col-md-3 control-label">Subject</label>
-														<div class="col-md-4">
-															<select id="subject-select" name="subject-of-evaluation" class="bs-select form-control">
-															{% for sub in subject%}
-																<option value="{{ sub.subject.id }}">{{ sub.subject.subject_name }}</option>
-															{% endfor %}
-															</select>
+												{% if forloopcounter == 1 %}
+													<div class="tab-pane" id="tab{{ forloop.counter }}">
+														<h3 class="block">Section : {{ key|title }}</h3>
+														<div class="form-group">
+															<label class="col-md-3 control-label">Subject</label>
+															<div class="col-md-4">
+																<select id="subject-select" name="subject-of-evaluation" class="bs-select form-control">
+																{% for sub in subject%}
+																	<option value="{{ sub.subject.id }}">{{ sub.subject.subject_name }}</option>
+																{% endfor %}
+																</select>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-md-3 control-label">Class</label>
+															<div class="col-md-4">
+																<select id="class-select" name="class-of-evaluation" class="bs-select form-control">
+																{% for cla in class%}
+																	<option value="{{ cla.grade.id }}---{{ cla.grade.grade_section }}">{{ cla.grade.grade_name }} {{ cla.grade.grade_section }}</option>
+																{% endfor %}
+																</select>
+															</div>
 														</div>
 													</div>
-													<div class="form-group">
-														<label class="col-md-3 control-label">Class</label>
-														<div class="col-md-4">
-															<select id="class-select" name="class-of-evaluation" class="bs-select form-control">
-															{% for cla in class%}
-																<option value="{{ cla.grade.id }}---{{ cla.grade.grade_section }}">{{ cla.grade.grade_name }} {{ cla.grade.grade_section }}</option>
-															{% endfor %}
-															</select>
-														</div>
-													</div>
-												</div>
 												{% else %}
 												<div class="tab-pane" id="tab{{ forloop.counter }}">
 													<h3 class="block">Section : {{ key|title }}</h3>
@@ -474,19 +378,21 @@ License: You must have a valid license purchased only from themeforest(the above
 														<div class="survey-question form-group" id="survey-question{{ question.question.id }}">
 															<div class=" portlet-title question-box-title">
 																<div class="caption">
-																	Question{{ forloop.counter }}
+																	<i class="fa fa-question"></i>Question{{ forloop.counter }}
 																</div>
 															</div>
 															<div class="portlet-body">
-																<p class="que_text">{{ question.question.question_text|title }}</p>
+																<p class="que_text">{{ question.question.question_text }}</p>
 																{% if question.question.description %}
 																	<p class="question_description_header">
-																		<span class="question_description_header_span">Description: {{ question.question.description }}</span>
+																		<span class="question_description_header_span">Description: </span>
 																	</p>
+																	<p class="question_description">{{ question.question.description }}</p>
 																{% endif %}
 																{% if question.type == "text" %}
-																{{ question.answer.strip }}
-																	<textarea id ="choiceText{{ question.question.id }}" class="text-ans" name="choice{{ question.question.id }}" placeholder="Enter Your Response in max 255 characters" maxlength="255">{{ question.answer }}</textarea>
+																	<textarea id ="choiceText{{ question.question.id }}" class="text-ans" name="choice{{ question.question.id }}" placeholder="Enter Your Response in max 255 characters" maxlength="255">
+																		{{ question.answer }}
+																	</textarea>
 																{% elif question.type == "rating" %}
 																	<input id="range_2" type="text" name="range{{ question.question.id }}" value="{{ question.min_value }};{{ question.max_value }}"/>
 																{% else %}
@@ -500,13 +406,13 @@ License: You must have a valid license purchased only from themeforest(the above
 																				<label class="choice-text" for="choice{{ choice.id }}">
 																				<input class="choices icheck" type="{{ question.type }}" name="choice{{ question.question.id }}" id="choice{{ choice.id }}" value="{{ choice.id }}" />
 																				{{ choice.choice_text }}</label>
-																				</div>
+																			</div>
 																		{% endfor %}
 																	</div>
-																	{% if question.addComment and question.type == "radio" %}
-																		<p>Any Other Comments</p>
-																		<textarea id ="choiceText{{ question.question.id }}Comment" class="text-ans" name="choice{{ question.question.id }}Comment" placeholder="Enter Your Response in max 255 characters" maxlength="255">{{ question.answer }}</textarea>
-																	{% endif %}
+																{% endif %}
+																{% if question.addComment %}
+																	<p>Any Other Comments</p>
+																	<textarea id ="choiceText{{ question.question.id }}Comment" class="text-ans" name="choice{{ question.question.id }}Comment" placeholder="Enter Your Response in max 255 characters" maxlength="255">{{ question.answer }}</textarea>
 																{% endif %}
 															</div>
 														</div>
@@ -525,24 +431,9 @@ License: You must have a valid license purchased only from themeforest(the above
 												<a href="javascript:;" class="btn blue button-next">
 												Continue <i class="m-icon-swapright m-icon-white"></i>
 												</a>
-												{% if view_ev %}
-													{% if ac_re %}
-														<a href="javascript:;" class="btn green button-submit accept-reject" id="accept---{{ evaluation.id }}">
-														Accept <i class="m-icon-swapright m-icon-white"></i>
-														</a>
-														<a href="javascript:;" class="btn green button-submit accept-reject" id="reject---{{ evaluation.id }}">
-														Reject <i class="m-icon-swapright m-icon-white"></i>
-														</a>
-													{% else %}
-														Evaluation is at {{ ev_status }} State
-													{% endif %}
-												{% elif not user_already_voted %}
-													<a href="javascript:;" class="btn green button-submit voteSubmit surveySubmit" id="vote{{ survey.id }}">
-													Submit <i class="m-icon-swapright m-icon-white"></i>
-													</a>
-												{% else %}
-													Evaluation is at {{ ev_status }} State
-												{% endif %}
+												<a href="javascript:;" class="btn disabled green button-submit voteSubmit surveySubmit" id="vote{{ survey.id }}">
+												Submit <i class="m-icon-swapright m-icon-white"></i>
+												</a>
 											</div>
 										</div>
 									</div>
@@ -552,9 +443,13 @@ License: You must have a valid license purchased only from themeforest(the above
 					</div>
 				</div>
 			</div>
+			<!-- END PAGE CONTENT-->
 		</div>
 	</div>
+	<!-- END CONTENT -->
 </div>
+<!-- END CONTAINER -->
+<!-- BEGIN FOOTER -->
 <div class="page-footer">
 	<div class="page-footer-inner">
 		 2016 &copy; Eduzen <a href="http://educationzen.com/" title="Eduzen" target="_blank">Eduzen Private Limited</a>
@@ -563,6 +458,9 @@ License: You must have a valid license purchased only from themeforest(the above
 		<i class="icon-arrow-up"></i>
 	</div>
 </div>
+<!-- END FOOTER -->
+<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+<!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
 <script src="../../assets/global/plugins/respond.min.js"></script>
 <script src="../../assets/global/plugins/excanvas.min.js"></script> 
@@ -581,7 +479,6 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="{% static 'assets/admin/layout/scripts/layout.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/quick-sidebar.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/demo.js' %}" type="text/javascript"></script>
-<script src="{% static 'assets/admin/layout/scripts/spin.min.js' %}" type="text/javascript"></script>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <script src="{% static 'assets/global/plugins/jquery-validation/js/jquery.validate.min.js' %}"></script>
 <script src="{% static 'assets/global/plugins/jquery-validation/js/additional-methods.min.js' %}"></script>
@@ -613,36 +510,10 @@ License: You must have a valid license purchased only from themeforest(the above
 
 		$('.remove').click(function(event){
 			event.preventDefault();
-			window.location = "{% url 'evaluationapp:index' %}";
+			window.location = "{% url 'evaluationapp:edit_evaluations' %}";
 		});
 
-		var opts = {
-			  lines: 13 // The number of lines to draw
-			, length: 28 // The length of each line
-			, width: 10 // The line thickness
-			, radius: 25 // The radius of the inner circle
-			, scale: 1 // Scales overall size of the spinner
-			, corners: 1 // Corner roundness (0..1)
-			, color: '#3598dc' // #rgb or #rrggbb or array of colors
-			, opacity: 0.25 // Opacity of the lines
-			, rotate: 0 // The rotation offset
-			, direction: 1 // 1: clockwise, -1: counterclockwise
-			, speed: 1 // Rounds per second
-			, trail: 60 // Afterglow percentage
-			, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
-			, zIndex: 2e9 // The z-index (defaults to 2000000000)
-			, className: 'spinner' // The CSS class to assign to the spinner
-			, top: '30%' // Top position relative to parent
-			, left: '50%' // Left position relative to parent
-			, shadow: false // Whether to render a shadow
-			, hwaccel: false // Whether to use hardware acceleration
-			, position: 'absolute' // Element positioning
-		}
-		var target = document.getElementById('loader')
-
-		$(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
 		$('.surveySubmit').click(function(){
-			var spinner = new Spinner(opts).spin(target);
 			var subButElem = $(this);
 			subButElem.attr("disabled","disabled");
 			$(".errorlist").remove();
@@ -653,9 +524,7 @@ License: You must have a valid license purchased only from themeforest(the above
 				data:form_data,
 				success:function(response)
 				{
-					spinner.stop();
 					if("success" in response){
-						location.reload();
 					}else{
 						for(key in response){
 							$("#survey-question"+key).append('<span class="errorlist">'+response[key]+'</span>');
