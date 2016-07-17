@@ -630,6 +630,8 @@ def saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEv
 		ev_status = EvaluationStatus.objects.filter(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("ongoing"))[0]
 		ev_status.evaluation_status_id = evappconstants.getEvStatus("submitted")
 		ev_status.save()
+		evaluation.completed_on = datetime.datetime.now()
+		evaluation.save()
 	except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

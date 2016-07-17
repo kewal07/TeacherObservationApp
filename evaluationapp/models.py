@@ -86,7 +86,7 @@ class Evaluation(models.Model):
 	evaluator = models.ForeignKey(settings.AUTH_USER_MODEL,blank=True,null=True,related_name='user_evaluator')
 	created_at = models.DateTimeField(auto_now_add=True)
 	scheduled_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
-	completed_on = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+	completed_on = models.DateTimeField(blank=True, null=True, auto_now_add=False)
 	last_day = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 	is_peer = models.BooleanField(default=1)
 	is_external = models.BooleanField(default=0)
