@@ -12,40 +12,6 @@ def get_file_path(instance, filename):
 	profilePath = (os.path.join(settings.BASE_DIR,'media'+os.sep+'profile'+os.sep+str(folder_day)))
 	return os.path.join(profilePath,filename)
 
-class ExternalEvaluator(models.Model):
-	external_evaluator_name = models.CharField(max_length=255)
-	external_evaluator_designation = models.CharField(max_length=255)
-	external_evaluator_organisation = models.CharField(max_length=255)	
-	external_evaluator_bio = models.CharField(max_length=1024,blank=True,null=True)
-	external_evaluator_picUrl = models.ImageField(upload_to=get_file_path,blank=True,null=True)
-	
-	def __str__(self):
-		return self.external_evaluator_name 
-
-	def get_profile_pic_name(self):
-		return self.external_evaluator_picUrl.path.split(os.sep)[-1]
-
-	def get_folder_day(self):
-		folder_day = ""
-		try:
-			day = self.external_evaluator_picUrl.path.split(os.sep)[-2]
-			folder_day = str(date(int(day.split("-")[0]),int(day.split("-")[1]),int(day.split("-")[2])))
-		except:
-			pass
-		return folder_day
-
-	def get_profile_pic_url(self):
-		default_pic_url = "/static/login/images/defaultAvatar.png"
-		if self.external_evaluator_picUrl:
-			external_evaluator_picUrl = self.external_evaluator_picUrl.path
-			if external_evaluator_picUrl.find("https:"+os.sep) != -1:
-				return external_evaluator_picUrl.split('media')[1][1:]
-			elif external_evaluator_picUrl.find("http:"+os.sep) != -1:
-				return external_evaluator_picUrl.split('media')[1][1:]
-			else:
-				return "/media/profile/"+self.get_folder_day()+os.sep+self.get_profile_pic_name()
-		return default_pic_url
-
 from evaluationapp.models import School
 class ExtendedUser(models.Model):
 	user = models.OneToOneField(settings.AUTH_USER_MODEL)

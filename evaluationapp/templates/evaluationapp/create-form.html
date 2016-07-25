@@ -541,7 +541,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			var horizontalOptions = false;
 			var flag = 0;
 			var element =
-				'<div class="my-popover popover confirmation fade top in" id="confirmation644182" style="top: -7rem !important; left: 24rem !important; display: block;"><div class="arrow" style="left: 50%;"></div><h3 class="popover-title">Issue Book?</h3><div class="popover-content text-center"><div class="btn-group"><a class="btn btn-xs btn-success" data-apply="confirmation"><i class="glyphicon glyphicon-ok"></i> Yes</a><a class="btn btn-xs btn-danger" data-dismiss="confirmation"><i class="glyphicon glyphicon-remove"></i> No</a></div></div></div>';
+				'<div class="my-popover popover confirmation fade top in" id="confirmation644182" style="top: -7rem !important; left: 24rem !important; display: block;"><div class="arrow" style="left: 50%;"></div><h3 style="color:black;" class="popover-title">Are you Sure? </h3><div class="popover-content text-center"><div class="btn-group"><a class="btn btn-xs btn-success" data-apply="confirmation"><i class="glyphicon glyphicon-ok"></i> Yes</a><a class="btn btn-xs btn-danger" data-dismiss="confirmation"><i class="glyphicon glyphicon-remove"></i> No</a></div></div></div>';
 			// End Variables
 	  	function add_another_choice(question_count_select,selectedType){
 			var question_choice_count = choice_count[question_count_select];
@@ -611,13 +611,10 @@ License: You must have a valid license purchased only from themeforest(the above
 			});
 
 			$("#tab2").on("change",".survey-section-text",function(){
-				// console.log("input changed");
 				var sectionNme = $(this).val();
 				var loopIndex = $(this)[0].id.split("---")[1];
-				// console.log(sectionNme,loopIndex,$(".question-section-option-"+loopIndex));
 				$(".question-section-option-"+loopIndex).text(sectionNme);
 				$(".question-section-option-"+loopIndex).val(sectionNme);
-				// console.log(sectionNme,loopIndex,$(".question-section-option-"+loopIndex));
 			});
 			// End Sections
 
@@ -670,19 +667,14 @@ License: You must have a valid license purchased only from themeforest(the above
 			// Question Type Select
 			$("#tab3").on("change",".question-type-select",function(){
 				var select_elem_id = $(this)[0].id;
-				console.log("select_elem_id: "+select_elem_id);
 		  		var question_count_select = select_elem_id.replace("question-type-select---","");
-		  		console.log("question_count_select: "+question_count_select);
 		  		choice_count[question_count_select] = 1;
 		  		choice_list[question_count_select] = [];
 		  		var question_choice_count = choice_count[question_count_select];
 		  		var choice_elem_div = "question"+question_count_select+"choiceDiv";
-		  		console.log("choice_elem_div: "+choice_elem_div);
 		  		var question_div = "questionDiv"+question_count_select;
-		  		console.log("question_div: "+question_div);
 		  		$("#"+choice_elem_div).remove();
 		  		var selectedType = $("#"+select_elem_id+" option:selected").val();
-		  		console.log("selectedType: "+selectedType);
 		  		if(selectedType != "text" && selectedType != "rating"){
 		  			var add_another_choice_elem = '<div id="'+choice_elem_div+'"></div>';
 		  			$("#"+question_div+" .portlet-body .scroller").append(add_another_choice_elem);

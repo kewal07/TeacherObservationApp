@@ -680,9 +680,10 @@ License: You must have a valid license purchased only from themeforest(the above
 <script>
 	$('.evaluation_reminder_button').click(function(){
 		var evaluationid = $(this).attr('id');
+		var n = new Date().getTimezoneOffset();
 		$.ajax({
 				type: 'GET',
-				url:"send-mail?action=evaluationremider&id="+evaluationid,
+				url:"send-mail?action=evaluationremider&id="+evaluationid+"&offset="+n.toString(),
 				processData: false,
 				contentType: false,
 				success:function(response)

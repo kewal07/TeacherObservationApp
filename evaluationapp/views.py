@@ -137,7 +137,6 @@ class CreateFormView(ListView):
 			user = request.user
 			post_data = request.POST
 			errors = {}
-			print(post_data)
 			form_name = post_data.get("fullname").strip()
 			form_desc = post_data.get("description").strip()
 			submit_text = post_data.get("submit-text")
@@ -302,7 +301,6 @@ def createFormQues(form,ques_list,curtime,user,edit):
 	try:
 		if edit:
 			form_ques = FormQuestion.objects.filter(form=form)
-			print(form_ques)
 			for que in form_ques:
 				question = que.question
 				question.delete()
@@ -399,7 +397,6 @@ class FormPreviewView(DetailView):
 		context['questions_section_dict'] = questions_section_dict		
 		context['DOMAIN_URL'] = settings.DOMAIN_URL
 		context['no_of_sections'] = len(questions_section_dict)
-		print(context)
 		return context
 
 
@@ -419,7 +416,6 @@ class EvaluationFormVoteView(DetailView):
 		
 		if FormVoted.objects.filter(evaluation_id = evaluation):
 			template_name = 'evaluationapp/evaluation-form-result.html'
-		print(template_name)
 		return [template_name]
 
 	def get_context_data(self, **kwargs):
@@ -814,8 +810,11 @@ def sendMails(action, data_dict):
 	if action == "evaluationremider":
 		subject = "Please Finish Evaluation"
 		evaluation = Evaluation.objects.get(id=data_dict.get("id"))
+		offset = data_dict.get("offset",0)
+		offset = int(offset)
+		lastDayTime = evaluation.last_day - datetime.timedelta(minutes=offset)
 		evaluation_url = settings.DOMAIN_URL + reverse('evaluationapp:evaluation_form_vote', kwargs={'pk':evaluation.evaluation_form.id, 'form_slug':evaluation.evaluation_form.form_slug, 'evaluation_id':evaluation.id})
-		message = "Hi %s,\n\nPlease complete the evaluation for %s using %s before %s"%(evaluation.evaluator.first_name,evaluation.evaluatee.first_name,evaluation_url,evaluation.last_day)
+		message = "Hi %s,\n\nPlease complete the evaluation for %s using %s before %s"%(evaluation.evaluator.first_name,evaluation.evaluatee.first_name,evaluation_url,lastDayTime)
 		to_mail = ['kewal07@gmail.com',evaluation.evaluator.email]
 	elif action == "evaluatee":
 		subject = "You are being evaluated"
@@ -884,11 +883,9 @@ def excel_view(request):
 		errors['notloggedin'] = "User not logged In"
 		return HttpResponseNotFound(errors,content_type="application/json")
 	post_data = request.GET
-	print(post_data)
 	export_type = post_data.get("export_type","")
 	teacher_id = int(post_data.get("teacher-select",-1))
 	form_id = int(post_data.get("form-select",-1))
-	print(export_type, teacher_id, form_id)
 	response = HttpResponse(content_type='application/ms-excel')
 	wb = xlwt.Workbook()
 	ws0 = wb.add_sheet('Definitions', cell_overwrite_ok=True)
@@ -902,11 +899,8 @@ def excel_view(request):
 			ev_status = ""
 			try:
 				form = Form.objects.get(pk=form_id)
-				print(form)
 				evaluation = Evaluation.objects.get(evaluation_form=form, evaluatee=teacher)
-				print(evaluation)
 				ev_status = EvaluationStatus.objects.filter(evaluation_id=evaluation)[0].evaluation_status_id.status_state
-				print(ev_status)
 			except:
 				return HttpResponseNotFound("This Evaluation has not been done yet")
 			# raw data sheet 
