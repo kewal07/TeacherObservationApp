@@ -8,7 +8,8 @@ urlpatterns = [
 	# r'',
     # Examples:
     # url(r'^blog/', include('blog.urls')),
-	url(r'^$',login_required(views.IndexView.as_view()),name='index'),
+	url(r'^$',login_required(views.IndexView.as_view()), name='index'),
+	url(r'^gettoken/', views.gettoken, name='gettoken'),
 	url(r'^test$',login_required(views.TestView.as_view()),name='test'),
 	url(r'^create-form$',login_required(views.CreateFormView.as_view()),name='create-form'),
 	url(r'^evaluation-form/(?P<pk>\d+)/(?P<form_slug>[\w\-]+)/preview$',login_required(views.FormPreviewView.as_view()),name='evaluation_form_preview'),

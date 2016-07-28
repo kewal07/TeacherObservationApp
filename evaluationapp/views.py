@@ -1025,3 +1025,9 @@ def write_on_sheet1(ws0, form_question_list):
 		linecache.checkcache(filename)
 		line = linecache.getline(filename, lineno, f.f_globals)
 		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+
+def gettoken(request):
+	auth_code = request.GET['code']
+	print('****************')
+	print(auth_code)
+	print('****************')
