@@ -1034,7 +1034,8 @@ def get_token_from_code(auth_code, redirect_uri):
         	'redirect_uri': redirect_uri,
         	'scope': ' '.join(str(i) for i in scopes),
         	'client_id': 'ac92782f-c87a-48e5-9b4d-9ba250c8b11b',
-        	'client_secret': 'FJb8apcLnH98+bpg8uPWbqOOur7qF4LZ8oyQDoSZhk4='
+        	'client_secret': 'FJb8apcLnH98+bpg8uPWbqOOur7qF4LZ8oyQDoSZhk4=',
+        	'state': '12345'
     	}
 	r = requests.post(token_url, data = post_data)
 	try:
