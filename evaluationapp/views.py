@@ -13,6 +13,9 @@ from django.conf import settings
 from collections import OrderedDict as SortedDict
 from django.core.mail import EmailMessage,send_mail
 from django.core.urlresolvers import resolve,reverse
+import requests
+import uuid
+import base64
 
 class TestView(ListView):
 	template_name = 'evaluationapp/test.html'
@@ -1028,6 +1031,8 @@ def write_on_sheet1(ws0, form_question_list):
 
 def get_token_from_code(auth_code, redirect_uri):
 	scopes = ['openid', 'https://outlook.office.com/mail.read']
+	authority = 'https://login.microsoftonline.com'
+	token_url = '{0}{1}'.format(authority, '/common/oauth2/v2.0/token')
 	post_data = {
 		'grant_type': 'authorization_code',
         	'code': auth_code,
@@ -1058,11 +1063,10 @@ def get_user_email_from_id_token(id_token):
 	return jwt['preffered_username']
 
 def gettoken(request):
-	authority = 'https://login.microsoftonline.com'
-	token_url = '{0}{1}'.format(authority, '/common/oauth2/v2.0/token')
 	auth_code = request.GET['code']
 	redirect_uri = request.build_absolute_uri(reverse('evaluationapp:gettoken'))
 	token = get_token_from_code(auth_code, redirect_uri)
+	print(token)
 	access_token = token['access_token']
 	user_email = get_user_email_from_id_token(token['id_token'])
 	print(user_email)
