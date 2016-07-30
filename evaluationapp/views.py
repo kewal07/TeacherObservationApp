@@ -1027,7 +1027,22 @@ def write_on_sheet1(ws0, form_question_list):
 		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 
 def gettoken(request):
+	authority = 'https://login.microsoftonline.com'
+	token_url = '{0}{1}'.format(authority, '/common/oauth2/v2.0/token')
+	scopes = ['openid', 'https://outlook.office.com/mail.read']
 	auth_code = request.GET['code']
-	print('****************')
-	print(auth_code)
-	print('****************')
+	post_data = {
+		'grant_type': 'authorization_code',
+        'code': auth_code,
+        'redirect_uri': redirect_uri,
+        'scope': ' '.join(str(i) for i in scopes),
+        'client_id': 'ac92782f-c87a-48e5-9b4d-9ba250c8b11b',
+        'client_secret': 'FJb8apcLnH98+bpg8uPWbqOOur7qF4LZ8oyQDoSZhk4='
+    }
+
+	r = requests.post(token_url, data = post_data)
+	try:
+		print(r.json())
+		return r.json()
+	except:
+		return 'Error retrieving token: {0} - {1}'.format(r.status_code, r.text)
