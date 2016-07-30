@@ -1026,11 +1026,8 @@ def write_on_sheet1(ws0, form_question_list):
 		line = linecache.getline(filename, lineno, f.f_globals)
 		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 
-def gettoken(request):
-	authority = 'https://login.microsoftonline.com'
-	token_url = '{0}{1}'.format(authority, '/common/oauth2/v2.0/token')
+def get_token_from_code(auth_code, redirect_uri):
 	scopes = ['openid', 'https://outlook.office.com/mail.read']
-	auth_code = request.GET['code']
 	post_data = {
 		'grant_type': 'authorization_code',
         	'code': auth_code,
@@ -1039,8 +1036,38 @@ def gettoken(request):
         	'client_id': 'ac92782f-c87a-48e5-9b4d-9ba250c8b11b',
         	'client_secret': 'FJb8apcLnH98+bpg8uPWbqOOur7qF4LZ8oyQDoSZhk4='
     	}
-
 	r = requests.post(token_url, data = post_data)
+	try:
+		return r.json()
+	except:
+		return 'Error retrieving token: {0} - {1}'.format(r.status_code, r.text)
+
+def get_user_email_from_id_token(id_token):
+	token_parts = id_token.split('.')
+	encoded_token = token_parts[1]
+
+	leftovers = len(encoded_token)%4
+	if leftovers == 2:
+		encoded_token += '=='
+	elif leftovers == 3:
+		encoded_token += '='
+
+	# URL-safe base64 decode the token parts
+	decoded = base64.urlsafe_b64decode(encoded_token.encode('utf-8')).decode('utf-8')
+	jwt = json.loads(decoded)
+	return jwt['preffered_username']
+
+def gettoken(request):
+	authority = 'https://login.microsoftonline.com'
+	token_url = '{0}{1}'.format(authority, '/common/oauth2/v2.0/token')
+	auth_code = request.GET['code']
+	redirect_uri = request.build_absolute_uri(reverse('evaluationapp:gettoken'))
+	token = get_token_from_code(auth_code, redirect_uri)
+	access_token = token['access_token']
+	user_email = get_user_email_from_id_token(token['id_token'])
+	print(user_email)
+	request.session['access_token'] = access_token
+	request.session['user_email'] = user_email 
 	try:
 		print(r.json())
 		return r.json()
