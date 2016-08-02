@@ -3,6 +3,7 @@ from datetime import date
 from django.conf import settings
 from django.template.defaultfilters import slugify
 import hashlib, hmac, os
+from evaluationapp.models import School
 # Create your models here.
 
 def get_file_path(instance, filename):
@@ -12,7 +13,6 @@ def get_file_path(instance, filename):
 	profilePath = (os.path.join(settings.BASE_DIR,'media'+os.sep+'profile'+os.sep+str(folder_day)))
 	return os.path.join(profilePath,filename)
 
-from evaluationapp.models import School
 class ExtendedUser(models.Model):
 	user = models.OneToOneField(settings.AUTH_USER_MODEL)
 	user_pk = models.CharField(max_length=255)

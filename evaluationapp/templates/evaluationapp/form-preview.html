@@ -513,6 +513,8 @@ License: You must have a valid license purchased only from themeforest(the above
 			window.location = "{% url 'evaluationapp:edit_evaluations' %}";
 		});
 
+		$(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
+
 		$('.surveySubmit').click(function(){
 			var subButElem = $(this);
 			subButElem.attr("disabled","disabled");
