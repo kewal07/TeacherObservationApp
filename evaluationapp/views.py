@@ -668,7 +668,7 @@ class AssignEvaluationView(ListView):
 
 	def get_queryset(self, **kwargs):
 		context = {}
-		teachers = ExtendedUser.objects.filter(is_admin = 0)
+		teachers = ExtendedUser.objects.filter(is_admin = 0, school_id = self.request.user.extendeduser.school.id)
 		context['teachers'] = teachers
 		forms = Form.objects.filter(is_active = 1, is_public =1)
 		context['forms'] = forms
