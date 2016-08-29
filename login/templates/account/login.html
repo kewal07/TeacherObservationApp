@@ -130,18 +130,16 @@ License: You must have a valid license purchased only from themeforest(the above
 							</p>
 						</li>
 					</a>
-					<!-- <li>
-					<a class="twitter" data-original-title="Twitter" href="javascript:;">
+
+					<a href="{% provider_login_url "google" method="oauth2" %}" class="signup-a google">
+						<li>
+							<p class="googleplus" data-original-title="google" style="height: 28px;margin-right:0;">Google
+							</p>
+						</li>
 					</a>
-				</li>
-				<li>
-					<a class="googleplus" data-original-title="Goole Plus" href="javascript:;">
+					<a href="https://login.microsoftonline.com/common/oauth2/authorize?client_id=ac92782f-c87a-48e5-9b4d-9ba250c8b11b&redirect_uri=http%3A%2F%2Fteachsprout.com%2Fgettoken%2F&response_type=code&state=12345" class="signup-a" style="color:lightgrey;">
+						<i class="fa fa-windows fa-5x" style="font-size:28px;"></i>
 					</a>
-				</li>
-				<li>
-					<a class="linkedin" data-original-title="Linkedin" href="javascript:;">
-					</a>
-				</li> -->
 				</ul>
 			</div>
 			<div class="forget-password">
@@ -167,6 +165,7 @@ License: You must have a valid license purchased only from themeforest(the above
 	</div>
 	<!-- END COPYRIGHT -->
 	<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+	<!-- GRAPHS BY www.insightsio.com -->
 	<!-- BEGIN CORE PLUGINS -->
 	<script src="{% static 'assets/global/plugins/jquery.min.js' %}" type="text/javascript"></script>
 	<script src="{% static 'assets/global/plugins/jquery-migrate.min.js' %}" type="text/javascript"></script>

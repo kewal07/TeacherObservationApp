@@ -216,7 +216,7 @@ License: You must have a valid license purchased only from themeforest(the above
 				</li>
 				<li>
 					<a href="javascript:;">
-						<i class="fa-file-text-o"></i>
+						<i class="fa fa-file-text-o"></i>
 						<span class="title">Forms</span>
 						<span class="arrow "></span>
 					</a>
@@ -238,6 +238,25 @@ License: You must have a valid license purchased only from themeforest(the above
 						</li>
 					</ul>
 				</li>
+				<li>
+						<a href="javascript:;">
+						<fa class="fa fa-check-square-o"></fa>
+						<span class="title">Targets</span>
+						<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:assigntargettoteachers' %}">
+								<fa class="fa fa-plus"></fa>
+								Assign</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:target_review' %}">
+								<i class="fa fa-search"></i>
+								Review</a>
+							</li>
+						</ul>
+					</li>
 				<li>
 					<a href="{% url 'evaluationapp:index' %}">
 						<i class="fa fa-bar-chart"></i>
@@ -348,11 +367,30 @@ License: You must have a valid license purchased only from themeforest(the above
 											</div>
 											{% for key,value in questions_section_dict.items %}
 												{% if forloopcounter == 1 %}
-													<script>
-														var d = document.getElementById("tab1");
-														d.className += " active";
-													</script>
-												{% endif %}
+													<div class="tab-pane" id="tab{{ forloop.counter }}">
+														<h3 class="block">Section : {{ key|title }}</h3>
+														<div class="form-group">
+															<label class="col-md-3 control-label">Subject</label>
+															<div class="col-md-4">
+																<select id="subject-select" name="subject-of-evaluation" class="bs-select form-control">
+																{% for sub in subject%}
+																	<option value="{{ sub.subject.id }}">{{ sub.subject.subject_name }}</option>
+																{% endfor %}
+																</select>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-md-3 control-label">Class</label>
+															<div class="col-md-4">
+																<select id="class-select" name="class-of-evaluation" class="bs-select form-control">
+																{% for cla in class%}
+																	<option value="{{ cla.grade.id }}---{{ cla.grade.grade_section }}">{{ cla.grade.grade_name }} {{ cla.grade.grade_section }}</option>
+																{% endfor %}
+																</select>
+															</div>
+														</div>
+													</div>
+												{% else %}
 												<div class="tab-pane" id="tab{{ forloop.counter }}">
 													<h3 class="block">Section : {{ key|title }}</h3>
 													{% for question in value %}
@@ -400,6 +438,7 @@ License: You must have a valid license purchased only from themeforest(the above
 														
 													{% endfor %}
 												</div>
+												{% endif %}
 											{% endfor %}
 										</div>
 									</div>
@@ -492,6 +531,8 @@ License: You must have a valid license purchased only from themeforest(the above
 			event.preventDefault();
 			window.location = "{% url 'evaluationapp:edit_evaluations' %}";
 		});
+
+		$(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
 
 		$('.surveySubmit').click(function(){
 			var subButElem = $(this);

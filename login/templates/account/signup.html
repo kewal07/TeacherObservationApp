@@ -94,59 +94,63 @@ License: You must have a valid license purchased only from themeforest(the above
 			</div>
 			<div class="form-group">
 				{{ form.first_name.label_tag }}
-				<!-- <label class="control-label visible-ie8 visible-ie9">Full Name</label> -->
 				<div class="input-icon">
 					<i class="fa fa-font"></i>
 					{{ form.first_name }}
-					<!-- <input class="form-control placeholder-no-fix" id="signup-full-name" type="text" placeholder="Full Name" name="first_name" /> -->
 				</div>
 				<p class="login-error" id="invalid-full-name">This field is required</p>
 			</div>
 
 			<div class="form-group">
 				{{ form.last_name.label_tag }}
-				<!-- <label class="control-label visible-ie8 visible-ie9">Full Name</label> -->
 				<div class="input-icon">
 					<i class="fa fa-font"></i>
 					{{ form.last_name }}
-					<!-- <input class="form-control placeholder-no-fix" id="signup-full-name" type="text" placeholder="Full Name" name="first_name" /> -->
+				</div>
+				<p class="login-error" id="invalid-full-name">This field is required</p>
+			</div>
+
+			<div class="form-group">
+				{{ form.gender.label_tag }}
+				<div class="input-icon">
+					<i class="fa fa-font"></i>
+					{{ form.gender }}
 				</div>
 				<p class="login-error" id="invalid-full-name">This field is required</p>
 			</div>
 
 			<div class="form-group">
 				{{ form.email.label_tag }}
-				<!-- <label class="control-label visible-ie8 visible-ie9">Email</label> -->
 				<div class="input-icon">
 					<i class="fa fa-envelope"></i>
 					{{ form.email }}
-					<!-- <input class="form-control placeholder-no-fix" id="signup-email" type="text" placeholder="Email" name="email" /> -->
 				</div>
 				<p class="login-error" id="invalid-email">This field is required</p>
 			</div>
 
 			<div class="form-group">
+				{{ form.school.label_tag }}
+				{{ form.school }}
+				<p class="login-error" id="invalid-country">This field is required</p>
+			</div>
+
+			<div class="form-group">
 				{{ form.address.label_tag }}
-				<!-- <label class="control-label visible-ie8 visible-ie9">Address</label> -->
 				<div class="input-icon">
 					<i class="fa fa-check"></i>
 					{{ form.address }}
-					<!-- <input class="form-control placeholder-no-fix" id="signup-address" type="text" placeholder="Address" name="address" /> -->
 				</div>
 				<p class="login-error" id="invalid-address">This field is required</p>
 			</div>
 			<div class="form-group">
 				{{ form.city.label_tag }}
-				<!-- <label class="control-label visible-ie8 visible-ie9">City/Town</label> -->
 				<div class="input-icon">
 					<i class="fa fa-location-arrow"></i>
 					{{ form.city }}
-					<!-- <input class="form-control placeholder-no-fix" id="signup-city" type="text" placeholder="City/Town" name="city" /> -->
 				</div>
 				<p class="login-error" id="invalid-city">This field is required</p>
 			</div>
 			<div class="form-group">
-				<!-- <label class="control-label visible-ie8 visible-ie9">Country</label> -->
 				{{ form.country.label_tag }}
 				{{ form.country }}
 				<p class="login-error" id="invalid-country">This field is required</p>
@@ -156,39 +160,33 @@ License: You must have a valid license purchased only from themeforest(the above
 			</p>
 			<div class="form-group">
 				{{ form.username.label_tag }}
-				<!-- <label class="control-label visible-ie8 visible-ie9">Username</label> -->
 				<div class="input-icon">
 					<i class="fa fa-user"></i>
 					{{ form.username }}
-					<!-- <input class="form-control placeholder-no-fix" id="signup-username" type="text" autocomplete="off" placeholder="Username" name="username" /> -->
 				</div>
 				<p class="login-error" id="invalid-username">This field is required</p>
 			</div>
 			<div class="form-group">
 				{{ form.password1.label_tag}}
-				<!-- <label class="control-label visible-ie8 visible-ie9">Password</label> -->
 				<div class="input-icon">
 					<i class="fa fa-lock"></i>
 					{{ form.password1 }}
-					<!-- <input class="form-control placeholder-no-fix" id="signup-password" type="password" autocomplete="off" id="register_password" placeholder="Password" name="password1" /> -->
 				</div>
 				<p class="login-error" id="invalid-password">This field is required</p>
 			</div>
 			<div class="form-group">
 				{{ form.password2.label_tag }}
-				<!-- <label class="control-label visible-ie8 visible-ie9">Re-type Your Password</label> -->
 				<div class="controls">
 					<div class="input-icon">
 						<i class="fa fa-check"></i>
 						{{ form.password2 }}
-						<!-- <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Re-type Your Password" name="password2" /> -->
 					</div>
 				</div>
 			</div>
 			<div class="form-group">
 				<label></label>
-					<input type="checkbox" id="tnc" name="tnc" /> I agree to the <a href="#" target="_blank">
-			Terms of Service </a> and <a href="#" target="_blank">
+					<input type="checkbox" id="tnc" name="tnc" /> I agree to the <a href="{% url 'evaluationapp:termsofservice' %}" target="_blank">
+			Terms of Service </a> and <a href="{% url 'evaluationapp:privacypolicy' %}" target="_blank">
 			Privacy Policy </a>
 
 				<div id="register_tnc_error">
@@ -307,10 +305,6 @@ License: You must have a valid license purchased only from themeforest(the above
 					$("#invalid-password").css("display", "block");
 					verified = 0;
 				}
-				// if (!$('#tnc').is(":checked")) {
-				// 	$("#invalid-tnc").css("display", "block");
-				// 	verified = 0;
-				// }
 				if (verified === 1) {
 					$("#register-submit-btn").unbind('click').click();
 					$("#register-submit-btn").attr("disabled","disabled");

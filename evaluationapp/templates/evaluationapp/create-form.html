@@ -64,7 +64,6 @@ License: You must have a valid license purchased only from themeforest(the above
 		}
 		.add-choice{
 			position: absolute;
-			bottom:30px;
 		}
 		.button-next{
 			margin-left: 15rem !important;
@@ -133,7 +132,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		            </a>
 		        </li>
 		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
+		            <a href="{% url 'evaluationapp:dashboard' user.extendeduser.school.school_name %}">
 		              <fa class="fa fa-bar-chart" data-placement="bottom" data-original-title="Evaluations"></fa>
 		              <span id="menu-items-text" class="title tooltips">Analytics</span>
 		            </a>
@@ -185,13 +184,6 @@ License: You must have a valid license purchased only from themeforest(the above
 		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
 		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
 		<div class="page-sidebar navbar-collapse collapse">
-			<!-- BEGIN SIDEBAR MENU -->
-			<!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
-			<!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
-			<!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
-			<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-			<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
-			<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
 			<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
 				<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
 				<li class="sidebar-toggler-wrapper">
@@ -233,7 +225,7 @@ License: You must have a valid license purchased only from themeforest(the above
 				</li>
 				<li>
 					<a href="javascript:;">
-						<i class="fa-file-text-o"></i>
+						<i class="fa fa-file-text-o"></i>
 						<span class="title">Forms</span>
 						<span class="arrow "></span>
 					</a>
@@ -256,7 +248,26 @@ License: You must have a valid license purchased only from themeforest(the above
 					</ul>
 				</li>
 				<li>
-					<a href="{% url 'evaluationapp:index' %}">
+						<a href="javascript:;">
+						<fa class="fa fa-check-square-o"></fa>
+						<span class="title">Targets</span>
+						<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:assigntargettoteachers' %}">
+								<fa class="fa fa-plus"></fa>
+								Assign</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:target_review' %}">
+								<i class="fa fa-search"></i>
+								Review</a>
+							</li>
+						</ul>
+					</li>
+				<li>
+					<a href="{% url 'evaluationapp:dashboard' user.extendeduser.school.school_name %}">
 						<i class="fa fa-bar-chart"></i>
 						<span class="title">Analytics</span>
 					</a>
@@ -323,7 +334,7 @@ License: You must have a valid license purchased only from themeforest(the above
 								</a>
 								<a href="javascript:;" class="reload">
 								</a>
-								<a href="{% url 'evaluationapp:view_forms_home' %}" class="remove">
+								<a href="{% url 'evaluationapp:view_forms_home' %}" title="Close" class="remove">
 								</a>
 							</div>
 						</div>
@@ -473,7 +484,7 @@ License: You must have a valid license purchased only from themeforest(the above
 												<a href="javascript:;" class="btn blue button-next">
 												Continue <i class="m-icon-swapright m-icon-white"></i>
 												</a>
-												<a href="javascript:;" class="btn green button-submit surveySubmit" id="createSurveySubmit" data-toggle="confirmation">
+												<a href="javascript:;" class="btn green button-submit surveySubmit" id="createSurveySubmit" >
 												Submit <i class="m-icon-swapright m-icon-white"></i>
 												</a>
 											</div>
@@ -547,6 +558,9 @@ License: You must have a valid license purchased only from themeforest(the above
 			var mandatory = false;
 			var addComment = false;
 			var horizontalOptions = false;
+			var flag = 0;
+			var element =
+				'<div class="my-popover popover confirmation fade top in" id="confirmation644182" style="top: -7rem !important; left: 24rem !important; display: block;"><div class="arrow" style="left: 50%;"></div><h3 style="color:black;" class="popover-title">Are you Sure? </h3><div class="popover-content text-center"><div class="btn-group"><a class="btn btn-xs btn-success" data-apply="confirmation"><i class="glyphicon glyphicon-ok"></i> Yes</a><a class="btn btn-xs btn-danger" data-dismiss="confirmation"><i class="glyphicon glyphicon-remove"></i> No</a></div></div></div>';
 			// End Variables
 	  	function add_another_choice(question_count_select,selectedType){
 			var question_choice_count = choice_count[question_count_select];
@@ -616,13 +630,10 @@ License: You must have a valid license purchased only from themeforest(the above
 			});
 
 			$("#tab2").on("change",".survey-section-text",function(){
-				// console.log("input changed");
 				var sectionNme = $(this).val();
 				var loopIndex = $(this)[0].id.split("---")[1];
-				// console.log(sectionNme,loopIndex,$(".question-section-option-"+loopIndex));
 				$(".question-section-option-"+loopIndex).text(sectionNme);
 				$(".question-section-option-"+loopIndex).val(sectionNme);
-				// console.log(sectionNme,loopIndex,$(".question-section-option-"+loopIndex));
 			});
 			// End Sections
 
@@ -675,19 +686,14 @@ License: You must have a valid license purchased only from themeforest(the above
 			// Question Type Select
 			$("#tab3").on("change",".question-type-select",function(){
 				var select_elem_id = $(this)[0].id;
-				console.log("select_elem_id: "+select_elem_id);
 		  		var question_count_select = select_elem_id.replace("question-type-select---","");
-		  		console.log("question_count_select: "+question_count_select);
 		  		choice_count[question_count_select] = 1;
 		  		choice_list[question_count_select] = [];
 		  		var question_choice_count = choice_count[question_count_select];
 		  		var choice_elem_div = "question"+question_count_select+"choiceDiv";
-		  		console.log("choice_elem_div: "+choice_elem_div);
 		  		var question_div = "questionDiv"+question_count_select;
-		  		console.log("question_div: "+question_div);
 		  		$("#"+choice_elem_div).remove();
 		  		var selectedType = $("#"+select_elem_id+" option:selected").val();
-		  		console.log("selectedType: "+selectedType);
 		  		if(selectedType != "text" && selectedType != "rating"){
 		  			var add_another_choice_elem = '<div id="'+choice_elem_div+'"></div>';
 		  			$("#"+question_div+" .portlet-body .scroller").append(add_another_choice_elem);
@@ -781,7 +787,15 @@ License: You must have a valid license purchased only from themeforest(the above
 			// Form Submit
 			$(".surveySubmit").click(function(event){
 				event.preventDefault();
-				var elemid = "#submit_form";
+				if (flag == 0){
+					flag = 1;
+					var that = $(this);
+					$(this).append(element);
+					$(".btn-success").click(function(e) {
+						e.stopPropagation();
+						flag = 0;
+						$(".my-popover").remove();
+						var elemid = "#submit_form";
 				var form_data = new FormData($(elemid)[0]);
 				form_data.append('question_count', JSON.stringify(question_list));
 				form_data.append('choice_count', JSON.stringify(choice_list));
@@ -798,7 +812,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						{
 							$(".errorlist").remove();
 							if(obj.hasOwnProperty("success")){
-								window.location = "{{ DOMAIN_URL }}";
+								window.location = "{% url 'evaluationapp:edit_evaluations' %}";
 							}
 							else{
 								for(var key in obj){
@@ -817,6 +831,13 @@ License: You must have a valid license purchased only from themeforest(the above
 				{% else %}
 					$(location).attr('href',create_url);
 				{% endif %}
+					});
+					$(".btn-danger").click(function(e){
+						e.stopPropagation();
+						$(".my-popover").remove();
+						flag = 0;
+					});
+				}
 			});
 			// End Form Submit
       });

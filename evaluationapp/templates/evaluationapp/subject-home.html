@@ -196,24 +196,6 @@ License: You must have a valid license purchased only from themeforest(the above
 						<span id="menu-items-text" class="title tooltips">My Feedback</span>
 					</a>
 				</li>
-		        <!-- <li>
-		            <a href="{% url 'evaluationapp:evaluation_home' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Evaluations</span>
-		            </a>
-		        </li> -->
-		        <!-- <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Analytics</span>
-		            </a>
-		        </li> -->
-		       <!--  <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Upload</span>
-		            </a>
-		        </li> -->
 		        <li>
 		            <a href="{% url 'evaluationapp:index' %}">
 		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Evaluations"></i>
@@ -305,7 +287,7 @@ License: You must have a valid license purchased only from themeforest(the above
 				</li>
 				<li>
 					<a href="javascript:;">
-						<i class="fa-file-text-o"></i>
+						<i class="fa fa-file-text-o"></i>
 						<span class="title">Forms</span>
 						<span class="arrow "></span>
 					</a>
@@ -327,6 +309,25 @@ License: You must have a valid license purchased only from themeforest(the above
 						</li>
 					</ul>
 				</li>
+				<li>
+						<a href="javascript:;">
+						<fa class="fa fa-check-square-o"></fa>
+						<span class="title">Targets</span>
+						<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:assigntargettoteachers' %}">
+								<fa class="fa fa-plus"></fa>
+								Assign</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:target_review' %}">
+								<i class="fa fa-search"></i>
+								Review</a>
+							</li>
+						</ul>
+					</li>
 				<li>
 					<a href="{% url 'evaluationapp:index' %}">
 						<i class="fa fa-bar-chart"></i>

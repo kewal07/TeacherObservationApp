@@ -10,6 +10,15 @@
   margin-top: 1rem;
 }
 
+.loader {
+    position: fixed;
+    top: 45%;
+    right: 45%;
+    background: white;
+    padding: 1rem;
+    z-index: 5;
+}
+
 @media only screen and (max-width: 480px){
 	.page-header.navbar .menu-toggler .responsive-toggler {
     	/*display: none;*/

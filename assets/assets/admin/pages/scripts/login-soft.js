@@ -127,7 +127,7 @@ var Login = function () {
 		function format(state) {
             if (!state.id) return state.text; // optgroup
 			//return "<img class='flag' src='assets/global/img/flags/" + state.id.toLowerCase() + ".png'/>&nbsp;&nbsp;" + state.text;
-			return "<img class='flag' src='" + "http://localhost:8000/static/assets/global/img/flags/" + state.id.toLowerCase() + ".png'/>&nbsp;&nbsp;" + state.text;
+			return "<img class='flag' src='" + "http://teachsprout.com/static/assets/global/img/flags/" + state.id.toLowerCase() + ".png'/>&nbsp;&nbsp;" + state.text;
         }
 
 

@@ -13,7 +13,7 @@ import sys
 from django.core.wsgi import get_wsgi_application
 
 os.environ['HTTPS'] = "on"
-sys.path.append("/home/ubuntu/EReader_Django")
+sys.path.append("/home/ubuntu/TeacherObservationApp")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "eduzen.settings")
 
 application = get_wsgi_application()
