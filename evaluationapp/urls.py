@@ -30,8 +30,7 @@ urlpatterns = [
 	url(r'^evaluation-form/(?P<pk>\d+)/(?P<form_slug>[\w\-]+)/(?P<evaluation_id>[\d+]+)$',login_required(views.EvaluationFormVoteView.as_view()),name='evaluation_form_vote'),
 	url(r'^evaluation-under-me$',login_required(views.EvaluationListView.as_view()),name='evaluation_under_me'),
 	url(r'^my-evaluations$',login_required(views.EvaluationListView.as_view()),name='my_evaluations'),
-	# url(r'^view-evaluation$',login_required(views.ViewEvaluationView.as_view()),name='view_evaluation'),
-	url(r'^view-evaluation/(?P<pk>\d+)/(?P<form_slug>[\w\-]+)/(?P<evaluation_id>[\d+]+)$$',login_required(views.EvaluationFormVoteView.as_view()),name='view_evaluation'),
+	url(r'^view-evaluation/(?P<pk>\d+)/(?P<form_slug>[\w\-]+)/(?P<evaluation_id>[\d+]+)$',login_required(views.EvaluationFormVoteView.as_view()),name='view_evaluation'),
 	url(r'^accept-reject/(?P<pk>\d+)$',login_required(views.AcceptRejectView.as_view()),name='evaluation_form_vote'),
 	url(r'^forms-home$',login_required(views.FormsHomeView.as_view()),name='view_forms_home'),
 	url(r'^settings-home$',login_required(views.SettingsHomeView.as_view()),name='view_settings'),
@@ -42,4 +41,8 @@ urlpatterns = [
 	url(r'^exportexcel',views.excel_view,name="exportexcel"),
 	url(r'^termsofservice', TemplateView.as_view(template_name='termsofservice.html'), name='termsofservice'),
     url(r'^privacypolicy', TemplateView.as_view(template_name='privacypolicy.html'), name='privacypolicy'),
+    url(r'^getteachersubjects_in_section$', login_required(views.getteachersubjects_in_section), name='getteachersubjectsection'),
+    url(r'^assign-targets$', login_required(views.AssignTargets.as_view()), name='assigntargettoteachers'),
+    url(r'^assign-targets$', login_required(views.AssignTargets.as_view()), name='target_review'),
+    url(r'^dashboard/(?P<school_name>[\w\-]+)$', login_required(views.AdminDashboard.as_view()), name='dashboard')
 ]

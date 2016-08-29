@@ -314,6 +314,25 @@ License: You must have a valid license purchased only from themeforest(the above
 					</ul>
 				</li>
 				<li>
+					<a href="javascript:;">
+					<fa class="fa fa-check-square-o"></fa>
+					<span class="title">Targets</span>
+					<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="{% url 'evaluationapp:assigntargettoteachers' %}">
+							<fa class="fa fa-plus"></fa>
+							Assign</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:target_review' %}">
+							<i class="fa fa-search"></i>
+							Review</a>
+						</li>
+					</ul>
+				</li>
+				<li>
 					<a href="{% url 'evaluationapp:index' %}">
 						<i class="fa fa-bar-chart"></i>
 						<span class="title">Analytics</span>
@@ -600,7 +619,6 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- Page Level Scripts -->
 <script src="{% static 'assets/admin/pages/scripts/components-dropdowns.js' %}"></script>
 <script src="{% static 'assets/admin/pages/scripts/form-wizard.js' %}"></script>
-<script src="{% static 'assets/admin/pages/scripts/components-dropdowns.js' %}"></script>
 <script src="{% static 'assets/admin/pages/scripts/form-icheck.js ' %}"></script>
 <script src="{% static 'assets/admin/pages/scripts/form-samples.js ' %}"></script>
 <script src="{% static 'assets/global/plugins/ion.rangeslider/js/ion-rangeSlider/ion.rangeSlider.min.js' %}"></script>

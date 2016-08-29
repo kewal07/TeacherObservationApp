@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound
 from django.views.generic import ListView,DetailView
-from evaluationapp.models import Grade,School,Subject,Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, EvaluationStatus, TeacherSubject, TeacherClass
+from evaluationapp.models import Grade,School,Subject,Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, TeacherClassSubject, SchoolGradeSection, EvaluationTargets
 from evaluationapp import evappconstants
 from django.contrib.auth import login
 from django.contrib.auth.models import User
@@ -429,15 +429,28 @@ class EvaluationFormVoteView(DetailView):
 		evaluation = None
 		try:
 			evaluation = Evaluation.objects.get(pk=ev_id)
-			context["ev_status"] = EvaluationStatus.objects.get(evaluation_id=evaluation).evaluation_status_id.status_state
-			context['evaluation'] = evaluation
-		except:
-			pass
+			context["ev_status"] = evaluation.status.status_state
+			context["evaluation"] = evaluation
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 		user_already_voted = False
 		evaluatee = evaluation.evaluatee
 		evaluateeSchool = evaluatee.extendeduser.school
-		context['subject'] = TeacherSubject.objects.filter(evaluatee=evaluatee)
-		context['class'] = TeacherClass.objects.filter(teacher=evaluatee)
+		schoolgradesection = TeacherClassSubject.objects.filter(teacher=evaluatee).values_list('school_grade_section').distinct()
+		context['gradesection'] = []
+		
+		for i in schoolgradesection:
+			context['gradesection'].append(SchoolGradeSection.objects.get(pk=i[0]))
+
 		formVoted = FormVoted.objects.filter(evaluation_id = evaluation)
 		if formVoted:
 			user_already_voted = True
@@ -700,10 +713,8 @@ class AssignEvaluationView(ListView):
 			if errors:
 				return HttpResponse(json.dumps(errors), content_type='application/json')
 			else:
-				evaluation = Evaluation(evaluation_name=evaluation_name, evaluation_form=form, evaluatee=evaluatee, evaluator=evaluator, scheduled_at=scheduled_at, last_day=last_day, is_peer=is_peer, is_surprised=is_surprised)
+				evaluation = Evaluation(evaluation_name=evaluation_name, evaluation_form=form, evaluatee=evaluatee, evaluator=evaluator, scheduled_at=scheduled_at, last_day=last_day, is_peer=is_peer, is_surprised=is_surprised, status=evappconstants.getEvStatus("ongoing"))
 				evaluation.save()
-				ev_status = EvaluationStatus(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("ongoing"))
-				ev_status.save()
 				sendMails("evaluationremider", {"id": evaluation.id})
 				sendMails("evaluatee", {"id": evaluation.id})
 			errors['success'] = True
@@ -735,7 +746,7 @@ class EvaluationListView(ListView):
 		completed_evaluations_list = []
 		reviewed_status = [evappconstants.getEvStatus("accepted"), evappconstants.getEvStatus("reviewed"), evappconstants.getEvStatus("rejected")]
 		completed_status = [evappconstants.getEvStatus("completed")]
-		completed_evaluations = EvaluationStatus.objects.filter(evaluation_status_id__in=completed_status).values_list('evaluation_id', flat=True)
+		completed_evaluations = Evaluation.objects.filter(status_id__in=completed_status).values_list('id', flat=True)
 		ce = Evaluation.objects.filter(id__in=completed_evaluations).values_list('id', flat=True)
 		completed_evaluations_list = ce
 		if path.endswith("evaluation-ongoing"):
@@ -759,14 +770,12 @@ class EvaluationListView(ListView):
 			activeForms = list(activeForms)
 			context["evaluations"] = Evaluation.objects.filter(evaluator_id= user).filter(evaluation_form_id__in=activeForms)			
 			for evaluation in context["evaluations"]:
-				status = EvaluationStatus.objects.get(evaluation_id=evaluation)
-				if status.evaluation_status_id.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
+				status = evaluation.status
+				if status.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
 					evaluation.dateCrossed = True
 				else:
 					evaluation.dateCrossed = False
 			context["nav_val"] = "Evaluations Under Me"
-			evaluations_list_under_me = Evaluation.objects.filter(evaluator_id= user).values_list('id', flat=True)
-			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=evaluations_list_under_me)
 		elif path.endswith("my-evaluations"):
 			context["evaluations"] = Evaluation.objects.filter(evaluatee_id=user).filter(evaluation_form__is_active=1)
 			for evaluation in context["evaluations"]:
@@ -776,18 +785,15 @@ class EvaluationListView(ListView):
 				else:
 					evaluation.dateCrossed = False
 			context["nav_val"] = "My Evaluations"
-			my_evals = Evaluation.objects.filter(evaluatee_id= user).values_list('id', flat=True)
-			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=my_evals)
 		elif path.endswith("evaluation-review"):
 			evr = Evaluation.objects.exclude(id__in=completed_evaluations_list)
 			for evaluation in evr:
-				status = EvaluationStatus.objects.get(evaluation_id=evaluation)
-				if status.evaluation_status_id.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
+				status = evaluation.status
+				if status.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
 					evaluation.dateCrossed = True
 				else:
 					evaluation.dateCrossed = False
 			context["evaluations"] = evr
-			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=evr)
 			context["nav_val"] = "Review Evaluations"
 		elif path.endswith("evaluation-archive"):
 			completed_evaluations = EvaluationStatus.objects.filter(evaluation_status_id__in=completed_status).values_list('evaluation_id', flat=True)
@@ -1067,10 +1073,8 @@ def gettoken(request):
 	auth_code = request.GET['code']
 	redirect_uri = request.build_absolute_uri(reverse('evaluationapp:gettoken'))
 	token = get_token_from_code(auth_code, redirect_uri)
-	print(token)
 	access_token = token['access_token']
 	user_email = get_user_email_from_id_token(token['id_token'])
-	print(user_email)
 	request.session['access_token'] = access_token
 	request.session['user_email'] = user_email 
 	try:
@@ -1078,3 +1082,157 @@ def gettoken(request):
 		return r.json()
 	except:
 		return 'Error retrieving token: {0} - {1}'.format(r.status_code, r.text)
+
+def getteachersubjects_in_section(request):
+	try:
+		response = {}
+		response['subjects'] = []
+		# data from request parameter
+		classsection = request.POST.get('classsection')
+		evaluation = request.POST.get('evaluation')
+
+		# evaluatee and the selected grade section
+		evaluatee = Evaluation.objects.get(pk=evaluation).evaluatee
+		selectedgradesection = SchoolGradeSection.objects.get(pk=classsection)
+
+		# subjects taught by the teacher in the selected grade section
+		teacherSubjects = TeacherClassSubject.objects.filter(teacher=evaluatee, school_grade_section=selectedgradesection)
+
+		if teacherSubjects:
+			for elements in teacherSubjects:
+				temp = {'id':elements.subject.id, 'name':elements.subject.subject_name}
+				response['subjects'].append(temp)
+		else:
+			response['error'] = 'No Subjects taught by the teacher in the selected Class.'
+
+		return HttpResponse(json.dumps(response), content_type='application/json')
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
+		exc_type, exc_obj, tb = sys.exc_info()
+		f = tb.tb_frame
+		lineno = tb.tb_lineno
+		filename = f.f_code.co_filename
+		linecache.checkcache(filename)
+		line = linecache.getline(filename, lineno, f.f_globals)
+		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+class AdminDashboard(DetailView):
+
+	def get_template_names(self, **kwargs):
+		template_name = 'dashboard.html'
+		return [template_name]
+
+	def get(self, request, *args, **kwargs):
+		try:
+			data = {}
+			schoolTeacherList = User.objects.filter(extendeduser__school=self.request.user.extendeduser.school)
+			evaluations = Evaluation.objects.filter(evaluator__in=schoolTeacherList)
+			data['totalTeachers'] = len(schoolTeacherList)
+			data['totalEvaluations'] = len(evaluations)
+			return self.render_to_response(data)
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+			return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+class AssignTargets(ListView):
+	template_name = 'evaluationapp/assign-target.html'
+	context_object_name = 'data'
+
+	def get_queryset(self, **kwargs):
+		try:
+			context = {}
+			schoolTeacherList = User.objects.filter(extendeduser__school=self.request.user.extendeduser.school)
+			formsCreatedBySchool = Form.objects.filter(user__extendeduser__school=self.request.user.extendeduser.school)
+			context['teachers'] = schoolTeacherList
+			context['forms'] = formsCreatedBySchool
+			return context
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+			return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+	def post(self, request, *args, **kwargs):
+		try:
+			print('***************')
+			print(request.POST)
+			print('***************')
+			teacherid = int(request.POST.get('teacher',''))
+			fromdate  = request.POST.get('from_date','')
+			todate    = request.POST.get('to_date')
+			teacherslist = request.POST.get('teacherslist','')
+			print('___________________________________')
+			print(teacherslist)
+			print('___________________________________')
+			formTargets = {}
+			teacherUsers = []
+
+			if not fromdate == '' or not fromdate == None:
+				fd = datetime.datetime.strptime(fromdate, '%m/%d/%Y')
+			else:
+				return HttpResponse(json.dumps({'error':'Invalid from date'}), content_type='application/json')
+
+			if not todate == '' or not todate == None:
+				td = datetime.datetime.strptime(todate, '%m/%d/%Y')
+			else:
+				return HttpResponse(json.dumps({'error':'Invalid to date'}), content_type='application/json')
+
+			try:
+				if teacherslist:
+					print('________')
+					print('Here')
+					print('________')
+					teacherslist = teacherslist.split(';')
+					for teacher in teacherslist:
+						tempUser = User.objects.filter(email = teacher)
+						if tempUser:
+							teacherUsers.append(tempUser)
+				else:
+					tempUser = User.objects.get(pk=teacherid)
+					teacherUsers.append(tempUser)
+			except:
+				return HttpResponse(json.dumps({'error':'Invalid Teacher Details!!!'}), content_type='application/json')
+
+			for key,val in request.POST.items():
+				if key.startswith("form_"):
+					formTargets[key.split('_')[1]] = val
+
+			currentUser = self.request.user
+
+			for teacher in teacherUsers:
+				for key,val in formTargets.items():
+					form = Form.objects.get(pk=int(key))
+					evaluationTarget = EvaluationTargets(school=currentUser.extendeduser.school, teacher=teacher, form=form, target=val,  start_date=fd, end_date=td, status='N/A')
+					evaluationTarget.save()
+			return HttpResponse(json.dumps({'success':'Target set successfully!!!'}), content_type='application/json')
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+			return HttpResponseNotFound("Some error occured!!!",content_type="application/json")

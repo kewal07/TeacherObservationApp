@@ -447,22 +447,19 @@ License: You must have a valid license purchased only from themeforest(the above
 												<div class="tab-pane" id="tab{{ forloop.counter }}">
 													<h3 class="block">Section : {{ key|title }}</h3>
 													<div class="form-group">
-														<label class="col-md-3 control-label">Subject</label>
+														<label class="col-md-3 control-label">Class</label>
 														<div class="col-md-4">
-															<select id="subject-select" name="subject-of-evaluation" class="bs-select form-control">
-															{% for sub in subject%}
-																<option value="{{ sub.subject.id }}">{{ sub.subject.subject_name }}</option>
+															<select id="class-select" name="class-of-evaluation" class="form-control">
+															{% for cla in gradesection %}
+																<option id="{{ cla.id }}" value="{{ cla.id }}">{{ cla.grade.grade_name }} {{ cla.section }}</option>
 															{% endfor %}
 															</select>
 														</div>
 													</div>
 													<div class="form-group">
-														<label class="col-md-3 control-label">Class</label>
+														<label class="col-md-3 control-label">Subject</label>
 														<div class="col-md-4">
-															<select id="class-select" name="class-of-evaluation" class="bs-select form-control">
-															{% for cla in class%}
-																<option value="{{ cla.grade.id }}---{{ cla.grade.grade_section }}">{{ cla.grade.grade_name }} {{ cla.grade.grade_section }}</option>
-															{% endfor %}
+															<select id="subject-select" name="subject-of-evaluation" class="form-control">
 															</select>
 														</div>
 													</div>
@@ -537,7 +534,7 @@ License: You must have a valid license purchased only from themeforest(the above
 														Evaluation is at {{ ev_status }} State
 													{% endif %}
 												{% elif not user_already_voted %}
-													<a href="javascript:;" class="btn green button-submit voteSubmit surveySubmit" id="vote{{ survey.id }}">
+													<a href="javascript:;" class="btn green button-submit voteSubmit surveySubmit" id="vote{{ evaluation.id }}">
 													Submit <i class="m-icon-swapright m-icon-white"></i>
 													</a>
 												{% else %}
@@ -602,7 +599,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="{% static 'assets/admin/pages/scripts/components-ion-sliders.js' %}"></script>
 <!-- End Page Level Scripts -->
 <script>
-	jQuery(document).ready(function() {    
+	jQuery(document).ready(function() {
      	Metronic.init(); // init metronic core components
 		Layout.init(); // init current layout
 		QuickSidebar.init(); // init quick sidebar
@@ -611,6 +608,30 @@ License: You must have a valid license purchased only from themeforest(the above
 		FormSamples.init();
 		FormWizard.init();
 		ComponentsDropdowns.init();
+		
+		function populateSubjects(){
+			$('#subject-select').empty();
+			$.ajax({
+				type: 'POST',
+				url:'/getteachersubjects_in_section',
+				data:{'classsection':$('#class-select').find(":selected").attr('id'), 'evaluation':"{{ evaluation.id }}",'csrfmiddlewaretoken': "{{ csrf_token }}" },
+				success:function(response)
+				{
+					if("subjects" in response){
+						$.each(response['subjects'], function (i, item) {
+    						$('#subject-select').append(new Option(item.name, item.id));
+						});
+					}else{
+					}
+				}
+			});
+		}
+
+		populateSubjects();
+
+		$('#class-select').change(function(event){
+			populateSubjects();
+		});
 
 		$('.remove').click(function(event){
 			event.preventDefault();
@@ -660,8 +681,8 @@ License: You must have a valid license purchased only from themeforest(the above
 					if("success" in response){
 						bootbox.alert("Evaluation is completed successfully.");
 						window.location = "{% url 'evaluationapp:evaluation_under_me' %}";
-					}else{
-						for(key in response){
+					} else {
+						for(key in response) {
 							$("#survey-question"+key).append('<span class="errorlist">'+response[key]+'</span>');
 						}
 					}

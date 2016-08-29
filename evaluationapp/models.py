@@ -67,16 +67,21 @@ class School(models.Model):
 class Grade(models.Model):
 	grade_id = models.IntegerField(blank=True,null=True,default=0)
 	grade_name = models.CharField(max_length=512,blank=True,null=True)
+
+	def __str__(self):
+		return self.grade_name
+
+class SchoolGradeSection(models.Model):
+	school = models.ForeignKey(School)
+	grade = models.ForeignKey(Grade)
+	section = models.CharField(max_length=10)
 	students_count = models.IntegerField(blank=True,null=True,default=0)
 	number_emirati =  models.IntegerField(blank=True,null=True,default=0)
 	number_nonemirati = models.IntegerField(blank=True,null=True,default=0)
 	number_boys = models.IntegerField(blank=True,null=True,default=0)
 	number_girls = models.IntegerField(blank=True,null=True,default=0)
-	school = models.ForeignKey(School,blank=True,null=True)
-	grade_section = models.CharField(max_length=10,blank=True,null=True)
-
 	def __str__(self):
-		return self.grade_name + " " + self.grade_section
+		return self.school.school_name+"_"+self.grade.grade_name+"_"+self.section
 
 class Subject(models.Model):
 	subject_id = models.IntegerField(blank=True,null=True,default=0)
@@ -85,6 +90,13 @@ class Subject(models.Model):
 
 	def __str__(self):
 		return self.subject_name + " " + self.grade.grade_name
+
+class TeacherClassSubject(models.Model):
+	teacher = models.ForeignKey(settings.AUTH_USER_MODEL)
+	school_grade_section = models.ForeignKey(SchoolGradeSection)
+	subject = models.ForeignKey(Subject)
+	def __str__(self):
+		return self.teacher.first_name+"_"+ self.school_grade_section.school.school_name+"_"+self.school_grade_section.grade.grade_name+"_"+self.school_grade_section.section+"_"+ self.subject.subject_name
 
 class Form(models.Model):
 	form_name = models.CharField(max_length=200)
@@ -119,44 +131,6 @@ class FormSection(models.Model):
 	form = models.ForeignKey(Form)
 	def __str__(self):
 		return self.sectionName+"---"+str(self.sectionOrder)
-
-class Evaluation(models.Model):
-	evaluation_name = models.CharField(max_length=512,blank=True,null=True)
-	evaluation_form = models.ForeignKey(Form)
-	evaluatee = models.ForeignKey(settings.AUTH_USER_MODEL,related_name='user_evaluatee')
-	evaluator = models.ForeignKey(settings.AUTH_USER_MODEL,blank=True,null=True,related_name='user_evaluator')
-	created_at = models.DateTimeField(auto_now_add=True)
-	scheduled_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
-	completed_on = models.DateTimeField(blank=True, null=True, auto_now_add=False)
-	last_day = models.DateTimeField(blank=True, null=True, auto_now_add=True)
-	is_peer = models.BooleanField(default=1)
-	is_external = models.BooleanField(default=0)
-	is_surprised = models.BooleanField(default=0)
-	external_evaluator = models.ForeignKey(ExternalEvaluator,blank=True,null=True)
-	def __str__(self):
-		return self.evaluation_name
-
-class TeacherSubject(models.Model):
-	evaluatee = models.ForeignKey(settings.AUTH_USER_MODEL)
-	subject = models.ForeignKey(Subject)
-	def __str__(self):
-		return self.evaluatee.first_name+ " " + self.subject.subject_name
-
-class TeacherClass(models.Model):
-	teacher = models.ForeignKey(settings.AUTH_USER_MODEL)
-	grade = models.ForeignKey(Grade)
-	def __str__(self):
-		return str(self.teacher.first_name) + " " + str(self.grade.grade_name) + " " + str(self.grade.grade_section)
-
-class Status(models.Model):
-	status_id = models.IntegerField(default=0)
-	status_state = models.CharField(max_length=20)
-	def __str__(self):
-		return str(self.id)+" : "+str(self.status_id)+" : "+self.status_state
-
-class EvaluationStatus(models.Model):
-	evaluation_id = models.ForeignKey(Evaluation)
-	evaluation_status_id = models.ForeignKey(Status)
 
 class Category(models.Model):
 	category_title = models.CharField(max_length=50)
@@ -208,6 +182,41 @@ class Choice(models.Model):
 	def __str__(self):
 		return self.choice_text
 
+class FormQuestion(models.Model):
+	form = models.ForeignKey(Form)
+	question = models.ForeignKey(Question)
+	question_type = models.CharField(max_length=20)
+	add_comment = models.BooleanField(default=0)
+	mandatory = models.BooleanField(default=0)
+	min_value  = models.IntegerField(default=0)
+	max_value = models.IntegerField(default=10)
+	section = models.ForeignKey(FormSection,null=True,default=None)
+	def __str__(self):
+		return self.form.form_name+"_"+self.question.question_text+"_"+self.question_type
+
+class Status(models.Model):
+	status_id = models.IntegerField(default=0)
+	status_state = models.CharField(max_length=20)
+	def __str__(self):
+		return str(self.id)+" : "+str(self.status_id)+" : "+self.status_state
+
+class Evaluation(models.Model):
+	evaluation_name = models.CharField(max_length=512,blank=True,null=True)
+	evaluation_form = models.ForeignKey(Form)
+	evaluatee = models.ForeignKey(settings.AUTH_USER_MODEL,related_name='user_evaluatee')
+	evaluator = models.ForeignKey(settings.AUTH_USER_MODEL,blank=True,null=True,related_name='user_evaluator')
+	created_at = models.DateTimeField(auto_now_add=True)
+	scheduled_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+	completed_on = models.DateTimeField(blank=True, null=True, auto_now_add=False)
+	last_day = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+	is_peer = models.BooleanField(default=1)
+	is_external = models.BooleanField(default=0)
+	is_surprised = models.BooleanField(default=0)
+	external_evaluator = models.ForeignKey(ExternalEvaluator,blank=True,null=True)
+	status = models.ForeignKey(Status)
+	def __str__(self):
+		return self.evaluation_name
+
 class Vote(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	choice = models.ForeignKey(Choice)
@@ -233,18 +242,6 @@ class VoteText(models.Model):
 	def __str__(self):
 		return self.answer_text
 
-class FormQuestion(models.Model):
-	form = models.ForeignKey(Form)
-	question = models.ForeignKey(Question)
-	question_type = models.CharField(max_length=20)
-	add_comment = models.BooleanField(default=0)
-	mandatory = models.BooleanField(default=0)
-	min_value  = models.IntegerField(default=0)
-	max_value = models.IntegerField(default=10)
-	section = models.ForeignKey(FormSection,null=True,default=None)
-	def __str__(self):
-		return self.form.form_name+"_"+self.question.question_text+"_"+self.question_type
-
 class FormVoted(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	form = models.ForeignKey(Form)
@@ -253,10 +250,20 @@ class FormVoted(models.Model):
 	user_answer_count = models.IntegerField(blank=True,null=True,default=0)
 	evaluation = models.ForeignKey(Evaluation,blank=True,null=True)
 	subject = models.ForeignKey(Subject,blank=True,null=True)
-	grade = models.ForeignKey(Grade,blank=True,null=True)
-	section = models.CharField(max_length=20)
+	grade_section = models.ForeignKey(SchoolGradeSection)
 	full_lesson_observation = models.BooleanField(default=0)
 	def __str__(self):
 		return self.form.form_name+" : "+self.user.username
 	def save(self, *args, **kwargs):
 		super(FormVoted, self).save(*args, **kwargs)
+
+class EvaluationTargets(models.Model):
+	school = models.ForeignKey(School)
+	teacher = models.ForeignKey(settings.AUTH_USER_MODEL)
+	form = models.ForeignKey(Form)
+	target = models.IntegerField(blank=True,null=True,default=0)
+	start_date = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+	end_date = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+	status = models.CharField(max_length=255)
+	def __str__(self):
+		return "Target of "+ self.target+" evaluations assigned to "+self.teacher.first_name+" of "+self.school.school_name+" ( "+self.start_date+" - "+self.end_date+" ) " 
