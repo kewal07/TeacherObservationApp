@@ -25,6 +25,38 @@ class TestView(ListView):
 		context["nav_val"] = "Ongoing Evaluations"
 		return context
 
+class DetailTeacherView(ListView):
+	context_object_name = 'data'
+	template_name = 'evaluationapp/teacher-detail.html'
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		return context		
+
+class TeacherAnalyticsDetailView(ListView):
+	context_object_name = 'data'
+	template_name = 'evaluationapp/teacher-analysis.html'
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		return context
+
+class AnalyticsDetailView(ListView):
+	context_object_name = 'data'
+	template_name = 'evaluationapp/analytics-detailed.html'
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		return context
+
+class AnalyticsView(ListView):
+	context_object_name = 'data'
+	template_name = 'evaluationapp/analytics.html'
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		return context
+
 class IndexView(ListView):
 	context_object_name = 'data'
 

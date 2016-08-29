@@ -40,9 +40,23 @@ License: You must have a valid license purchased only from themeforest(the above
 	<link href="{% static 'assets/global/css/plugins.css' %}" rel="stylesheet" type="text/css" />
 	<link href="{% static 'assets/admin/layout/css/layout.css' %}" rel="stylesheet" type="text/css" />
 	<link id="style_color" href="{% static 'assets/admin/layout/css/themes/darkblue.css' %}" rel="stylesheet" type="text/css" />
+	<!-- <link href="{% static 'assets/global/plugins/jqvmap/jqvmap/jqvmap.css' % }" rel="stylesheet" type="text/css"/> -->
 	<link href="{% static 'assets/admin/layout/css/index_teacher.css' %}" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-select/bootstrap-select.min.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/select2/select2.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/jquery-multi-select/css/multi-select.css' %}"/>
 	<!-- END THEME STYLES -->
 	<link rel="shortcut icon" href="{% static 'favicon.png' %}" />
+	<style type="text/css">
+		.portlet-title{
+			background: none;
+		}
+		.text-comment{
+		    padding: 0.5rem;
+		    background: lightblue;
+		    margin-left: 3rem;
+		}
+	</style>
 </head>
 <!-- END HEAD -->
 <!-- END HEAD -->
@@ -252,7 +266,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		<div class="page-content">
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
-			Home
+			Analytics Dashboard <small>Reports & Statistics</small>
 			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
@@ -261,79 +275,60 @@ License: You must have a valid license purchased only from themeforest(the above
 						<a href="{% url 'evaluationapp:index' %}">Home</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
+					<li>
+						<i class="fa fa-bar-chart"></i>
+						<a href="{% url 'evaluationapp:analytics' %}">Analytics</a>
+					</li>
 				</ul>
 			</div>
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN PAGE CONTENT-->
-			<div class="tiles">
-				<div class="tile double-down bg-blue-hoki">
-					<a href="{% url 'evaluationapp:evaluation_home' %}">
-						<div class="tile-body">
-							<i class="fa fa-check-square-o"></i>
-						</div>
-						<div class="tile-object">
-							<div class="name">
-								 Evaluations
+				<div class="row">
+					<div class="col-md-12">
+					<!-- BEGIN Portlet PORTLET-->
+					<div class="portlet light">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="icon-speech"></i>
+								<span class="caption-subject bold uppercase"> Performance Analysis</span>
+								<span class="caption-helper">weekly stats...</span>
+							</div>
+							<div class="actions">
+								
+								<a> Start:10th May, 2016 </a>
+								
+								<a> End:17th May, 2016  </a>
+								
+								<a> Evaluations: 25  </a>
+								
 							</div>
 						</div>
-					</a>
-				</div>
-				<div class="tile bg-red-sunglo">
-					<a href="{% url 'evaluationapp:view_forms_home' %}">
-						<div class="tile-body">
-							<i class="fa fa-file-text-o"></i>
-						</div>
-						<div class="tile-object">
-							<div class="name">
-								 Forms
+						<div class="portlet-body">
+							<div class="scroller" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
+								<h4 style="margin-bottom:5rem;">Q1. The teacher is very interactive with students</h4>
+								<div id="pie_chart_3" class="chart">
+								</div>
+
+								<h4 style="margin-bottom:5rem;">Q2. The teacher is very interactive with students</h4>
+								<div id="chart_1_2" class="chart">
+								</div>
+
+								<h4 style="margin-bottom:5rem;">Q3. The teacher is very interactive with students</h4>
+								<div id="chart_1_1" class="chart">
+								</div>
+
+								<h4 style="margin-bottom:2rem;">Q3. The teacher is very interactive with students</h4>
+								<p class="text-comment"> His teaching style is unique</p>
+								<p class="text-comment"> His English is bad</p>
+								<p class="text-comment"> His English is bad</p>
+								<p class="text-comment"> His English is bad</p>
 							</div>
 						</div>
-					</a>
-				</div>
-				<div class="tile bg-yellow-saffron">
-					<div class="tile-body">
-						<i class="fa fa-bar-chart-o"></i>
 					</div>
-					<div class="tile-object">
-						<div class="name">
-							 Analytics
-						</div>
-					</div>
+					<!-- END Portlet PORTLET-->
 				</div>
-				<div class="tile double bg-grey-cascade">
-					<a href="{% url 'evaluationapp:view_download' %}">
-						<div class="tile-body">
-							<i class="fa fa-cloud-download"></i>
-						</div>
-						<div class="tile-object">
-							<div class="name">
-								Export Data
-							</div>
-						</div>
-					</a>
+
 				</div>
-				<div class="tile bg-blue-steel">
-					<a href="{% url 'evaluationapp:view_settings' %}">
-						<div class="tile-body">
-							<i class="fa fa-cogs"></i>
-						</div>
-						<div class="tile-object">
-							<div class="name">
-								 Settings
-							</div>
-						</div>
-					</a>
-				</div>
-				<div class="tile bg-red-sunglo">
-					<div class="tile-body">
-						<i class="fa fa-cloud-upload"></i>
-					</div>
-					<div class="tile-object">
-						<div class="name">
-							 Uploads
-						</div>
-				</div>
-			</div>
 			<!-- END PAGE CONTENT-->
 		</div>
 	</div>
@@ -369,13 +364,30 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="{% static 'assets/global/scripts/metronic.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/layout.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/quick-sidebar.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/flot/jquery.flot.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/flot/jquery.flot.resize.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/flot/jquery.flot.categories.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/flot/jquery.flot.pie.min.js' %}"></script>
+<script src="{% static 'assets/admin/pages/scripts/index.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/demo.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/admin/pages/scripts/charts-flotcharts.js' %}"></script>
+<script src="{% static 'assets/admin/pages/scripts/components-dropdowns.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/bootstrap-select/bootstrap-select.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/select2/select2.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js' %}"></script>
 <script>
       jQuery(document).ready(function() {    
          	Metronic.init(); // init metronic core components
 			Layout.init(); // init current layout
 			QuickSidebar.init(); // init quick sidebar
 			Demo.init(); // init demo features
+			Index.init();   
+			Index.initCharts();
+			ChartsFlotcharts.init();
+		   	ChartsFlotcharts.initCharts();
+		   	ChartsFlotcharts.initPieCharts();
+		   	ChartsFlotcharts.initBarCharts();
+		   	ComponentsDropdowns.init();
       });
 </script>
 <!-- END JAVASCRIPTS -->

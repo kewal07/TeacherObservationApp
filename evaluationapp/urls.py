@@ -39,4 +39,8 @@ urlpatterns = [
 	url(r'^classes-home$',login_required(views.SubjectHomeView.as_view()),name='classes_view'),
 	url(r'^download-home$',login_required(views.DownloadHomeView.as_view()),name='view_download'),
 	url(r'^exportexcel',views.excel_view,name="exportexcel"),
+	url(r'^analytics',login_required(views.AnalyticsView.as_view()),name='analytics'),
+	url(r'^detail_analytics',login_required(views.AnalyticsDetailView.as_view()),name='detail_analytics'),
+	url(r'^comparative_analytics',login_required(views.TeacherAnalyticsDetailView.as_view()),name='teacher_analytics'),
+	url(r'^detail_teacher',login_required(views.DetailTeacherView.as_view()),name='detail_teacher')
 ]

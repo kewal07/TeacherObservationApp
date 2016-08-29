@@ -40,9 +40,23 @@ License: You must have a valid license purchased only from themeforest(the above
 	<link href="{% static 'assets/global/css/plugins.css' %}" rel="stylesheet" type="text/css" />
 	<link href="{% static 'assets/admin/layout/css/layout.css' %}" rel="stylesheet" type="text/css" />
 	<link id="style_color" href="{% static 'assets/admin/layout/css/themes/darkblue.css' %}" rel="stylesheet" type="text/css" />
+	<!-- <link href="{% static 'assets/global/plugins/jqvmap/jqvmap/jqvmap.css' % }" rel="stylesheet" type="text/css"/> -->
 	<link href="{% static 'assets/admin/layout/css/index_teacher.css' %}" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-select/bootstrap-select.min.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/select2/select2.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/jquery-multi-select/css/multi-select.css' %}"/>
 	<!-- END THEME STYLES -->
 	<link rel="shortcut icon" href="{% static 'favicon.png' %}" />
+	<style type="text/css">
+		.portlet-title{
+			background: none;
+		}
+		.text-comment{
+		    padding: 0.5rem;
+		    background: lightblue;
+		    margin-left: 3rem;
+		}
+	</style>
 </head>
 <!-- END HEAD -->
 <!-- END HEAD -->
@@ -252,7 +266,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		<div class="page-content">
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
-			Home
+			Analytics Dashboard <small>Reports & Statistics</small>
 			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
@@ -261,79 +275,61 @@ License: You must have a valid license purchased only from themeforest(the above
 						<a href="{% url 'evaluationapp:index' %}">Home</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
+					<li>
+						<i class="fa fa-bar-chart"></i>
+						<a href="{% url 'evaluationapp:analytics' %}">Analytics</a>
+					</li>
 				</ul>
 			</div>
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN PAGE CONTENT-->
-			<div class="tiles">
-				<div class="tile double-down bg-blue-hoki">
-					<a href="{% url 'evaluationapp:evaluation_home' %}">
-						<div class="tile-body">
-							<i class="fa fa-check-square-o"></i>
-						</div>
-						<div class="tile-object">
-							<div class="name">
-								 Evaluations
-							</div>
-						</div>
-					</a>
-				</div>
-				<div class="tile bg-red-sunglo">
-					<a href="{% url 'evaluationapp:view_forms_home' %}">
-						<div class="tile-body">
-							<i class="fa fa-file-text-o"></i>
-						</div>
-						<div class="tile-object">
-							<div class="name">
-								 Forms
-							</div>
-						</div>
-					</a>
-				</div>
-				<div class="tile bg-yellow-saffron">
-					<div class="tile-body">
-						<i class="fa fa-bar-chart-o"></i>
+				<div class="row">
+					<h3 style="text-align: center;margin-bottom: 3rem;"> Teacher1 vs Teacher2 </h3>
+					<div class="col-md-3">
+						<select id="form-select" name="selected-form" class="bs-select form-control">
+							<option value="Select">Evaluator</option>
+							<option value="Select">Ankit Goyal</option>
+							<option value="Select">Kewal Krishna</option>
+						</select>
 					</div>
-					<div class="tile-object">
-						<div class="name">
-							 Analytics
+
+					<div class="col-md-3">
+						<select id="form-select" name="selected-form" class="bs-select form-control">
+							<option value="Select">Class</option>
+							<option value="Select">V A</option>
+							<option value="Select">VII B</option>
+							<option value="Select">VI C</option>
+						</select>
+					</div>
+
+					<div class="col-md-3">
+						<select id="form-select" name="selected-form" class="bs-select form-control">
+							<option value="Select">Form</option>
+							<option value="Select">V A</option>
+							<option value="Select">VII B</option>
+							<option value="Select">VI C</option>
+						</select>
+					</div>
+
+					<div class="col-md-3">
+						<select id="form-select" name="selected-form" class="bs-select form-control">
+							<option value="Select">Question</option>
+							<option value="Select">Q1</option>
+							<option value="Select">Q2</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6" style="margin-top:5rem;">
+						<div id="pie_chart_2" class="chart">
+						</div>
+					</div>
+					<div class="col-md-6" style="margin-top:5rem;">
+						<div id="pie_chart_10" class="chart">
 						</div>
 					</div>
 				</div>
-				<div class="tile double bg-grey-cascade">
-					<a href="{% url 'evaluationapp:view_download' %}">
-						<div class="tile-body">
-							<i class="fa fa-cloud-download"></i>
-						</div>
-						<div class="tile-object">
-							<div class="name">
-								Export Data
-							</div>
-						</div>
-					</a>
-				</div>
-				<div class="tile bg-blue-steel">
-					<a href="{% url 'evaluationapp:view_settings' %}">
-						<div class="tile-body">
-							<i class="fa fa-cogs"></i>
-						</div>
-						<div class="tile-object">
-							<div class="name">
-								 Settings
-							</div>
-						</div>
-					</a>
-				</div>
-				<div class="tile bg-red-sunglo">
-					<div class="tile-body">
-						<i class="fa fa-cloud-upload"></i>
-					</div>
-					<div class="tile-object">
-						<div class="name">
-							 Uploads
-						</div>
-				</div>
-			</div>
 			<!-- END PAGE CONTENT-->
 		</div>
 	</div>
@@ -369,13 +365,30 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="{% static 'assets/global/scripts/metronic.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/layout.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/quick-sidebar.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/flot/jquery.flot.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/flot/jquery.flot.resize.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/flot/jquery.flot.categories.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/flot/jquery.flot.pie.min.js' %}"></script>
+<script src="{% static 'assets/admin/pages/scripts/index.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/demo.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/admin/pages/scripts/charts-flotcharts.js' %}"></script>
+<script src="{% static 'assets/admin/pages/scripts/components-dropdowns.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/bootstrap-select/bootstrap-select.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/select2/select2.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js' %}"></script>
 <script>
       jQuery(document).ready(function() {    
          	Metronic.init(); // init metronic core components
 			Layout.init(); // init current layout
 			QuickSidebar.init(); // init quick sidebar
 			Demo.init(); // init demo features
+			Index.init();   
+			Index.initCharts();
+			ChartsFlotcharts.init();
+		   	ChartsFlotcharts.initCharts();
+		   	ChartsFlotcharts.initPieCharts();
+		   	ChartsFlotcharts.initBarCharts();
+		   	ComponentsDropdowns.init();
       });
 </script>
 <!-- END JAVASCRIPTS -->
