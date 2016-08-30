@@ -458,8 +458,15 @@ License: You must have a valid license purchased only from themeforest(the above
 												<div class="form-group">
 													<label class="control-label col-md-3">Section1
 													</label>
-													<div class="col-md-4">
+													<div class="col-md-3">
 														<input type="text" id="sectionName---1" class="form-control survey-section-text" name="section1"/>
+													</div>
+													<div class="col-md-3">
+														<select id="sectionfiller---1" class="form-control survey-section-filler" name="sectionfiller1"/>
+															<option value="" disabled selected>Select Who Fill Out This Section</option>
+															<option value="1">Evaluator</option>
+															<option value="2">Evaluatee</option>
+														</select>
 													</div>
 												</div>
 											</div>
@@ -607,7 +614,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					var i;
 					for (i = 1; i <= parseInt(noOfSections); i++) { 
 						if (i<parseInt(noOfSections)){
-							var element = '<div class="form-group extra-section-div"><label class="control-label col-md-3">Section'+(i+parseInt(1))+'</label><div class="col-md-4"><input type="text" id="sectionName---'+(i+parseInt(1))+'"  class="form-control survey-section-text" name="section'+(i+parseInt(1))+'"/></div></div>';
+							var element = '<div class="form-group extra-section-div"><label class="control-label col-md-3">Section'+(i+parseInt(1))+'</label><div class="col-md-3"><input type="text" id="sectionName---'+(i+parseInt(1))+'"  class="form-control survey-section-text" name="section'+(i+parseInt(1))+'"/></div><div class="col-md-3"><select id="sectionfiller---'+(i+parseInt(1))+'" class="form-control survey-section-filler" name="sectionfiller1"><option value="" disabled selected>Select Who Fill Out This Section</option><option value="1"> Evaluator</option><option value="2">Evaluatee</option></select></div></div>';
 							$("#tab2").append(element);
 						}
 						var sectionName = $("#sectionName---"+i).val();

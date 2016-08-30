@@ -178,7 +178,7 @@ class CreateFormView(ListView):
 			fSection = post_data.get("no-of-section")
 			sectionList = []
 			for i in range(1, int(fSection)+1):
-				sectionList.append({"sectionName":post_data.get("section"+str(i)), "sectionOrder":i})
+				sectionList.append({"sectionName":post_data.get("section"+str(i)), "sectionOrder":i,"section_filler":post_data.get("sectionfiller"+str(i))})
 			formError = ""
 			if not form_name:
 				formError += "Form Title is Required<br>"
@@ -388,7 +388,7 @@ def createFormSections(form, sectionList, edit):
 		if edit:
 			FormSection.objects.filter(form=form).delete()
 		for section in sectionList:
-			fsection = FormSection(form=form, sectionName=section['sectionName'], sectionOrder=section['sectionOrder'])
+			fsection = FormSection(form=form, sectionName=section['sectionName'], sectionOrder=section['sectionOrder'], section_filler=section['section_filler'])
 			fsection.save()
 	except Exception as e:
 		exc_type, exc_obj, exc_tb = sys.exc_info()

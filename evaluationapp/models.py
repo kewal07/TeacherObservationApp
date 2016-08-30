@@ -128,6 +128,7 @@ class Form(models.Model):
 class FormSection(models.Model):
 	sectionName = models.CharField(max_length=64)
 	sectionOrder = models.IntegerField()
+	section_filler = models.BooleanField(default=1)
 	form = models.ForeignKey(Form)
 	def __str__(self):
 		return self.sectionName+"---"+str(self.sectionOrder)
