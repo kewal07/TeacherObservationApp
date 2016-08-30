@@ -1188,7 +1188,7 @@ class AdminDashboard(ListView):
 			data['totalTeachers'] = len(schoolTeacherList)
 			data['totalEvaluations'] = len(evaluations)
 
-			if not len(evaluations) = 0:
+			if not len(evaluations) == 0:
 				data['percentageCompletion'] = len(completedEvaluations)/len(evaluations)
 			else:
 				data['percentageCompletion'] = 0
