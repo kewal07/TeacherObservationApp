@@ -500,7 +500,7 @@ class EvaluationFormVoteView(DetailView):
 		if user_already_voted:
 			formVoted = formVoted[0]
 			context['subject'] = formVoted.subject.subject_name
-			context['class'] = formVoted.grade.grade_name + ' ' + formVoted.section
+			context['class'] = formVoted.grade_section.grade.grade_name + ' ' + formVoted.grade_section.section
 
 		context['questions']=[]
 		sections = FormSection.objects.filter(form_id=context['form'].id).order_by('sectionOrder')
@@ -547,7 +547,7 @@ class EvaluationFormVoteView(DetailView):
 			context["ac_re"] = False
 			if user.extendeduser.is_admin:
 				context["archive"] = True
-				if EvaluationStatus.objects.filter(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("completed")):
+				if evaluation.status.status_state == 'Completed':
 					context["archive"] = False
 			if user_already_voted and EvaluationStatus.objects.filter(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("submitted")):
 				context["ac_re"] = True			
@@ -568,8 +568,7 @@ class EvaluationFormVoteView(DetailView):
 			post_data = request.POST
 			form_id = int(post_data.get("survey-id"))
 			subjectOfEvaluation = post_data.get('subject-of-evaluation')
-			classOfEvaluation = post_data.get('class-of-evaluation').split('---')[0]
-			sectionOfEvaluation = post_data.get('class-of-evaluation').split('---')[1]
+			classOfEvaluation = post_data.get('class-of-evaluation')
 			form_voted = None
 			form_questions = FormQuestion.objects.filter(form_id = form_id)
 			votes_list = []
@@ -610,7 +609,7 @@ class EvaluationFormVoteView(DetailView):
 				votes_list.append(vote)
 			if not errors:
 				errors["success"] = "Successfull"
-				saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEvaluation, sectionOfEvaluation)
+				saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEvaluation)
 			return HttpResponse(json.dumps(errors),content_type='application/json')
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -652,11 +651,11 @@ def createExtendedUser(user):
 		extendedUser = ExtendedUser(user=user)
 		extendedUser.save()
 
-def saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEvaluation, sectionOfEvaluation):
+def saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEvaluation):
 	try:
 		user_voted = 0
 		subject = Subject.objects.get(pk=subjectOfEvaluation)
-		grade = Grade.objects.get(pk=classOfEvaluation)
+		gradeSection = SchoolGradeSection.objects.get(pk=classOfEvaluation)
 		for vote in votes_list:
 			if vote["type"] in ["text","rating"]:
 				if vote["answer"]:
@@ -676,11 +675,9 @@ def saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEv
 				if vote["answer"]:
 					votetext = VoteText(user=user, question_id=vote["id"], answer_text=vote["answer"], evaluation=evaluation)
 					votetext.save()
-		voted = FormVoted(user=user, form_id=form_id, form_question_count=len(votes_list), user_answer_count=user_voted, evaluation=evaluation, subject=subject, grade=grade, section=sectionOfEvaluation)
+		voted = FormVoted(user=user, form_id=form_id, form_question_count=len(votes_list), user_answer_count=user_voted, evaluation=evaluation, subject=subject, grade_section=gradeSection)
 		voted.save()
-		ev_status = EvaluationStatus.objects.filter(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("ongoing"))[0]
-		ev_status.evaluation_status_id = evappconstants.getEvStatus("submitted")
-		ev_status.save()
+		evaluation.status = evappconstants.getEvStatus("submitted")
 		evaluation.completed_on = datetime.datetime.now()
 		evaluation.save()
 	except Exception as e:

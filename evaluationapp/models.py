@@ -251,7 +251,7 @@ class FormVoted(models.Model):
 	user_answer_count = models.IntegerField(blank=True,null=True,default=0)
 	evaluation = models.ForeignKey(Evaluation,blank=True,null=True)
 	subject = models.ForeignKey(Subject,blank=True,null=True)
-	grade_section = models.ForeignKey(SchoolGradeSection)
+	grade_section = models.ForeignKey(SchoolGradeSection,blank=True,null=True)
 	full_lesson_observation = models.BooleanField(default=0)
 	def __str__(self):
 		return self.form.form_name+" : "+self.user.username
