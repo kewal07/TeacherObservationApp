@@ -1130,8 +1130,10 @@ class AdminDashboard(DetailView):
 			data = {}
 			schoolTeacherList = User.objects.filter(extendeduser__school=self.request.user.extendeduser.school)
 			evaluations = Evaluation.objects.filter(evaluator__in=schoolTeacherList)
+			completedEvaluations = Evaluation.objects.filter(status__status_id=4)
 			data['totalTeachers'] = len(schoolTeacherList)
 			data['totalEvaluations'] = len(evaluations)
+			data['percentageCompletion'] = len(completedEvaluations)/len(evaluations)
 			return self.render_to_response(data)
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -1173,16 +1175,10 @@ class AssignTargets(ListView):
 
 	def post(self, request, *args, **kwargs):
 		try:
-			print('***************')
-			print(request.POST)
-			print('***************')
 			teacherid = int(request.POST.get('teacher',''))
 			fromdate  = request.POST.get('from_date','')
 			todate    = request.POST.get('to_date')
 			teacherslist = request.POST.get('teacherslist','')
-			print('___________________________________')
-			print(teacherslist)
-			print('___________________________________')
 			formTargets = {}
 			teacherUsers = []
 
@@ -1236,3 +1232,38 @@ class AssignTargets(ListView):
 			line = linecache.getline(filename, lineno, f.f_globals)
 			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 			return HttpResponseNotFound("Some error occured!!!",content_type="application/json")
+
+class ReviewTargets(ListView):
+	template_name = 'evaluationapp/review-target.html'
+	context_object_name = 'data'
+
+	def get_queryset(self, **kwargs):
+		try:
+			context = {}
+			tgts = []
+			targets = EvaluationTargets.objects.filter(school=self.request.user.extendeduser.school)
+			
+			for target in targets:
+				temp = {}
+				temp['id']       = target.teacher.id
+				temp['name']     = target.teacher.first_name+' '+target.teacher.last_name
+				temp['duration'] = str(target.start_date.strftime("%Y/%m/%d"))+' - '+str(target.end_date.strftime("%Y/%m/%d"))
+				temp['target']   = target.target
+				temp['form']     = target.form.form_name
+				evaluationInDuration = Evaluation.objects.filter(evaluator_id=target.teacher.id, completed_on__day__gte=target.start_date.day, completed_on__month__gte=target.start_date.month, completed_on__year__gte=target.start_date.year, completed_on__day__lt=target.end_date.day, completed_on__month__lt=target.end_date.month, completed_on__year__lt=target.end_date.year)
+				temp['completion'] = int(len(evaluationInDuration)) /int(target.target)
+				tgts.append(temp)
+			context['targets'] = tgts
+			return context
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+			return HttpResponseNotFound("Evaluation not found",content_type="application/json")

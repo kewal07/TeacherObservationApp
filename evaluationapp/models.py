@@ -152,7 +152,7 @@ class Question(models.Model):
 	que_slug = models.SlugField(null=True,blank=True)
 	created_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 	horizontal_options = models.BooleanField(default=1)
-
+	weight = models.IntegerField(default=1)
 	def __str__(self):
 		return self.question_text
 
