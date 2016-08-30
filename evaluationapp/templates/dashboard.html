@@ -399,73 +399,27 @@ License: You must have a valid license purchased only from themeforest(the above
                             <!-- END PORTLET-->
                         </div>
                         <div class="col-md-6 col-sm-6">
-                            <!-- BEGIN PORTLET-->
-                            <div class="portlet light portlet-fit bordered">
+                            <div class="portlet box blue">
                                 <div class="portlet-title">
                                     <div class="caption">
-                                        <i class="icon-share font-red-sunglo hide"></i>
-                                        <span class="caption-subject font-dark bold uppercase">Revenue</span>
-                                        <span class="caption-helper">monthly stats...</span>
+                                        <i class="fa fa-gift"></i>Average Rating
                                     </div>
-                                    <div class="actions">
-                                        <div class="btn-group">
-                                            <a href="" class="btn dark btn-outline btn-circle btn-sm dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Filter Range
-                                                <span class="fa fa-angle-down"> </span>
-                                            </a>
-                                            <ul class="dropdown-menu pull-right">
-                                                <li>
-                                                    <a href="javascript:;"> Q1 2014
-                                                        <span class="label label-sm label-default"> past </span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:;"> Q2 2014
-                                                        <span class="label label-sm label-default"> past </span>
-                                                    </a>
-                                                </li>
-                                                <li class="active">
-                                                    <a href="javascript:;"> Q3 2014
-                                                        <span class="label label-sm label-success"> current </span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:;"> Q4 2014
-                                                        <span class="label label-sm label-warning"> upcoming </span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                    <div class="tools">
+                                        <a href="javascript:;" class="collapse">
+                                        </a>
+                                        <a href="#portlet-config" data-toggle="modal" class="config">
+                                        </a>
+                                        <a href="javascript:;" class="reload">
+                                        </a>
+                                        <a href="javascript:;" class="remove">
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="portlet-body">
-                                    <div id="site_activities_loading">
-                                        <img src="../assets/global/img/loading.gif" alt="loading" /> </div>
-                                    <div id="site_activities_content" class="display-none">
-                                        <div id="site_activities" style="height: 228px;"> </div>
-                                    </div>
-                                    <div style="margin: 20px 0 10px 30px">
-                                        <div class="row">
-                                            <div class="col-md-3 col-sm-3 col-xs-6 text-stat">
-                                                <span class="label label-sm label-success"> Revenue: </span>
-                                                <h3>$13,234</h3>
-                                            </div>
-                                            <div class="col-md-3 col-sm-3 col-xs-6 text-stat">
-                                                <span class="label label-sm label-info"> Tax: </span>
-                                                <h3>$134,900</h3>
-                                            </div>
-                                            <div class="col-md-3 col-sm-3 col-xs-6 text-stat">
-                                                <span class="label label-sm label-danger"> Shipment: </span>
-                                                <h3>$1,134</h3>
-                                            </div>
-                                            <div class="col-md-3 col-sm-3 col-xs-6 text-stat">
-                                                <span class="label label-sm label-warning"> Orders: </span>
-                                                <h3>235090</h3>
-                                            </div>
-                                        </div>
+                                    <div id="average-rating-graph" class="chart">
                                     </div>
                                 </div>
-                            </div>
-                            <!-- END PORTLET-->
+                            </div>    
                         </div>
                     </div>
 
@@ -599,53 +553,54 @@ License: You must have a valid license purchased only from themeforest(the above
             QuickSidebar.init();
             Demo.init();
             ComponentsIonSliders.init();
-            //ComponentsDropdowns.init();
-            ChartsFlotcharts.init();
             ComponentsPickers.init();
+            ChartsFlotcharts.init();
             ChartsFlotcharts.initCharts();
-            ChartsFlotcharts.initPieCharts();
+            ChartsFlotcharts.initBarCharts();
 
             var data = [];
             var series = 0;
 
-            $.ajax({
-                type: 'POST',
-                url:'/get-evaluation-status-stats',
-                data:{'csrfmiddlewaretoken': "{{ csrf_token }}"},
-                success:function(response)
-                {
-                    series = response.length;
-                    for(var i=0; i<response.length; i++){
-                        data[i] = { 
-                            label: response[i]['state'],
-                            data: response[i]['count']
+            function evaluationStatusStats(){
+                $.ajax({
+                    type: 'POST',
+                    url:'/get-evaluation-status-stats',
+                    data:{'csrfmiddlewaretoken': "{{ csrf_token }}"},
+                    success:function(response)
+                    {
+                        series = response.length;
+                        for(var i=0; i<response.length; i++){
+                            data[i] = { 
+                                label: response[i]['state'],
+                                data: response[i]['count']
+                            }
                         }
-                    }
-                    if ($('#evaluation_status_chart').size() !== 0) {
-                        $.plot($("#evaluation_status_chart"), data, {
-                            series: {
-                                pie: {
-                                    show: true,
-                                    radius: 1,
-                                    label: {
+                        if ($('#evaluation_status_chart').size() !== 0) {
+                            $.plot($("#evaluation_status_chart"), data, {
+                                series: {
+                                    pie: {
                                         show: true,
-                                        radius: 3 / 4,
-                                        formatter: function(label, series) {
-                                            return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">' + label + '<br/>' + Math.round(series.percent) + '%</div>';
-                                        },
-                                        background: {
-                                            opacity: 0.5
+                                        radius: 1,
+                                        label: {
+                                            show: true,
+                                            radius: 3 / 4,
+                                            formatter: function(label, series) {
+                                                return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">' + label + '<br/>' + Math.round(series.percent) + '%</div>';
+                                            },
+                                            background: {
+                                                opacity: 0.5
+                                            }
                                         }
                                     }
+                                },
+                                legend: {
+                                    show: false
                                 }
-                            },
-                            legend: {
-                                show: false
-                            }
-                        });
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }
 
             function teacherDetailAnalysis(){
                 $.ajax({
@@ -655,13 +610,64 @@ License: You must have a valid license purchased only from themeforest(the above
                     success:function(response)
                     {
                         for(var i=0; i<response.length; i++){
-                            $('#teacher-detail-table').append('<tr><td>'+response[i].id+'</td><td><img alt="'+response[i].name+'"class="img-circle" src="'+ response[i].profilepic+'" style="margin-right:1rem; height:50px;"/>'+response[i].name+'</td><td>25</td><td>20</td><td><a href="localhost:8000/analytics"> Analyze </a> </td></tr>');
+                            $('#teacher-detail-table').append('<tr><td>'+response[i].id+'</td><td>'+response[i].name+'</td><td>25</td><td>20</td><td><a href="localhost:8000/analytics"> Analyze </a> </td></tr>');
                         }
                     }
                 });
             }
-            teacherDetailAnalysis();
 
+            function averageRatingAnalysis(){
+                var data = GenerateSeries(0);
+
+                function GenerateSeries(added) {
+                    var data = [];
+                    var start = 1 + added;
+                    var end = 2 + added;
+
+                    for (i = 1; i <= 12; i++) {
+                        var d = Math.floor(Math.random() * (end - start + 1) + start);
+                        data.push([i, d]);
+                        start++;
+                        end++;
+                    }
+                    console.log(data);
+                    return data;
+                }
+
+                var options = {
+                    series: {
+                        bars: {
+                            show: true
+                        }
+                    },
+                    bars: {
+                        barWidth: 0.8,
+                        lineWidth: 0.5, // in pixels
+                        shadowSize: 0.5,
+                        align: 'left'
+                    },
+
+                    grid: {
+                        tickColor: "#eee",
+                        borderColor: "#eee",
+                        borderWidth: 1
+                    }
+                };
+
+
+                if ($('#average-rating-graph').size() !== 0) {
+                    $.plot($("#average-rating-graph"), [{
+                        data: data,
+                        lines: {
+                            lineWidth: 1,
+                        },
+                        shadowSize: 0
+                    }], options);
+                }
+            }
+            teacherDetailAnalysis();
+            evaluationStatusStats();
+            averageRatingAnalysis();
         });
 </script>
 </body>
