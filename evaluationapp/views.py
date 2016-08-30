@@ -164,12 +164,14 @@ class CreateFormView(ListView):
 				que_text = post_data.get("question-title"+str(que_index)).strip()
 				que_desc = post_data.get("question-description"+str(que_index)).strip()
 				que_type = post_data.get("question-type"+str(que_index)).strip()
+				que_weight = post_data.get("question-weight"+str(que_index)).strip()
 				addComment = post_data.get("question-require-feedback"+str(que_index),False)
 				mandatory = post_data.get("question-mandatory"+str(que_index),False)
 				horizontalOptions = post_data.get("question-horizontal-options"+str(que_index),False)
 				que['text'] = que_text
 				que['desc'] = que_desc
 				que['type'] = que_type
+				que['weight'] = que_weight
 				que['addComment'] = addComment
 				que['mandatory'] = mandatory
 				que['horizontalOptions'] = horizontalOptions
@@ -318,7 +320,12 @@ def createFormQues(form,ques_list,curtime,user,edit):
 			horizontalOptions = 0
 			if que['horizontalOptions']:
 				horizontalOptions = 1
-			question = Question(user=user, created_at=curtime, question_text=que['text'], description=que['desc'], horizontal_options=horizontalOptions)
+			if que['weight']:
+				weight = int(que['weight'])
+			else:
+				weight = 1
+
+			question = Question(user=user, created_at=curtime, question_text=que['text'], description=que['desc'], horizontal_options=horizontalOptions, weight=weight)
 			question.save()
 			for index,choice_text in enumerate(que['choice_texts']):
 				choice = Choice(question=question,choice_text=choice_text)
