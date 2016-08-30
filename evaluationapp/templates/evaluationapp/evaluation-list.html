@@ -475,9 +475,6 @@ License: You must have a valid license purchased only from themeforest(the above
 								<thead>
 									<tr>
 										<th>
-											Evaluation Name
-										</th>
-										<th>
 											Evaluation Form
 										</th>
 										<th>
@@ -499,21 +496,13 @@ License: You must have a valid license purchased only from themeforest(the above
 											Status
 										</th>
 										<th>
-											 View
+											Action
 										</th>
-										{% if not request.path == '/evaluation-archive' %}
-											<th>
-												 Send Reminder
-											</th>
-										{% endif %}
 									</tr>
 								</thead>
 								<tbody>
 									{% for evaluation in data.evaluations %}
 										<tr class="odd gradeX">
-											<td>
-												{{ evaluation.evaluation_name }}
-											</td>
 											<td>
 												{{ evaluation.evaluation_form.form_name }}
 											</td>
@@ -542,25 +531,14 @@ License: You must have a valid license purchased only from themeforest(the above
 												{% if request.path == '/evaluation-archive' %}
 													Archived
 												{% else %}
-													{% for s in data.status %}
-														{% if s.evaluation_id.id == evaluation.id %}
-													 		{{ s.evaluation_status_id.status_state }}
-													 	{% endif %}
-													{% endfor %}
+													{{ evaluation.status.status_state }}
 												{% endif %}
 											</td>
-											<td>	
-												<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View Evaluation</button></a>
-												
-											</td>
 											<td>
-												{% if not request.path == '/evaluation-archive' %}
-													{% for s in data.status %}
-														{% if s.evaluation_id.id == evaluation.id and s.evaluation_status_id.status_state == 'Ongoing' %}
-																<a href="#" class="btn blue btn-sm evaluation_reminder_button" id="{{ evaluation.id }}">
-																<i class="fa fa-pencil"></i> Send Reminder </a>
-													 	{% endif %}
-													{% endfor %}
+												<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View Evaluation</button></a>
+												{% if evaluation.status.status_state == 'Ongoing' %}
+													<a href="#" class="evaluation_reminder_button" id="{{ evaluation.id }}">
+													<button type="button" class="btn btn-primary">Send Reminder</button></a></a>
 												{% endif %}
 											</td>
 										</tr>
@@ -627,11 +605,7 @@ License: You must have a valid license purchased only from themeforest(the above
 												In-Class Observation
 											</td>
 											<td>
-												{% for s in data.status %}
-													{% if s.evaluation_id.id == evaluation.id %}
-												 		{{ s.evaluation_status_id.status_state }}
-												 	{% endif %}
-												{% endfor %}
+												{{ evaluation.status.status_state }}s
 											</td>
 											<td>
 												{% if request.path == '/my-evaluations' %}

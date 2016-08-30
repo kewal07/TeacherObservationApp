@@ -59,6 +59,9 @@ License: You must have a valid license purchased only from themeforest(the above
 		    display: inline-block;
 		    padding: 0 1rem;
 		}
+		.distraction-free-mode{
+			display: none;
+		}
 	</style>
 	<!-- End Page Level -->
 	<link rel="shortcut icon" href="{% static 'favicon.png' %}" />
@@ -309,10 +312,14 @@ License: You must have a valid license purchased only from themeforest(the above
 						<a href="#">{{ form.form_name|title }}</a>
 					</li>
 				</ul>
+				<ul class="page-breadcrumb view-modes">
+					<li><a href="javascript:;" id="regular-mode">Regular Mode</a></li> | 
+					<li><a href="javascript:;" id="distraction-free-mode">Distraction Free Mode</a></li>
+				</ul>
 			</div>
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN PAGE CONTENT-->
-			<div class="row">
+			<div class="row regular-mode">
 				<div class="col-md-12">
 					<div class="portlet box blue" id="form_wizard_1">
 						<div class="portlet-title">
@@ -462,6 +469,93 @@ License: You must have a valid license purchased only from themeforest(the above
 					</div>
 				</div>
 			</div>
+			<div class="row distraction-free-mode">
+				<div class="col-md-12">
+					<form action="#" class="form-horizontal" id="submit_form" method="POST" enctype="multipart/form-data">
+						<input type="hidden" name="survey-id" value="{{ form.id }}" />
+						{% csrf_token %}
+						{% for key,value in questions_section_dict.items %}
+							{% if forloopcounter == 1 %}
+								<div class="tab-pane" id="tab{{ forloop.counter }}">
+									<h3 class="block">Section : {{ key|title }}</h3>
+									<div class="form-group">
+										<label class="col-md-3 control-label">Subject</label>
+										<div class="col-md-4">
+											<select id="subject-select" name="subject-of-evaluation" class="bs-select form-control">
+											{% for sub in subject%}
+												<option value="{{ sub.subject.id }}">{{ sub.subject.subject_name }}</option>
+											{% endfor %}
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-3 control-label">Class</label>
+										<div class="col-md-4">
+											<select id="class-select" name="class-of-evaluation" class="bs-select form-control">
+											{% for cla in class%}
+												<option value="{{ cla.grade.id }}---{{ cla.grade.grade_section }}">{{ cla.grade.grade_name }} {{ cla.grade.grade_section }}</option>
+											{% endfor %}
+											</select>
+										</div>
+									</div>
+								</div>
+							{% else %}
+							<div class="tab-pane" id="tab{{ forloop.counter }}">
+								<h3 class="block">Section : {{ key|title }}</h3>
+								{% for question in value %}
+									<div class="survey-question form-group" id="survey-question{{ question.question.id }}">
+										<div class="portlet-body question-body">
+											<p class="que_text">{{ question.question.question_text }}</p>
+											{% if question.question.description %}
+												<p class="question_description_header">
+													<span class="question_description_header_span">Description: </span>
+												</p>
+												<p class="question_description">{{ question.question.description }}</p>
+											{% endif %}
+											{% if question.type == "text" %}
+												<textarea id ="choiceText{{ question.question.id }}" class="text-ans distraction-free-text" name="choice{{ question.question.id }}" placeholder="Enter Your Response in max 255 characters" maxlength="255" >
+													{{ question.answer }}
+												</textarea>
+											{% elif question.type == "rating" %}
+												<input id="range_6" type="text" name="range{{ question.question.id }}" value="{{ question.min_value }};{{ question.max_value }}"/>
+											{% else %}
+												<div class="input-group">
+													{% for choice in question.question.choice_set.all %}
+														{% if question.horizontalOptions %}
+															<div class="icheck-inline">
+														{% else %}
+															<div class="icheck-list">
+														{% endif %}
+															<label class="choice-text" for="choice{{ choice.id }}">
+															<input class="choices icheck" type="{{ question.type }}" name="choice{{ question.question.id }}" id="choice{{ choice.id }}" value="{{ choice.id }}" />
+															{{ choice.choice_text }}</label>
+														</div>
+													{% endfor %}
+												</div>
+											{% endif %}
+											{% if question.addComment %}
+												<span>Any Other Comment</span>
+												<input type="text" id ="choiceText{{ question.question.id }}Comment" class="text-ans text-distraction" name="choice{{ question.question.id }}Comment" placeholder="Enter Your Response in max 255 characters" maxlength="255">{{ question.answer }}</input>
+											{% endif %}
+										</div>
+									</div>
+									
+								{% endfor %}
+							</div>
+							{% endif %}
+						{% endfor %}
+						<div class="form-actions">
+							<div class="row">
+								<div class="col-md-offset-3 col-md-9">
+									<a href="javascript:;" class="btn disabled green button-submit voteSubmit surveySubmit" id="vote{{ survey.id }}">
+									Submit <i class="m-icon-swapright m-icon-white"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
 			<!-- END PAGE CONTENT-->
 		</div>
 	</div>
@@ -532,7 +626,21 @@ License: You must have a valid license purchased only from themeforest(the above
 			window.location = "{% url 'evaluationapp:edit_evaluations' %}";
 		});
 
-		$(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
+		
+		$("#regular-mode").click(function(event){
+			$(".distraction-free-mode").hide();
+			$("body").removeClass("page-sidebar-closed page-sidebar-closed-hide-logo");
+			$(".page-sidebar-wrapper").removeClass("page-sidebar-menu-closed");
+			$(".page-sidebar-wrapper").show();
+			$(".regular-mode").show();
+		});
+
+		$("#distraction-free-mode").click(function(event){
+			$(".regular-mode").hide();
+			$(".page-sidebar-wrapper").addClass("page-sidebar-menu-closed");
+			$("body").addClass("page-sidebar-closed page-sidebar-closed-hide-logo");
+			$(".distraction-free-mode").show();
+		});
 
 		$('.surveySubmit').click(function(){
 			var subButElem = $(this);

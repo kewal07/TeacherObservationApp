@@ -2,10 +2,6 @@
 	display: block;
     width: 50%;
 }
-.survey-question{
-	    border: 1px solid #869ab3;
-    border-top: 0;
-}
 .portlet-title{
 	background-color: #67809F;
 	border-bottom: 0;
@@ -28,8 +24,32 @@
     clear: both;
 }
 .survey-question textarea{
-	width:100%;
+    width:100%;
+}
+.text-distraction{
+	    width: 80%;
+    border: 0;
+    border-bottom: 1px solid #666;
 }
 .tiles .tile{
     width:300px!important;
+}
+ul.view-modes{
+    list-style-type: none;
+    position: absolute;
+    right:2rem;
+    display: inline-block;
+}
+ul.view-modes li{
+    display: inline;    
+}
+p.question_description_header , p.question_description{
+    display: inline;
+}
+.question-body{
+    margin-top:;
+}
+textarea.distraction-free-text{
+    width:87%;
+    display: block;
 }

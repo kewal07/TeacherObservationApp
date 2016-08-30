@@ -42,11 +42,11 @@ urlpatterns = [
 	url(r'^analytics',login_required(views.AnalyticsView.as_view()),name='analytics'),
 	url(r'^detail_analytics',login_required(views.AnalyticsDetailView.as_view()),name='detail_analytics'),
 	url(r'^comparative_analytics',login_required(views.TeacherAnalyticsDetailView.as_view()),name='teacher_analytics'),
-	url(r'^detail_teacher',login_required(views.DetailTeacherView.as_view()),name='detail_teacher')
+	url(r'^detail_teacher',login_required(views.DetailTeacherView.as_view()),name='detail_teacher'),
 	url(r'^termsofservice', TemplateView.as_view(template_name='termsofservice.html'), name='termsofservice'),
     url(r'^privacypolicy', TemplateView.as_view(template_name='privacypolicy.html'), name='privacypolicy'),
     url(r'^getteachersubjects_in_section$', login_required(views.getteachersubjects_in_section), name='getteachersubjectsection'),
     url(r'^assign-targets$', login_required(views.AssignTargets.as_view()), name='assigntargettoteachers'),
-    url(r'^assign-targets$', login_required(views.AssignTargets.as_view()), name='target_review'),
+    url(r'^review-targets$', login_required(views.AssignTargets.as_view()), name='target_review'),
     url(r'^dashboard/(?P<school_name>[\w\-]+)$', login_required(views.AdminDashboard.as_view()), name='dashboard')
 ]
