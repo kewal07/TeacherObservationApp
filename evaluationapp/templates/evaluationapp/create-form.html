@@ -462,13 +462,6 @@ License: You must have a valid license purchased only from themeforest(the above
 														<input type="text" id="sectionName---1" class="form-control survey-section-text" name="section1"/>
 													</div>
 												</div>
-												<!-- <div class="form-group">
-													<label class="control-label col-md-3">Section2
-													</label>
-													<div class="col-md-4">
-														<input type="text" id="sectionName---2" class="form-control" name="section2"/>
-													</div>
-												</div> -->
 											</div>
 											<div class="tab-pane" id="tab3">
 												<h3 class="block">Add Questions</h3>
@@ -549,19 +542,19 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- End Page Level Scripts -->
 <script>
 		//Variables
-			var noOfSections;
-			var display_question_count = 1;
-			var question_count = 1;
-			var question_list = [];
-			var choice_count = {};
-			var choice_list = {};
-			var mandatory = false;
-			var addComment = false;
-			var horizontalOptions = false;
-			var flag = 0;
-			var element =
-				'<div class="my-popover popover confirmation fade top in" id="confirmation644182" style="top: -7rem !important; left: 24rem !important; display: block;"><div class="arrow" style="left: 50%;"></div><h3 style="color:black;" class="popover-title">Are you Sure? </h3><div class="popover-content text-center"><div class="btn-group"><a class="btn btn-xs btn-success" data-apply="confirmation"><i class="glyphicon glyphicon-ok"></i> Yes</a><a class="btn btn-xs btn-danger" data-dismiss="confirmation"><i class="glyphicon glyphicon-remove"></i> No</a></div></div></div>';
-			// End Variables
+		var noOfSections;
+		var display_question_count = 1;
+		var question_count = 1;
+		var question_list = [];
+		var choice_count = {};
+		var choice_list = {};
+		var mandatory = false;
+		var addComment = false;
+		var horizontalOptions = false;
+		var flag = 0;
+		var element =
+			'<div class="my-popover popover confirmation fade top in" id="confirmation644182" style="top: -7rem !important; left: 24rem !important; display: block;"><div class="arrow" style="left: 50%;"></div><h3 style="color:black;" class="popover-title">Are you Sure? </h3><div class="popover-content text-center"><div class="btn-group"><a class="btn btn-xs btn-success" data-apply="confirmation"><i class="glyphicon glyphicon-ok"></i> Yes</a><a class="btn btn-xs btn-danger" data-dismiss="confirmation"><i class="glyphicon glyphicon-remove"></i> No</a></div></div></div>';
+		// End Variables
 	  	function add_another_choice(question_count_select,selectedType){
 			var question_choice_count = choice_count[question_count_select];
 	  		choice_list[question_count_select].push(question_choice_count);
@@ -621,10 +614,8 @@ License: You must have a valid license purchased only from themeforest(the above
 						$(".question-section-option-"+i).remove();
 						$('.question-section-select-class').selectpicker('refresh');
 						$("select.question-section-select-class").append('<option value="'+sectionName+'" class="question-section-option-'+i+'">'+sectionName+'</option>');
-						// $(".question-section-select-class .selectpicker").append(sectionName);
 						$('.question-section-select-class').selectpicker('render');
 						$('.question-section-select-class').selectpicker('refresh');
-						// $('option[value="'+sectionName+'"]').hide();
 					}
 				}
 			});
@@ -668,7 +659,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			  	}
 			  	question_elem += '</select></div></div>';
 			  	question_elem += '<div class="form-group"><label class="control-label col-md-3">Question Type</label><div class="col-md-4"><select id="question-type-select---'+question_count_str+'" name="question-type'+question_count_str+'" class="bs-select form-control question-type-select"><option value="noselect">Select</option><option value="radio">Single Select</option><option value="checkbox">Multi Select</option><option value="rating">Rating</option><option value="text">Text</option>';
-			  	question_elem += '</select></div></div>';
+			  	question_elem += '</select></div></div>  <div class="form-group"><label class="control-label col-md-3">Question Weight</label><div class="col-md-4"><input type="text" class="form-control" name="question-weight'+question_count_str+'"/></div> </div>';
 
 			  	question_elem += '</div></div></div>';
 			  	$("#tab3").append(question_elem);
