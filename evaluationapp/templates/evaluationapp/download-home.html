@@ -100,7 +100,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		            </a>
 		        </li>
 		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
+		            <a href="{% url 'evaluationapp:dashboard' user.extendeduser.school.school_name %}">
 		              <fa class="fa fa-bar-chart" data-placement="bottom" data-original-title="Evaluations"></fa>
 		              <span id="menu-items-text" class="title tooltips">Analytics</span>
 		            </a>
@@ -223,7 +223,26 @@ License: You must have a valid license purchased only from themeforest(the above
 					</ul>
 				</li>
 				<li>
-					<a href="{% url 'evaluationapp:index' %}">
+						<a href="javascript:;">
+						<fa class="fa fa-check-square-o"></fa>
+						<span class="title">Targets</span>
+						<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:assigntargettoteachers' %}">
+								<fa class="fa fa-plus"></fa>
+								Assign</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:target_review' %}">
+								<i class="fa fa-search"></i>
+								Review</a>
+							</li>
+						</ul>
+					</li>
+				<li>
+					<a href="{% url 'evaluationapp:dashboard' user.extendeduser.school.school_name %}">
 						<i class="fa fa-bar-chart"></i>
 						<span class="title">Analytics</span>
 					</a>

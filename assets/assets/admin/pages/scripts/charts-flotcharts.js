@@ -1,5 +1,26 @@
 var ChartsFlotcharts = function() {
-
+    var data_new = [
+                    {
+                        label:"Very Good",
+                        data:54
+                    },
+                    {
+                        label:"Good",
+                        data:14
+                    },
+                    {
+                        label:"Avergae",
+                        data:10
+                    },
+                    {
+                        label:"Bad",
+                        data:18
+                    },
+                    {
+                        label:"Very Bad",
+                        data:4
+                    }
+                ];
     return {
         //main function to initiate the module
 
@@ -137,25 +158,7 @@ var ChartsFlotcharts = function() {
                     [9, 25 + randValue()],
                     [10, 30 + randValue()],
                     [11, 35 + randValue()],
-                    [12, 25 + randValue()],
-                    [13, 15 + randValue()],
-                    [14, 20 + randValue()],
-                    [15, 45 + randValue()],
-                    [16, 50 + randValue()],
-                    [17, 65 + randValue()],
-                    [18, 70 + randValue()],
-                    [19, 85 + randValue()],
-                    [20, 80 + randValue()],
-                    [21, 75 + randValue()],
-                    [22, 80 + randValue()],
-                    [23, 75 + randValue()],
-                    [24, 70 + randValue()],
-                    [25, 65 + randValue()],
-                    [26, 75 + randValue()],
-                    [27, 80 + randValue()],
-                    [28, 85 + randValue()],
-                    [29, 90 + randValue()],
-                    [30, 95 + randValue()]
+                    [12, 25 + randValue()]
                 ];
                 var visitors = [
                     [1, randValue() - 5],
@@ -169,30 +172,12 @@ var ChartsFlotcharts = function() {
                     [9, 26 + randValue()],
                     [10, 38 + randValue()],
                     [11, 39 + randValue()],
-                    [12, 50 + randValue()],
-                    [13, 51 + randValue()],
-                    [14, 12 + randValue()],
-                    [15, 13 + randValue()],
-                    [16, 14 + randValue()],
-                    [17, 15 + randValue()],
-                    [18, 15 + randValue()],
-                    [19, 16 + randValue()],
-                    [20, 17 + randValue()],
-                    [21, 18 + randValue()],
-                    [22, 19 + randValue()],
-                    [23, 20 + randValue()],
-                    [24, 21 + randValue()],
-                    [25, 14 + randValue()],
-                    [26, 24 + randValue()],
-                    [27, 25 + randValue()],
-                    [28, 26 + randValue()],
-                    [29, 27 + randValue()],
-                    [30, 31 + randValue()]
+                    [12, 50 + randValue()]
                 ];
 
                 var plot = $.plot($("#chart_2"), [{
                     data: pageviews,
-                    label: "Unique Visits",
+                    label: "2014-15",
                     lines: {
                         lineWidth: 1,
                     },
@@ -200,7 +185,7 @@ var ChartsFlotcharts = function() {
 
                 }, {
                     data: visitors,
-                    label: "Page Views",
+                    label: "2015-16",
                     lines: {
                         lineWidth: 1,
                     },
@@ -656,7 +641,7 @@ var ChartsFlotcharts = function() {
 
             // GRAPH 2
             if ($('#pie_chart_2').size() !== 0) {
-                $.plot($("#pie_chart_2"), data, {
+                $.plot($("#pie_chart_2"), data_new, {
                     series: {
                         pie: {
                             show: true,
@@ -678,10 +663,32 @@ var ChartsFlotcharts = function() {
                     }
                 });
             }
-
+             if ($('#pie_chart_10').size() !== 0) {
+                $.plot($("#pie_chart_10"), data_new, {
+                    series: {
+                        pie: {
+                            show: true,
+                            radius: 1,
+                            label: {
+                                show: true,
+                                radius: 1,
+                                formatter: function(label, series) {
+                                    return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">' + label + '<br/>' + Math.round(series.percent) + '%</div>';
+                                },
+                                background: {
+                                    opacity: 0.8
+                                }
+                            }
+                        }
+                    },
+                    legend: {
+                        show: false
+                    }
+                });
+            }
             // GRAPH 3
             if ($('#pie_chart_3').size() !== 0) {
-                $.plot($("#pie_chart_3"), data, {
+                $.plot($("#pie_chart_3"), data_new, {
                     series: {
                         pie: {
                             show: true,

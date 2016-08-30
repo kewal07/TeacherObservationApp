@@ -324,16 +324,16 @@ var Index = function () {
                 $('#site_activities_content').show();
 
                 var data1 = [
-                    ['DEC', 300],
-                    ['JAN', 600],
-                    ['FEB', 1100],
-                    ['MAR', 1200],
-                    ['APR', 860],
-                    ['MAY', 1200],
-                    ['JUN', 1450],
-                    ['JUL', 1800],
-                    ['AUG', 1200],
-                    ['SEP', 600]
+                    ['DEC', 25],
+                    ['JAN', 12],
+                    ['FEB', 5],
+                    ['MAR', 12],
+                    ['APR', 2],
+                    ['MAY', 4],
+                    ['JUN', 1],
+                    ['JUL', 3],
+                    ['AUG', 4],
+                    ['SEP', 5]
                 ];
 
 

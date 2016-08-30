@@ -17,6 +17,7 @@ var ComponentsIonSliders = function () {
             });
 
             $("#range_2").ionRangeSlider();
+            $("#range_6").ionRangeSlider();
 
             $("#range_5").ionRangeSlider({
                 min: 0,

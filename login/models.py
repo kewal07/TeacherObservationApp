@@ -26,6 +26,7 @@ class ExtendedUser(models.Model):
 	bio = models.CharField(max_length=1024,blank=True,null=True)
 	gender = models.CharField(max_length=1,blank=True,null=True)
 	school = models.ForeignKey(School,blank=True,null=True)
+	supervisor = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, related_name='supervisor')
 	def __str__(self):
 		return self.user.username
 

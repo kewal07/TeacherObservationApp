@@ -1,7 +1,8 @@
 from django.shortcuts import render
+from django.db.models import Count
 from django.http import HttpResponse, HttpResponseNotFound
 from django.views.generic import ListView,DetailView
-from evaluationapp.models import Grade,School,Subject,Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, EvaluationStatus, TeacherSubject, TeacherClass
+from evaluationapp.models import Grade,School,Subject,Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, TeacherClassSubject, SchoolGradeSection, EvaluationTargets
 from evaluationapp import evappconstants
 from django.contrib.auth import login
 from django.contrib.auth.models import User
@@ -25,6 +26,38 @@ class TestView(ListView):
 		context = {}
 		context["evaluations"] = Evaluation.objects.all()
 		context["nav_val"] = "Ongoing Evaluations"
+		return context
+
+class DetailTeacherView(ListView):
+	context_object_name = 'data'
+	template_name = 'evaluationapp/teacher-detail.html'
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		return context		
+
+class TeacherAnalyticsDetailView(ListView):
+	context_object_name = 'data'
+	template_name = 'evaluationapp/teacher-analysis.html'
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		return context
+
+class AnalyticsDetailView(ListView):
+	context_object_name = 'data'
+	template_name = 'evaluationapp/analytics-detailed.html'
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		return context
+
+class AnalyticsView(ListView):
+	context_object_name = 'data'
+	template_name = 'evaluationapp/analytics.html'
+
+	def get_queryset(self, **kwargs):
+		context = {}
 		return context
 
 class IndexView(ListView):
@@ -146,7 +179,9 @@ class CreateFormView(ListView):
 			fSection = post_data.get("no-of-section")
 			sectionList = []
 			for i in range(1, int(fSection)+1):
-				sectionList.append({"sectionName":post_data.get("section"+str(i)), "sectionOrder":i})
+				sectionList.append({"sectionName":post_data.get("section"+str(i)), "sectionOrder":i,"section_filler":post_data.get("sectionfiller"+str(i))})
+			print("*************")
+			print(sectionList)
 			formError = ""
 			if not form_name:
 				formError += "Form Title is Required<br>"
@@ -164,12 +199,14 @@ class CreateFormView(ListView):
 				que_text = post_data.get("question-title"+str(que_index)).strip()
 				que_desc = post_data.get("question-description"+str(que_index)).strip()
 				que_type = post_data.get("question-type"+str(que_index)).strip()
+				que_weight = post_data.get("question-weight"+str(que_index)).strip()
 				addComment = post_data.get("question-require-feedback"+str(que_index),False)
 				mandatory = post_data.get("question-mandatory"+str(que_index),False)
 				horizontalOptions = post_data.get("question-horizontal-options"+str(que_index),False)
 				que['text'] = que_text
 				que['desc'] = que_desc
 				que['type'] = que_type
+				que['weight'] = que_weight
 				que['addComment'] = addComment
 				que['mandatory'] = mandatory
 				que['horizontalOptions'] = horizontalOptions
@@ -214,6 +251,8 @@ class CreateFormView(ListView):
 				return HttpResponse(json.dumps(errors), content_type='application/json')
 			else:
 				form = createForm(form_id,form_name,form_desc,curtime,user,selectedCats,submit_text,fSection)
+				print("*****************************************")
+				print(sectionList)
 				createFormSections(form,sectionList, edit)
 				createFormQues(form,ques_list,curtime,user,edit)
 			errors['success'] = True
@@ -318,7 +357,12 @@ def createFormQues(form,ques_list,curtime,user,edit):
 			horizontalOptions = 0
 			if que['horizontalOptions']:
 				horizontalOptions = 1
-			question = Question(user=user, created_at=curtime, question_text=que['text'], description=que['desc'], horizontal_options=horizontalOptions)
+			if que['weight']:
+				weight = int(que['weight'])
+			else:
+				weight = 1
+
+			question = Question(user=user, created_at=curtime, question_text=que['text'], description=que['desc'], horizontal_options=horizontalOptions, weight=weight)
 			question.save()
 			for index,choice_text in enumerate(que['choice_texts']):
 				choice = Choice(question=question,choice_text=choice_text)
@@ -349,7 +393,12 @@ def createFormSections(form, sectionList, edit):
 		if edit:
 			FormSection.objects.filter(form=form).delete()
 		for section in sectionList:
-			fsection = FormSection(form=form, sectionName=section['sectionName'], sectionOrder=section['sectionOrder'])
+			section_filler=int(section['section_filler'])
+			if section_filler == 1 :
+				sec_fil = 1
+			else:
+				sec_fil = 0 
+			fsection = FormSection(form=form, sectionName=section['sectionName'], sectionOrder=section['sectionOrder'], section_filler=sec_fil)
 			fsection.save()
 	except Exception as e:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -387,7 +436,7 @@ class FormPreviewView(DetailView):
 				tempSectionName = x.section.sectionName
 			else:
 				tempSectionName = None
-			question_dict = {"question":x.question,"type":x.question_type, "addComment":x.add_comment, "mandatory":x.mandatory, "min_value":x.min_value, "max_value":x.max_value,"horizontalOptions":x.question.horizontal_options,"section_name":tempSectionName}
+			question_dict = {"question":x.question,"type":x.question_type, "addComment":x.add_comment, "mandatory":x.mandatory, "min_value":x.min_value, "max_value":x.max_value,"horizontalOptions":x.question.horizontal_options,"section_name":tempSectionName,"section_filler":x.section.section_filler}
 			question_dict['user_already_voted'] = False
 			question_user_vote = []
 			if tempSectionName:
@@ -429,15 +478,28 @@ class EvaluationFormVoteView(DetailView):
 		evaluation = None
 		try:
 			evaluation = Evaluation.objects.get(pk=ev_id)
-			context["ev_status"] = EvaluationStatus.objects.get(evaluation_id=evaluation).evaluation_status_id.status_state
-			context['evaluation'] = evaluation
-		except:
-			pass
+			context["ev_status"] = evaluation.status.status_state
+			context["evaluation"] = evaluation
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 		user_already_voted = False
 		evaluatee = evaluation.evaluatee
 		evaluateeSchool = evaluatee.extendeduser.school
-		context['subject'] = TeacherSubject.objects.filter(evaluatee=evaluatee)
-		context['class'] = TeacherClass.objects.filter(teacher=evaluatee)
+		schoolgradesection = TeacherClassSubject.objects.filter(teacher=evaluatee).values_list('school_grade_section').distinct()
+		context['gradesection'] = []
+		
+		for i in schoolgradesection:
+			context['gradesection'].append(SchoolGradeSection.objects.get(pk=i[0]))
+
 		formVoted = FormVoted.objects.filter(evaluation_id = evaluation)
 		if formVoted:
 			user_already_voted = True
@@ -448,7 +510,7 @@ class EvaluationFormVoteView(DetailView):
 		if user_already_voted:
 			formVoted = formVoted[0]
 			context['subject'] = formVoted.subject.subject_name
-			context['class'] = formVoted.grade.grade_name + ' ' + formVoted.section
+			context['class'] = formVoted.grade_section.grade.grade_name + ' ' + formVoted.grade_section.section
 
 		context['questions']=[]
 		sections = FormSection.objects.filter(form_id=context['form'].id).order_by('sectionOrder')
@@ -463,7 +525,7 @@ class EvaluationFormVoteView(DetailView):
 				tempSectionName = x.section.sectionName
 			else:
 				tempSectionName = None
-			question_dict = {"question":x.question,"type":x.question_type, "addComment":x.add_comment, "mandatory":x.mandatory, "min_value":x.min_value, "max_value":x.max_value,"horizontalOptions":x.question.horizontal_options,"section_name":tempSectionName}
+			question_dict = {"question":x.question,"type":x.question_type, "addComment":x.add_comment, "mandatory":x.mandatory, "min_value":x.min_value, "max_value":x.max_value,"horizontalOptions":x.question.horizontal_options,"section_name":tempSectionName,"section_filler":x.section.section_filler}
 			question_dict['user_already_voted'] = False
 			question_user_vote = []
 			if user.is_authenticated():
@@ -492,13 +554,13 @@ class EvaluationFormVoteView(DetailView):
 		context['questions_section_dict'] = questions_section_dict
 		if path.startswith('/view-evaluation'):
 			context["view_ev"] = True
-			context["ac_re"] = False
+			context["ac_re"] = True
 			if user.extendeduser.is_admin:
 				context["archive"] = True
-				if EvaluationStatus.objects.filter(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("completed")):
+				if evaluation.status.status_state == 'Completed':
 					context["archive"] = False
-			if user_already_voted and EvaluationStatus.objects.filter(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("submitted")):
-				context["ac_re"] = True			
+			if evaluation.status.status_id > 3:
+				context["ac_re"] = False			
 		context['DOMAIN_URL'] = settings.DOMAIN_URL
 		context['no_of_sections'] = len(questions_section_dict)
 		return context
@@ -516,8 +578,7 @@ class EvaluationFormVoteView(DetailView):
 			post_data = request.POST
 			form_id = int(post_data.get("survey-id"))
 			subjectOfEvaluation = post_data.get('subject-of-evaluation')
-			classOfEvaluation = post_data.get('class-of-evaluation').split('---')[0]
-			sectionOfEvaluation = post_data.get('class-of-evaluation').split('---')[1]
+			classOfEvaluation = post_data.get('class-of-evaluation')
 			form_voted = None
 			form_questions = FormQuestion.objects.filter(form_id = form_id)
 			votes_list = []
@@ -558,7 +619,7 @@ class EvaluationFormVoteView(DetailView):
 				votes_list.append(vote)
 			if not errors:
 				errors["success"] = "Successfull"
-				saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEvaluation, sectionOfEvaluation)
+				saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEvaluation)
 			return HttpResponse(json.dumps(errors),content_type='application/json')
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -600,11 +661,11 @@ def createExtendedUser(user):
 		extendedUser = ExtendedUser(user=user)
 		extendedUser.save()
 
-def saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEvaluation, sectionOfEvaluation):
+def saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEvaluation):
 	try:
 		user_voted = 0
 		subject = Subject.objects.get(pk=subjectOfEvaluation)
-		grade = Grade.objects.get(pk=classOfEvaluation)
+		gradeSection = SchoolGradeSection.objects.get(pk=classOfEvaluation)
 		for vote in votes_list:
 			if vote["type"] in ["text","rating"]:
 				if vote["answer"]:
@@ -624,11 +685,9 @@ def saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEv
 				if vote["answer"]:
 					votetext = VoteText(user=user, question_id=vote["id"], answer_text=vote["answer"], evaluation=evaluation)
 					votetext.save()
-		voted = FormVoted(user=user, form_id=form_id, form_question_count=len(votes_list), user_answer_count=user_voted, evaluation=evaluation, subject=subject, grade=grade, section=sectionOfEvaluation)
+		voted = FormVoted(user=user, form_id=form_id, form_question_count=len(votes_list), user_answer_count=user_voted, evaluation=evaluation, subject=subject, grade_section=gradeSection)
 		voted.save()
-		ev_status = EvaluationStatus.objects.filter(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("ongoing"))[0]
-		ev_status.evaluation_status_id = evappconstants.getEvStatus("submitted")
-		ev_status.save()
+		evaluation.status = evappconstants.getEvStatus("submitted")
 		evaluation.completed_on = datetime.datetime.now()
 		evaluation.save()
 	except Exception as e:
@@ -700,10 +759,8 @@ class AssignEvaluationView(ListView):
 			if errors:
 				return HttpResponse(json.dumps(errors), content_type='application/json')
 			else:
-				evaluation = Evaluation(evaluation_name=evaluation_name, evaluation_form=form, evaluatee=evaluatee, evaluator=evaluator, scheduled_at=scheduled_at, last_day=last_day, is_peer=is_peer, is_surprised=is_surprised)
+				evaluation = Evaluation(evaluation_name=evaluation_name, evaluation_form=form, evaluatee=evaluatee, evaluator=evaluator, scheduled_at=scheduled_at, last_day=last_day, is_peer=is_peer, is_surprised=is_surprised, status=evappconstants.getEvStatus("ongoing"))
 				evaluation.save()
-				ev_status = EvaluationStatus(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("ongoing"))
-				ev_status.save()
 				sendMails("evaluationremider", {"id": evaluation.id})
 				sendMails("evaluatee", {"id": evaluation.id})
 			errors['success'] = True
@@ -735,7 +792,7 @@ class EvaluationListView(ListView):
 		completed_evaluations_list = []
 		reviewed_status = [evappconstants.getEvStatus("accepted"), evappconstants.getEvStatus("reviewed"), evappconstants.getEvStatus("rejected")]
 		completed_status = [evappconstants.getEvStatus("completed")]
-		completed_evaluations = EvaluationStatus.objects.filter(evaluation_status_id__in=completed_status).values_list('evaluation_id', flat=True)
+		completed_evaluations = Evaluation.objects.filter(status_id__in=completed_status).values_list('id', flat=True)
 		ce = Evaluation.objects.filter(id__in=completed_evaluations).values_list('id', flat=True)
 		completed_evaluations_list = ce
 		if path.endswith("evaluation-ongoing"):
@@ -759,35 +816,30 @@ class EvaluationListView(ListView):
 			activeForms = list(activeForms)
 			context["evaluations"] = Evaluation.objects.filter(evaluator_id= user).filter(evaluation_form_id__in=activeForms)			
 			for evaluation in context["evaluations"]:
-				status = EvaluationStatus.objects.get(evaluation_id=evaluation)
-				if status.evaluation_status_id.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
+				status = evaluation.status
+				if status.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
 					evaluation.dateCrossed = True
 				else:
 					evaluation.dateCrossed = False
 			context["nav_val"] = "Evaluations Under Me"
-			evaluations_list_under_me = Evaluation.objects.filter(evaluator_id= user).values_list('id', flat=True)
-			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=evaluations_list_under_me)
 		elif path.endswith("my-evaluations"):
 			context["evaluations"] = Evaluation.objects.filter(evaluatee_id=user).filter(evaluation_form__is_active=1)
 			for evaluation in context["evaluations"]:
-				status = EvaluationStatus.objects.get(evaluation_id=evaluation)
-				if status.evaluation_status_id.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
+				status = evaluation.status
+				if status.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
 					evaluation.dateCrossed = True
 				else:
 					evaluation.dateCrossed = False
 			context["nav_val"] = "My Evaluations"
-			my_evals = Evaluation.objects.filter(evaluatee_id= user).values_list('id', flat=True)
-			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=my_evals)
 		elif path.endswith("evaluation-review"):
 			evr = Evaluation.objects.exclude(id__in=completed_evaluations_list)
 			for evaluation in evr:
-				status = EvaluationStatus.objects.get(evaluation_id=evaluation)
-				if status.evaluation_status_id.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
+				status = evaluation.status
+				if status.status_id == 1 and evaluation.scheduled_at.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None):
 					evaluation.dateCrossed = True
 				else:
 					evaluation.dateCrossed = False
 			context["evaluations"] = evr
-			context["status"] = EvaluationStatus.objects.filter(evaluation_id__in=evr)
 			context["nav_val"] = "Review Evaluations"
 		elif path.endswith("evaluation-archive"):
 			completed_evaluations = EvaluationStatus.objects.filter(evaluation_status_id__in=completed_status).values_list('evaluation_id', flat=True)
@@ -1067,10 +1119,8 @@ def gettoken(request):
 	auth_code = request.GET['code']
 	redirect_uri = request.build_absolute_uri(reverse('evaluationapp:gettoken'))
 	token = get_token_from_code(auth_code, redirect_uri)
-	print(token)
 	access_token = token['access_token']
 	user_email = get_user_email_from_id_token(token['id_token'])
-	print(user_email)
 	request.session['access_token'] = access_token
 	request.session['user_email'] = user_email 
 	try:
@@ -1078,3 +1128,262 @@ def gettoken(request):
 		return r.json()
 	except:
 		return 'Error retrieving token: {0} - {1}'.format(r.status_code, r.text)
+
+def getteachersubjects_in_section(request):
+	try:
+		response = {}
+		response['subjects'] = []
+		# data from request parameter
+		classsection = request.POST.get('classsection')
+		evaluation = request.POST.get('evaluation')
+
+		# evaluatee and the selected grade section
+		evaluatee = Evaluation.objects.get(pk=evaluation).evaluatee
+		selectedgradesection = SchoolGradeSection.objects.get(pk=classsection)
+
+		# subjects taught by the teacher in the selected grade section
+		teacherSubjects = TeacherClassSubject.objects.filter(teacher=evaluatee, school_grade_section=selectedgradesection)
+
+		if teacherSubjects:
+			for elements in teacherSubjects:
+				temp = {'id':elements.subject.id, 'name':elements.subject.subject_name}
+				response['subjects'].append(temp)
+		else:
+			response['error'] = 'No Subjects taught by the teacher in the selected Class.'
+
+		return HttpResponse(json.dumps(response), content_type='application/json')
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
+		exc_type, exc_obj, tb = sys.exc_info()
+		f = tb.tb_frame
+		lineno = tb.tb_lineno
+		filename = f.f_code.co_filename
+		linecache.checkcache(filename)
+		line = linecache.getline(filename, lineno, f.f_globals)
+		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+class AdminDashboard(ListView):
+	context_object_name = 'data'
+	def get_template_names(self, **kwargs):
+		template_name = 'dashboard.html'
+		return [template_name]
+
+	def get_queryset(self):
+		try:
+			data = {}
+			totalStudents = 0
+			schoolTeacherList = User.objects.filter(extendeduser__school=self.request.user.extendeduser.school)
+			evaluations = Evaluation.objects.filter(evaluator__in=schoolTeacherList)
+			completedEvaluations = Evaluation.objects.filter(status__status_id=4)
+			totalClasses = SchoolGradeSection.objects.filter(school_id=self.request.user.extendeduser.school_id)
+
+			for classes in totalClasses:
+				totalStudents += classes.number_boys
+				totalStudents += classes.number_girls
+
+			data['totalStudents'] = totalStudents
+			data['totalTeachers'] = len(schoolTeacherList)
+			data['totalEvaluations'] = len(evaluations)
+			data['percentageCompletion'] = len(completedEvaluations)/len(evaluations)
+			return data
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+			return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+class AssignTargets(ListView):
+	template_name = 'evaluationapp/assign-target.html'
+	context_object_name = 'data'
+
+	def get_queryset(self, **kwargs):
+		try:
+			context = {}
+			schoolTeacherList = User.objects.filter(extendeduser__school=self.request.user.extendeduser.school)
+			formsCreatedBySchool = Form.objects.filter(user__extendeduser__school=self.request.user.extendeduser.school)
+			context['teachers'] = schoolTeacherList
+			context['forms'] = formsCreatedBySchool
+			return context
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+			return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+	def post(self, request, *args, **kwargs):
+		try:
+			teacherid = int(request.POST.get('teacher',''))
+			fromdate  = request.POST.get('from_date','')
+			todate    = request.POST.get('to_date')
+			teacherslist = request.POST.get('teacherslist','')
+			formTargets = {}
+			teacherUsers = []
+
+			if not fromdate == '' or not fromdate == None:
+				fd = datetime.datetime.strptime(fromdate, '%m/%d/%Y')
+			else:
+				return HttpResponse(json.dumps({'error':'Invalid from date'}), content_type='application/json')
+
+			if not todate == '' or not todate == None:
+				td = datetime.datetime.strptime(todate, '%m/%d/%Y')
+			else:
+				return HttpResponse(json.dumps({'error':'Invalid to date'}), content_type='application/json')
+
+			try:
+				if teacherslist:
+					teacherslist = teacherslist.split(';')
+					for teacher in teacherslist:
+						tempUser = User.objects.filter(email = teacher)
+						if tempUser:
+							teacherUsers.append(tempUser)
+				else:
+					tempUser = User.objects.get(pk=teacherid)
+					teacherUsers.append(tempUser)
+			except:
+				return HttpResponse(json.dumps({'error':'Invalid Teacher Details!!!'}), content_type='application/json')
+
+			for key,val in request.POST.items():
+				if key.startswith("form_"):
+					formTargets[key.split('_')[1]] = val
+
+			currentUser = self.request.user
+
+			for teacher in teacherUsers:
+				for key,val in formTargets.items():
+					form = Form.objects.get(pk=int(key))
+					evaluationTarget = EvaluationTargets(school=currentUser.extendeduser.school, teacher=teacher, form=form, target=val,  start_date=fd, end_date=td, status='N/A')
+					evaluationTarget.save()
+			return HttpResponse(json.dumps({'success':'Target set successfully!!!'}), content_type='application/json')
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+			return HttpResponseNotFound("Some error occured!!!",content_type="application/json")
+
+class ReviewTargets(ListView):
+	template_name = 'evaluationapp/review-target.html'
+	context_object_name = 'data'
+
+	def get_queryset(self, **kwargs):
+		try:
+			context = {}
+			tgts = []
+			targets = EvaluationTargets.objects.filter(school=self.request.user.extendeduser.school)
+			
+			for target in targets:
+				temp = {}
+				temp['id']       = target.teacher.id
+				temp['name']     = target.teacher.first_name+' '+target.teacher.last_name
+				temp['duration'] = str(target.start_date.strftime("%Y/%m/%d"))+' - '+str(target.end_date.strftime("%Y/%m/%d"))
+				temp['target']   = target.target
+				temp['form']     = target.form.form_name
+				evaluationInDuration = Evaluation.objects.filter(evaluator_id=target.teacher.id, completed_on__day__gte=target.start_date.day, completed_on__month__gte=target.start_date.month, completed_on__year__gte=target.start_date.year, completed_on__day__lt=target.end_date.day, completed_on__month__lt=target.end_date.month, completed_on__year__lt=target.end_date.year)
+				temp['completion'] = int(len(evaluationInDuration)) /int(target.target)
+				tgts.append(temp)
+			context['targets'] = tgts
+			return context
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+			return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+def getEvaluationStatusStats(request):
+	try:
+		evaluations = Evaluation.objects.filter(evaluator__extendeduser__school=request.user.extendeduser.school)
+		evaluationStates = Evaluation.objects.all().values('status__status_state').annotate(total=Count('status__status_state'))
+		evState = []
+
+		for states in evaluationStates:
+			temp = {}
+			temp['state'] = states['status__status_state']
+			temp['count'] = states['total']
+			evState.append(temp)
+		return HttpResponse(json.dumps(evState), content_type='application/json')
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
+		exc_type, exc_obj, tb = sys.exc_info()
+		f = tb.tb_frame
+		lineno = tb.tb_lineno
+		filename = f.f_code.co_filename
+		linecache.checkcache(filename)
+		line = linecache.getline(filename, lineno, f.f_globals)
+		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+def teacherDetailsDashboard(request):
+	try:
+		response = []
+		fromDate = request.POST.get('fromdate')
+		toDate = request.POST.get('todate')
+
+		if not fromDate:
+			fromDate = datetime.datetime(1970, 12, 31, 23, 59, 59, 0)
+		else:
+			fromDate = fromDate.strftime("%Y/%m/%d")
+
+		if not toDate:
+			toDate = datetime.datetime.now()
+		else:
+			toDate = toDate.strftime("%Y/%m/%d")
+
+		print('****************************')
+		print(fromDate)
+		print(toDate)
+		print('****************************')
+
+		teachers = User.objects.filter(extendeduser__school=request.user.extendeduser.school)
+
+		for teacher in teachers:
+			temp = {}
+			temp['id'] = teacher.id
+			temp['name'] = teacher.first_name+' '+teacher.last_name
+			temp['profilepic'] = teacher.extendeduser.get_profile_pic_url()
+			response.append(temp)
+		return HttpResponse(json.dumps(response), content_type='application/json')
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
+		exc_type, exc_obj, tb = sys.exc_info()
+		f = tb.tb_frame
+		lineno = tb.tb_lineno
+		filename = f.f_code.co_filename
+		linecache.checkcache(filename)
+		line = linecache.getline(filename, lineno, f.f_globals)
+		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
