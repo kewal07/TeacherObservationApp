@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Count
 from django.http import HttpResponse, HttpResponseNotFound
 from django.views.generic import ListView,DetailView
 from evaluationapp.models import Grade,School,Subject,Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, TeacherClassSubject, SchoolGradeSection, EvaluationTargets
@@ -549,7 +550,7 @@ class EvaluationFormVoteView(DetailView):
 				context["archive"] = True
 				if evaluation.status.status_state == 'Completed':
 					context["archive"] = False
-			if user_already_voted and EvaluationStatus.objects.filter(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("submitted")):
+			if user_already_voted and evaluation.status.status_id == evappconstants.getEvStatus("submitted"):
 				context["ac_re"] = True			
 		context['DOMAIN_URL'] = settings.DOMAIN_URL
 		context['no_of_sections'] = len(questions_section_dict)
@@ -1155,22 +1156,30 @@ def getteachersubjects_in_section(request):
 		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
 
-class AdminDashboard(DetailView):
-
+class AdminDashboard(ListView):
+	context_object_name = 'data'
 	def get_template_names(self, **kwargs):
 		template_name = 'dashboard.html'
 		return [template_name]
 
-	def get(self, request, *args, **kwargs):
+	def get_queryset(self):
 		try:
 			data = {}
+			totalStudents = 0
 			schoolTeacherList = User.objects.filter(extendeduser__school=self.request.user.extendeduser.school)
 			evaluations = Evaluation.objects.filter(evaluator__in=schoolTeacherList)
 			completedEvaluations = Evaluation.objects.filter(status__status_id=4)
+			totalClasses = SchoolGradeSection.objects.filter(school_id=self.request.user.extendeduser.school_id)
+
+			for classes in totalClasses:
+				totalStudents += classes.number_boys
+				totalStudents += classes.number_girls
+
+			data['totalStudents'] = totalStudents
 			data['totalTeachers'] = len(schoolTeacherList)
 			data['totalEvaluations'] = len(evaluations)
 			data['percentageCompletion'] = len(completedEvaluations)/len(evaluations)
-			return self.render_to_response(data)
+			return data
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -1230,9 +1239,6 @@ class AssignTargets(ListView):
 
 			try:
 				if teacherslist:
-					print('________')
-					print('Here')
-					print('________')
 					teacherslist = teacherslist.split(';')
 					for teacher in teacherslist:
 						tempUser = User.objects.filter(email = teacher)
@@ -1303,4 +1309,72 @@ class ReviewTargets(ListView):
 			line = linecache.getline(filename, lineno, f.f_globals)
 			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 			return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+def getEvaluationStatusStats(request):
+	try:
+		evaluations = Evaluation.objects.filter(evaluator__extendeduser__school=request.user.extendeduser.school)
+		evaluationStates = Evaluation.objects.all().values('status__status_state').annotate(total=Count('status__status_state'))
+		evState = []
+
+		for states in evaluationStates:
+			temp = {}
+			temp['state'] = states['status__status_state']
+			temp['count'] = states['total']
+			evState.append(temp)
+		return HttpResponse(json.dumps(evState), content_type='application/json')
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
+		exc_type, exc_obj, tb = sys.exc_info()
+		f = tb.tb_frame
+		lineno = tb.tb_lineno
+		filename = f.f_code.co_filename
+		linecache.checkcache(filename)
+		line = linecache.getline(filename, lineno, f.f_globals)
+		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+def teacherDetailsDashboard(request):
+	try:
+		response = []
+		fromDate = request.POST.get('fromdate')
+		toDate = request.POST.get('todate')
+
+		if not fromDate:
+			fromDate = datetime.datetime(1970, 12, 31, 23, 59, 59, 0)
+		else:
+			fromDate = fromDate.strftime("%Y/%m/%d")
+
+		if not toDate:
+			toDate = datetime.datetime.now()
+		else:
+			toDate = toDate.strftime("%Y/%m/%d")
+
+		print('****************************')
+		print(fromDate)
+		print(toDate)
+		print('****************************')
+
+		teachers = User.objects.filter(extendeduser__school=request.user.extendeduser.school)
+
+		for teacher in teachers:
+			temp = {}
+			temp['id'] = teacher.id
+			temp['name'] = teacher.first_name+' '+teacher.last_name
+			temp['profilepic'] = teacher.extendeduser.get_profile_pic_url()
+			response.append(temp)
+		return HttpResponse(json.dumps(response), content_type='application/json')
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
+		exc_type, exc_obj, tb = sys.exc_info()
+		f = tb.tb_frame
+		lineno = tb.tb_lineno
+		filename = f.f_code.co_filename
+		linecache.checkcache(filename)
+		line = linecache.getline(filename, lineno, f.f_globals)
+		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
 

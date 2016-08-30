@@ -48,5 +48,7 @@ urlpatterns = [
     url(r'^getteachersubjects_in_section$', login_required(views.getteachersubjects_in_section), name='getteachersubjectsection'),
     url(r'^assign-targets$', login_required(views.AssignTargets.as_view()), name='assigntargettoteachers'),
     url(r'^review-targets$', login_required(views.ReviewTargets.as_view()), name='target_review'),
+    url(r'^get-evaluation-status-stats$', login_required(views.getEvaluationStatusStats), name='evaluationStatusStats'),
+    url(r'^teachers-details-dashboard$', login_required(views.teacherDetailsDashboard), name='teacherDetailsTable'),
     url(r'^dashboard/(?P<school_name>[\w\-]+)$', login_required(views.AdminDashboard.as_view()), name='dashboard')
 ]
