@@ -1187,7 +1187,11 @@ class AdminDashboard(ListView):
 			data['totalStudents'] = totalStudents
 			data['totalTeachers'] = len(schoolTeacherList)
 			data['totalEvaluations'] = len(evaluations)
-			data['percentageCompletion'] = len(completedEvaluations)/len(evaluations)
+
+			if not len(evaluations) = 0:
+				data['percentageCompletion'] = len(completedEvaluations)/len(evaluations)
+			else:
+				data['percentageCompletion'] = 0
 			return data
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
