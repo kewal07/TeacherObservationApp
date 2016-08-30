@@ -180,6 +180,8 @@ class CreateFormView(ListView):
 			sectionList = []
 			for i in range(1, int(fSection)+1):
 				sectionList.append({"sectionName":post_data.get("section"+str(i)), "sectionOrder":i,"section_filler":post_data.get("sectionfiller"+str(i))})
+			print("*************")
+			print(sectionList)
 			formError = ""
 			if not form_name:
 				formError += "Form Title is Required<br>"
@@ -249,6 +251,8 @@ class CreateFormView(ListView):
 				return HttpResponse(json.dumps(errors), content_type='application/json')
 			else:
 				form = createForm(form_id,form_name,form_desc,curtime,user,selectedCats,submit_text,fSection)
+				print("*****************************************")
+				print(sectionList)
 				createFormSections(form,sectionList, edit)
 				createFormQues(form,ques_list,curtime,user,edit)
 			errors['success'] = True
@@ -389,7 +393,12 @@ def createFormSections(form, sectionList, edit):
 		if edit:
 			FormSection.objects.filter(form=form).delete()
 		for section in sectionList:
-			fsection = FormSection(form=form, sectionName=section['sectionName'], sectionOrder=section['sectionOrder'], section_filler=section['section_filler'])
+			section_filler=int(section['section_filler'])
+			if section_filler == 1 :
+				sec_fil = 1
+			else:
+				sec_fil = 0 
+			fsection = FormSection(form=form, sectionName=section['sectionName'], sectionOrder=section['sectionOrder'], section_filler=sec_fil)
 			fsection.save()
 	except Exception as e:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -427,7 +436,7 @@ class FormPreviewView(DetailView):
 				tempSectionName = x.section.sectionName
 			else:
 				tempSectionName = None
-			question_dict = {"question":x.question,"type":x.question_type, "addComment":x.add_comment, "mandatory":x.mandatory, "min_value":x.min_value, "max_value":x.max_value,"horizontalOptions":x.question.horizontal_options,"section_name":tempSectionName}
+			question_dict = {"question":x.question,"type":x.question_type, "addComment":x.add_comment, "mandatory":x.mandatory, "min_value":x.min_value, "max_value":x.max_value,"horizontalOptions":x.question.horizontal_options,"section_name":tempSectionName,"section_filler":x.section.section_filler}
 			question_dict['user_already_voted'] = False
 			question_user_vote = []
 			if tempSectionName:
@@ -516,7 +525,7 @@ class EvaluationFormVoteView(DetailView):
 				tempSectionName = x.section.sectionName
 			else:
 				tempSectionName = None
-			question_dict = {"question":x.question,"type":x.question_type, "addComment":x.add_comment, "mandatory":x.mandatory, "min_value":x.min_value, "max_value":x.max_value,"horizontalOptions":x.question.horizontal_options,"section_name":tempSectionName}
+			question_dict = {"question":x.question,"type":x.question_type, "addComment":x.add_comment, "mandatory":x.mandatory, "min_value":x.min_value, "max_value":x.max_value,"horizontalOptions":x.question.horizontal_options,"section_name":tempSectionName,"section_filler":x.section.section_filler}
 			question_dict['user_already_voted'] = False
 			question_user_vote = []
 			if user.is_authenticated():
@@ -545,13 +554,13 @@ class EvaluationFormVoteView(DetailView):
 		context['questions_section_dict'] = questions_section_dict
 		if path.startswith('/view-evaluation'):
 			context["view_ev"] = True
-			context["ac_re"] = False
+			context["ac_re"] = True
 			if user.extendeduser.is_admin:
 				context["archive"] = True
 				if evaluation.status.status_state == 'Completed':
 					context["archive"] = False
-			if user_already_voted and evaluation.status.status_id == evappconstants.getEvStatus("submitted"):
-				context["ac_re"] = True			
+			if evaluation.status.status_id > 3:
+				context["ac_re"] = False			
 		context['DOMAIN_URL'] = settings.DOMAIN_URL
 		context['no_of_sections'] = len(questions_section_dict)
 		return context
