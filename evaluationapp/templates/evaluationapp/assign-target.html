@@ -409,7 +409,7 @@ License: You must have a valid license purchased only from themeforest(the above
 									</div>
 								</div>
                                 
-                                or 
+                                <span> or </span> 
 
                                 <div class="form-group" style="margin-bottom: 10rem;">
 									<label class="col-md-3 control-label">Teachers</label>
@@ -418,18 +418,20 @@ License: You must have a valid license purchased only from themeforest(the above
 									</div>
 								</div>
 
+								<span> Set Targets </span>
+
 
 								{% for form in data.forms %}
-									<div class="form-group" style="margin-bottom: 14rem;">
-										<label class="col-md-3 control-label">{{ form.form_name }}</label>
-										<div class="col-md-9">
+									<div class="form-group row">
+										<label class="col-md-3 control-label" style="margin-left:1rem;">{{ form.form_name }}</label>
+										<div class="col-md-2">
 											<input type="text" class="form-control" placeholder="Target" name="form_{{ form.id }}">
 										</div>
 									</div>
 								{% endfor %}
 
-								<div class="form-group">
-									<label class="control-label col-md-3">Date Range</label>
+								<div class="form-group row">
+									<label class="control-label col-md-3" style="margin-left:1rem;">Date Range</label>
 									<div class="col-md-4">
 										<div class="input-group input-large date-picker input-daterange" data-date="10/11/2012" data-date-format="mm/dd/yyyy">
 											<input type="text" class="form-control" name="from_date">
@@ -441,7 +443,7 @@ License: You must have a valid license purchased only from themeforest(the above
 								</div>
 
                             </div>
-                            <div class="form-actions" style="margin-top: 15rem;">
+                            <div class="form-actions">
 									<div class="row">
 										<div class="col-md-offset-3 col-md-9">
 											<button type="submit" class="btn green">Submit</button>
