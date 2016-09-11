@@ -134,6 +134,12 @@ License: You must have a valid license purchased only from themeforest(the above
 		            </a>
 		        </li>
 		        <li>
+		            <a href="{% url 'evaluationapp:grading_scheme_home' %}">
+		              <fa class="fa fa-bar-chart" data-placement="bottom" data-original-title="Evaluations"></fa>
+		              <span id="menu-items-text" class="title tooltips">Grading Schemes</span>
+		            </a>
+		        </li>
+		        <li>
 		            <a href="{% url 'evaluationapp:view_download' %}">
 		              <fa class="fa fa-cloud-download" data-placement="bottom" data-original-title="Export"></fa>
 		              <span id="menu-items-text" class="title tooltips">Download</span>
@@ -448,74 +454,71 @@ License: You must have a valid license purchased only from themeforest(the above
 											</div>
 											{% for key,value in questions_section_dict.items %}
 												{% if forloop.counter == 1 %}
-												<div class="tab-pane" id="tab{{ forloop.counter }}">
-													<h3 class="block">Section : {{ key|title }}</h3>
-													<div class="form-group">
-														<label class="col-md-3 control-label">Class</label>
-														<div class="col-md-4">
-															<select id="class-select" name="class-of-evaluation" class="form-control">
-															{% for cla in gradesection %}
-																<option id="{{ cla.id }}" value="{{ cla.id }}">{{ cla.grade.grade_name }} {{ cla.section }}</option>
-															{% endfor %}
-															</select>
+													<div class="tab-pane" id="tab{{ forloop.counter }}">
+														<h3 class="block">Section : {{ key|title }}</h3>
+														<div class="form-group">
+															<label class="col-md-3 control-label">Class</label>
+															<div class="col-md-4">
+																<select id="class-select" name="class-of-evaluation" class="form-control">
+																{% for cla in gradesection %}
+																	<option id="{{ cla.id }}" value="{{ cla.id }}">{{ cla.grade.grade_name }} {{ cla.section }}</option>
+																{% endfor %}
+																</select>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-md-3 control-label">Subject</label>
+															<div class="col-md-4">
+																<select id="subject-select" name="subject-of-evaluation" class="form-control">
+																</select>
+															</div>
 														</div>
 													</div>
-													<div class="form-group">
-														<label class="col-md-3 control-label">Subject</label>
-														<div class="col-md-4">
-															<select id="subject-select" name="subject-of-evaluation" class="form-control">
-															</select>
-														</div>
-													</div>
-												</div>
 												{% else %}
-												<div class="tab-pane" id="tab{{ forloop.counter }}">
-															<h3 class="block">Section : {{ key|title }}</h3>
-															{% for question in value %}
-																{{ question.section_filler }}
-																{% if question.section_filler %}
-																<div class="survey-question form-group" id="survey-question{{ question.question.id }}">
-																	<div class=" portlet-title question-box-title">
-																		<div class="caption">
-																			Question{{ forloop.counter }}
-																		</div>
-																	</div>
-																	<div class="portlet-body">
-																		<p class="que_text">{{ question.question.question_text|title }}</p>
-																		{% if question.question.description %}
-																			<p class="question_description_header">
-																				<span class="question_description_header_span">Description: {{ question.question.description }}</span>
-																			</p>
-																		{% endif %}
-																		{% if question.type == "text" %}
-																		{{ question.answer.strip }}
-																			<textarea id ="choiceText{{ question.question.id }}" class="text-ans" name="choice{{ question.question.id }}" placeholder="Enter Your Response in max 255 characters" maxlength="255">{{ question.answer }}</textarea>
-																		{% elif question.type == "rating" %}
-																			<input id="range_2" type="text" name="range{{ question.question.id }}" value="{{ question.min_value }};{{ question.max_value }}"/>
-																		{% else %}
-																			<div class="input-group">
-																				{% for choice in question.question.choice_set.all %}
-																					{% if question.horizontalOptions %}
-																						<div class="icheck-inline">
-																					{% else %}
-																						<div class="icheck-list">
-																					{% endif %}
-																						<label class="choice-text" for="choice{{ choice.id }}">
-																						<input class="choices icheck" type="{{ question.type }}" name="choice{{ question.question.id }}" id="choice{{ choice.id }}" value="{{ choice.id }}" />
-																						{{ choice.choice_text }}</label>
-																						</div>
-																				{% endfor %}
-																			</div>
-																			{% if question.addComment and question.type == "radio" %}
-																				<p>Any Other Comments</p>
-																				<textarea id ="choiceText{{ question.question.id }}Comment" class="text-ans" name="choice{{ question.question.id }}Comment" placeholder="Enter Your Response in max 255 characters" maxlength="255">{{ question.answer }}</textarea>
-																			{% endif %}
-																		{% endif %}
+													<div class="tab-pane" id="tab{{ forloop.counter }}">
+														<h3 class="block">Section : {{ key|title }}</h3>
+														{% for question in value %}
+															<div class="survey-question form-group" id="survey-question{{ question.question.id }}">
+																<div class=" portlet-title question-box-title">
+																	<div class="caption">
+																		Question{{ forloop.counter }}
 																	</div>
 																</div>
-																{% endif %}
-															{% endfor %}
-												</div>
+																<div class="portlet-body">
+																	<p class="que_text">{{ question.question.question_text|title }}</p>
+																	{% if question.question.description %}
+																		<p class="question_description_header">
+																			<span class="question_description_header_span">Description: {{ question.question.description }}</span>
+																		</p>
+																	{% endif %}
+																	{% if question.type == "text" %}
+																	{{ question.answer.strip }}
+																		<textarea id ="choiceText{{ question.question.id }}" class="text-ans" name="choice{{ question.question.id }}" placeholder="Enter Your Response in max 255 characters" maxlength="255">{{ question.answer }}</textarea>
+																	{% elif question.type == "rating" %}
+																		<input id="range_2" type="text" name="range{{ question.question.id }}" value="{{ question.min_value }};{{ question.max_value }}"/>
+																	{% else %}
+																		<div class="input-group">
+																			{% for choice in question.question.choice_set.all %}
+																				{% if question.horizontalOptions %}
+																					<div class="icheck-inline">
+																				{% else %}
+																					<div class="icheck-list">
+																				{% endif %}
+																					<label class="choice-text" for="choice{{ choice.id }}">
+																					<input class="choices icheck" type="{{ question.type }}" name="choice{{ question.question.id }}" id="choice{{ choice.id }}" value="{{ choice.id }}" />
+																					{{ choice.choice_text }}</label>
+																					</div>
+																			{% endfor %}
+																		</div>
+																		{% if question.addComment and question.type == "radio" %}
+																			<p>Any Other Comments</p>
+																			<textarea id ="choiceText{{ question.question.id }}Comment" class="text-ans" name="choice{{ question.question.id }}Comment" placeholder="Enter Your Response in max 255 characters" maxlength="255">{{ question.answer }}</textarea>
+																		{% endif %}
+																	{% endif %}
+																</div>
+															</div>
+														{% endfor %}
+													</div>
 												{% endif %}
 											{% endfor %}
 										</div>

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseNotFound
 from django.views.generic import ListView,DetailView
-from evaluationapp.models import Grade,School,Subject,Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, TeacherClassSubject, SchoolGradeSection, EvaluationTargets
+from evaluationapp.models import Grade,School,Subject,Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, TeacherClassSubject, SchoolGradeSection, EvaluationTargets, GradeSchemes, GradesRange
 from evaluationapp import evappconstants
 from django.contrib.auth import login
 from django.contrib.auth.models import User
@@ -91,6 +91,21 @@ class FormsHomeView(ListView):
 		context = {}
 		return context
 
+class GradingHomeView(ListView):
+	context_object_name = 'data'
+
+	def get_template_names(self):
+		request = self.request
+		if self.request.user.extendeduser.is_admin:
+			template_name = 'evaluationapp/grading-home.html'
+		else:
+			template_name = 'evaluationapp/404.html'
+		return [template_name]
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		return context
+
 class SettingsHomeView(ListView):
 	context_object_name = 'data'
 
@@ -157,6 +172,7 @@ class CreateFormView(ListView):
 	def get_queryset(self):
 		context = {}
 		context['categories'] = Category.objects.all()
+		context['grading_schemes'] = GradeSchemes.objects.filter(school=self.request.user.extendeduser.school)
 		context['DOMAIN_URL'] = settings.DOMAIN_URL
 		return context
 
@@ -176,12 +192,11 @@ class CreateFormView(ListView):
 			form_name = post_data.get("fullname").strip()
 			form_desc = post_data.get("description").strip()
 			submit_text = post_data.get("submit-text")
+			gradingScheme = post_data.get('grading-scheme')
 			fSection = post_data.get("no-of-section")
 			sectionList = []
 			for i in range(1, int(fSection)+1):
-				sectionList.append({"sectionName":post_data.get("section"+str(i)), "sectionOrder":i,"section_filler":post_data.get("sectionfiller"+str(i))})
-			print("*************")
-			print(sectionList)
+				sectionList.append({"sectionName":post_data.get("section"+str(i)), "sectionOrder":i})
 			formError = ""
 			if not form_name:
 				formError += "Form Title is Required<br>"
@@ -212,6 +227,7 @@ class CreateFormView(ListView):
 				que['horizontalOptions'] = horizontalOptions
 				que['sectionName'] = post_data.get("question-section"+str(que_index)).strip()
 				choices = []
+				choice_weights = []
 				queError = ""
 				min_max = {}
 				if not que_text:
@@ -236,8 +252,11 @@ class CreateFormView(ListView):
 						queError += "Atleast 2 choices are required"
 					for choice_count in choice_list:
 						choice_elem_id = 'questionDiv'+que_index+'choice'+str(choice_count)
+						choice_weight_id  = 'questionDiv'+que_index+'choice'+str(choice_count)+'_weight'
 						choice = post_data.getlist(choice_elem_id)[0].strip()
+						choice_weight = post_data.getlist(choice_weight_id)[0].strip()
 						choices.append(choice)
+						choice_weights.append(choice_weight)
 						if not choice:
 							errors[choice_elem_id] = "Choice required"
 					if len(choices)!=len(set(choices)):
@@ -245,14 +264,13 @@ class CreateFormView(ListView):
 				if queError:
 					errors["question-title"+str(que_index)] = queError
 				que['choice_texts'] = choices
+				que['choice_weights'] = choice_weights
 				que['min_max'] = min_max
 				ques_list.append(que)
 			if errors:
 				return HttpResponse(json.dumps(errors), content_type='application/json')
 			else:
-				form = createForm(form_id,form_name,form_desc,curtime,user,selectedCats,submit_text,fSection)
-				print("*****************************************")
-				print(sectionList)
+				form = createForm(form_id,form_name,form_desc,curtime,user,selectedCats,submit_text,gradingScheme,fSection)
 				createFormSections(form,sectionList, edit)
 				createFormQues(form,ques_list,curtime,user,edit)
 			errors['success'] = True
@@ -306,9 +324,10 @@ def getCheckedValue(boolVal):
 		ret = "checked"
 	return ret
 
-def createForm(form_id,form_name,form_desc,curtime,user,selectedCats,submit_text,fSection):
+def createForm(form_id, form_name, form_desc, curtime, user, selectedCats, submit_text, gradingScheme, fSection):
 	try:
 		form = None
+		grading_scheme = GradeSchemes.objects.get(pk=gradingScheme)
 		if form_id > 0:
 			form = Form.objects.get(pk=form_id)
 			form.form_name = form_name
@@ -316,7 +335,7 @@ def createForm(form_id,form_name,form_desc,curtime,user,selectedCats,submit_text
 			form.thanks_msg = submit_text
 			form.number_sections = fSection
 		else:
-			form = Form( user=user, pub_date=curtime, form_name=form_name, description=form_desc, thanks_msg=submit_text, number_sections=fSection)
+			form = Form( user=user, pub_date=curtime, form_name=form_name, description=form_desc, thanks_msg=submit_text, grading_scheme=grading_scheme, number_sections=fSection)
 		form.save()
 		if form_id > 0:
 			for fcat in form.formwithcategory_set.all():
@@ -341,6 +360,15 @@ def createForm(form_id,form_name,form_desc,curtime,user,selectedCats,submit_text
 
 def createFormQues(form,ques_list,curtime,user,edit):
 	try:
+		total_question_weight = 0
+		question_section_weight_dict = {}
+
+		for que in ques_list:
+			if (que['type'] == 'radio' or que['type'] == 'checkbox') and (not que['sectionName'] == 'Class Information'):
+				if que['sectionName'] in question_section_weight_dict:
+					question_section_weight_dict[que['sectionName']] += int(que['weight'])
+				else :
+					question_section_weight_dict[que['sectionName']] = int(que['weight'])
 		if edit:
 			form_ques = FormQuestion.objects.filter(form=form)
 			for que in form_ques:
@@ -358,14 +386,24 @@ def createFormQues(form,ques_list,curtime,user,edit):
 			if que['horizontalOptions']:
 				horizontalOptions = 1
 			if que['weight']:
-				weight = int(que['weight'])
+				que['weight'] = int(que['weight'])
 			else:
-				weight = 1
+				que['weight'] = 1
 
-			question = Question(user=user, created_at=curtime, question_text=que['text'], description=que['desc'], horizontal_options=horizontalOptions, weight=weight)
+			question = Question(user=user, created_at=curtime, question_text=que['text'], description=que['desc'], horizontal_options=horizontalOptions)
 			question.save()
+
+			"""
+			logic to assign a % weight to every choice: Get the weight of every choices and assign value of 100% to maximum weight and then normalize other options in the similar fashion
+			"""
+			max_weight = -1
+			for tempweight in que['choice_weights']:
+				if int(tempweight) > int(max_weight):
+					max_weight = int(tempweight)
+
 			for index,choice_text in enumerate(que['choice_texts']):
-				choice = Choice(question=question,choice_text=choice_text)
+				temp_choice_value = float(float(que['choice_weights'][index])/float(max_weight))
+				choice = Choice(question=question,choice_text=choice_text, choice_weight=que['choice_weights'][index], choice_value=temp_choice_value)
 				choice.save()
 			min_value = que['min_max'].get("min_value",0)
 			max_value = que['min_max'].get("max_value",10)
@@ -374,7 +412,11 @@ def createFormQues(form,ques_list,curtime,user,edit):
 				formQuestionSection = FormSection.objects.get(form=form, sectionName=que['sectionName'])
 			except:
 				formQuestionSection = None
-			form_que = FormQuestion(form=form, question=question, question_type=que['type'], add_comment=addComment, mandatory=mandatory, min_value=min_value, max_value=max_value, section=formQuestionSection)
+
+			question_section_weight = 0.0
+			if que['type'] == 'radio' or que['type'] == 'checkbox' and not que['sectionName'] == 'Class Information':
+				question_section_weight = float(float(que['weight'])/float(question_section_weight_dict[que['sectionName']]))
+			form_que = FormQuestion(form=form, question=question, question_type=que['type'], add_comment=addComment, mandatory=mandatory, min_value=min_value, max_value=max_value, weight=int(que['weight']), value=question_section_weight, section=formQuestionSection)
 			form_que.save()
 	except Exception as e:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -393,12 +435,7 @@ def createFormSections(form, sectionList, edit):
 		if edit:
 			FormSection.objects.filter(form=form).delete()
 		for section in sectionList:
-			section_filler=int(section['section_filler'])
-			if section_filler == 1 :
-				sec_fil = 1
-			else:
-				sec_fil = 0 
-			fsection = FormSection(form=form, sectionName=section['sectionName'], sectionOrder=section['sectionOrder'], section_filler=sec_fil)
+			fsection = FormSection(form=form, sectionName=section['sectionName'], sectionOrder=section['sectionOrder'])
 			fsection.save()
 	except Exception as e:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -436,7 +473,7 @@ class FormPreviewView(DetailView):
 				tempSectionName = x.section.sectionName
 			else:
 				tempSectionName = None
-			question_dict = {"question":x.question,"type":x.question_type, "addComment":x.add_comment, "mandatory":x.mandatory, "min_value":x.min_value, "max_value":x.max_value,"horizontalOptions":x.question.horizontal_options,"section_name":tempSectionName,"section_filler":x.section.section_filler}
+			question_dict = {"question":x.question,"type":x.question_type, "addComment":x.add_comment, "mandatory":x.mandatory, "min_value":x.min_value, "max_value":x.max_value,"horizontalOptions":x.question.horizontal_options,"section_name":tempSectionName}
 			question_dict['user_already_voted'] = False
 			question_user_vote = []
 			if tempSectionName:
@@ -525,7 +562,7 @@ class EvaluationFormVoteView(DetailView):
 				tempSectionName = x.section.sectionName
 			else:
 				tempSectionName = None
-			question_dict = {"question":x.question,"type":x.question_type, "addComment":x.add_comment, "mandatory":x.mandatory, "min_value":x.min_value, "max_value":x.max_value,"horizontalOptions":x.question.horizontal_options,"section_name":tempSectionName,"section_filler":x.section.section_filler}
+			question_dict = {"question":x.question,"type":x.question_type, "addComment":x.add_comment, "mandatory":x.mandatory, "min_value":x.min_value, "max_value":x.max_value,"horizontalOptions":x.question.horizontal_options,"section_name":tempSectionName}
 			question_dict['user_already_voted'] = False
 			question_user_vote = []
 			if user.is_authenticated():
@@ -661,6 +698,48 @@ def createExtendedUser(user):
 		extendedUser = ExtendedUser(user=user)
 		extendedUser.save()
 
+def calculateEvaluationScore(id):
+	try:
+		evaluation = Evaluation.objects.get(pk=id)
+		evaluationForm = evaluation.evaluation_form
+		formSections = FormSection.objects.filter(form=evaluationForm)
+		avgScore = 0.0
+		sectionScore = []
+
+		for section in formSections:
+			sectionQuestions = FormQuestion.objects.filter(section=section)
+			tempSectionScore = 0.0
+			for question in sectionQuestions:
+				if question.question_type == 'checkbox' or question.question_type == 'radio':
+					votedChoice = Vote.objects.filter(user=evaluation.evaluator, question=question.question, evaluation=evaluation)[0].choice
+					questionScore = float(question.value * votedChoice.choice_value)
+					tempSectionScore += questionScore
+			sectionScore.append(tempSectionScore)
+		if not len(sectionScore) == 0:
+			avgScore = float(sum(sectionScore)/(1.0*len(sectionScore)))*100
+
+		gradingScheme = evaluationForm.grading_scheme
+		ranges = GradesRange.objects.filter(schemes=gradingScheme)
+		grade = ''
+		for range in ranges:
+			if int(avgScore) > range.minscore and int(avgScore) <= range.maxscore:
+				grade = range.grade
+
+		evaluation.grade = grade
+		evaluation.score = avgScore
+		evaluation.save()
+	except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+
 def saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEvaluation):
 	try:
 		user_voted = 0
@@ -679,7 +758,7 @@ def saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEv
 					user_voted += 1
 					for choice_id in vote["choices"]:
 						choice = Choice.objects.get(pk=int(choice_id))
-						uvote = Vote(user=user, choice=choice, evaluation=evaluation)
+						uvote = Vote(user=user, choice=choice, question=choice.question, evaluation=evaluation)
 						uvote.save()
 						voted,created = Voted.objects.get_or_create(user=user, question_id=vote["id"], evaluation=evaluation)
 				if vote["answer"]:
@@ -690,6 +769,7 @@ def saveVotes(user,form_id,votes_list,evaluation, subjectOfEvaluation, classOfEv
 		evaluation.status = evappconstants.getEvStatus("submitted")
 		evaluation.completed_on = datetime.datetime.now()
 		evaluation.save()
+		calculateEvaluationScore(evaluation.id)
 	except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -1168,7 +1248,7 @@ def getteachersubjects_in_section(request):
 class AdminDashboard(ListView):
 	context_object_name = 'data'
 	def get_template_names(self, **kwargs):
-		template_name = 'dashboard.html'
+		template_name = 'evaluationapp/dashboard.html'
 		return [template_name]
 
 	def get_queryset(self):
@@ -1363,12 +1443,6 @@ def teacherDetailsDashboard(request):
 			toDate = datetime.datetime.now()
 		else:
 			toDate = toDate.strftime("%Y/%m/%d")
-
-		print('****************************')
-		print(fromDate)
-		print(toDate)
-		print('****************************')
-
 		teachers = User.objects.filter(extendeduser__school=request.user.extendeduser.school)
 
 		for teacher in teachers:
@@ -1391,3 +1465,119 @@ def teacherDetailsDashboard(request):
 		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
 
+class TeacherDashboard(ListView):
+	context_object_name = 'data'
+	def get_template_names(self, **kwargs):
+		template_name = 'evaluationapp/teacher-dashboard.html'
+		return [template_name]
+
+	def get_queryset(self):
+		try:
+			teacherId = int(self.request.path.split('/')[2])
+			data = {}
+			totalStudents = 0
+			schoolTeacherList = User.objects.filter(extendeduser__school=self.request.user.extendeduser.school)
+			evaluations = Evaluation.objects.filter(evaluator__in=schoolTeacherList)
+			completedEvaluations = Evaluation.objects.filter(status__status_id=4)
+			totalClasses = SchoolGradeSection.objects.filter(school_id=self.request.user.extendeduser.school_id)
+
+			for classes in totalClasses:
+				totalStudents += classes.number_boys
+				totalStudents += classes.number_girls
+
+			data['totalStudents'] = totalStudents
+			data['totalTeachers'] = len(schoolTeacherList)
+			data['totalEvaluations'] = len(evaluations)
+
+			if not len(evaluations) == 0:
+				data['percentageCompletion'] = len(completedEvaluations)/len(evaluations)
+			else:
+				data['percentageCompletion'] = 0
+			return data
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+			return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+class GradingSchemeListView(ListView):
+	template_name = 'evaluationapp/gradingscheme-list.html'
+	context_object_name = 'data'
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		gradingSchemes = GradeSchemes.objects.filter(school=self.request.user.extendeduser.school)
+		print(gradingSchemes)
+		for schemes in gradingSchemes:
+			pass
+		context['schemes'] = gradingSchemes
+		return context
+
+class GradingScheme(ListView):
+	template_name = 'evaluationapp/grading-scheme.html'
+	context_object_name = 'data'
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		return context
+
+	def post(self, request, *args, **kwargs):
+		try:
+			schemeName = request.POST.get('scheme-name','')
+			for i in range(1,6):
+				if (request.POST.get('grade_'+str(i)) == '') or (not request.POST.get('grade_'+str(i)+'_max').isdigit()) or (not request.POST.get('grade_'+str(i)+'_min').isdigit()) or (schemeName == ''):
+					return HttpResponse(json.dumps({'formError':'Invalid Input!!!'}), content_type='application/json')
+
+			newGradingScheme = GradeSchemes(scheme_name=schemeName, school=self.request.user.extendeduser.school, teacher=self.request.user)
+			newGradingScheme.save()
+
+			for i in range(1,6):
+				newGradeRange = GradesRange(schemes=newGradingScheme, grade=request.POST.get('grade_'+str(i)), maxscore=request.POST.get('grade_'+str(i)+'_max'), minscore=request.POST.get('grade_'+str(i)+'_min'))
+				newGradeRange.save()
+			return HttpResponse(json.dumps({'success':'Grading Scheme Created !!!'}), content_type='application/json')
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+			return HttpResponseNotFound("Some error occured!!!",content_type="application/json")
+
+class GradingSchemeDetailView(ListView):
+	template_name = 'evaluationapp/gradingscheme-detail.html'
+	context_object_name = 'data'
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		schemeId = int(self.request.path.split('/')[2])
+		ranges = GradesRange.objects.filter(schemes__id=schemeId)
+		context['ranges'] = ranges
+		return context
+
+def deleteScheme(request):
+	try:
+		pass
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
+		exc_type, exc_obj, tb = sys.exc_info()
+		f = tb.tb_frame
+		lineno = tb.tb_lineno
+		filename = f.f_code.co_filename
+		linecache.checkcache(filename)
+		line = linecache.getline(filename, lineno, f.f_globals)
+		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+		return HttpResponseNotFound("Evaluation not found",content_type="application/json")

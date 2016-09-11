@@ -248,24 +248,43 @@ License: You must have a valid license purchased only from themeforest(the above
 					</ul>
 				</li>
 				<li>
-						<a href="javascript:;">
-						<fa class="fa fa-check-square-o"></fa>
-						<span class="title">Targets</span>
-						<span class="arrow "></span>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a href="{% url 'evaluationapp:assigntargettoteachers' %}">
-								<fa class="fa fa-plus"></fa>
-								Assign</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:target_review' %}">
-								<i class="fa fa-search"></i>
-								Review</a>
-							</li>
-						</ul>
-					</li>
+					<a href="javascript:;">
+					<fa class="fa fa-check-square-o"></fa>
+					<span class="title">Targets</span>
+					<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="{% url 'evaluationapp:assigntargettoteachers' %}">
+							<fa class="fa fa-plus"></fa>
+							Assign</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:target_review' %}">
+							<i class="fa fa-search"></i>
+							Review</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="javascript:;">
+					<fa class="fa fa-check-square-o"></fa>
+					<span class="title">Grading Schemes</span>
+					<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="{% url 'evaluationapp:grade_scheme_create' %}">
+							<fa class="fa fa-plus"></fa>
+							Create</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:grading_scheme_list' %}">
+							<i class="fa fa-search"></i>
+							Review</a>
+						</li>
+					</ul>
+				</li>
 				<li>
 					<a href="{% url 'evaluationapp:dashboard' user.extendeduser.school.school_name %}">
 						<i class="fa fa-bar-chart"></i>
@@ -419,6 +438,16 @@ License: You must have a valid license purchased only from themeforest(the above
 													</div>
 												</div>
 												<div class="form-group">
+													<label class="col-md-3 control-label">Grading Scheme</label>
+													<div class="col-md-4">
+														<select id="scheme-select" name="grading-scheme" class="form-control">
+														{% for scheme in data.grading_schemes %}
+															<option id="{{ scheme.id }}" value="{{ scheme.id }}">{{ scheme.scheme_name }}</option>
+														{% endfor %}
+														</select>
+													</div>
+												</div>
+												<div class="form-group">
 													<label class="col-md-3 control-label">Other Settings</label>
 													<div class="col-md-4">
 														<div class="input-group">
@@ -460,13 +489,6 @@ License: You must have a valid license purchased only from themeforest(the above
 													</label>
 													<div class="col-md-3">
 														<input type="text" id="sectionName---1" class="form-control survey-section-text" name="section1"/>
-													</div>
-													<div class="col-md-3">
-														<select id="sectionfiller---1" class="form-control survey-section-filler" name="sectionfiller1"/>
-															<option value="" disabled selected>Select Who Fill Out This Section</option>
-															<option value="1">Evaluator</option>
-															<option value="2">Evaluatee</option>
-														</select>
 													</div>
 												</div>
 											</div>
@@ -572,7 +594,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			if(selectedType != "text"){
 				choice_elem = '<div id="'+choice_elem_div+'"></div>';
 				$("#"+question_div+" .portlet-body .scroller").append(choice_elem);
-				$("#"+choice_elem_div).append('<div class="form-group" id="questionDiv'+question_count_select+'choice'+question_choice_count+'Div"><label class="control-label col-md-3"></label><div class="col-md-4"><input type="text" class="form-control" name="'+choice_elem_id+'" id="'+choice_elem_id+'" placeholder="Enter Choice Value"/></div><div class="col-md-4"><i id="' +question_count_select+'---'+ question_choice_count+'---'+selectedType+ '" class="fa fa-minus remove-choice"></i></div></div>');
+				$("#"+choice_elem_div).append('<div class="form-group" id="questionDiv'+question_count_select+'choice'+question_choice_count+'Div"><label class="control-label col-md-3"></label><div class="col-md-4"><input type="text" class="form-control" name="'+choice_elem_id+'" id="'+choice_elem_id+'" placeholder="Enter Choice Value"/></div><div class="col-md-2"><input type="text" class="form-control" name="'+choice_elem_id+'_weight" id="'+choice_elem_id+'_weight" placeholder="weight" value="1"/></div><div class="col-md-2"><i id="' +question_count_select+'---'+ question_choice_count+'---'+selectedType+ '" class="fa fa-minus remove-choice"></i></div></div>');
 			}
 			choice_count[question_count_select]+=1;
 		}
@@ -614,7 +636,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					var i;
 					for (i = 1; i <= parseInt(noOfSections); i++) { 
 						if (i<parseInt(noOfSections)){
-							var element = '<div class="form-group extra-section-div"><label class="control-label col-md-3">Section'+(i+parseInt(1))+'</label><div class="col-md-3"><input type="text" id="sectionName---'+(i+parseInt(1))+'"  class="form-control survey-section-text" name="section'+(i+parseInt(1))+'"/></div><div class="col-md-3"><select id="sectionfiller---'+(i+parseInt(1))+'" class="form-control survey-section-filler" name="sectionfiller'+(i+parseInt(1))+'"><option value="" disabled selected>Select Who Fill Out This Section</option><option value="1"> Evaluator</option><option value="2">Evaluatee</option></select></div></div>';
+							var element = '<div class="form-group extra-section-div"><label class="control-label col-md-3">Section'+(i+parseInt(1))+'</label><div class="col-md-3"><input type="text" id="sectionName---'+(i+parseInt(1))+'"  class="form-control survey-section-text" name="section'+(i+parseInt(1))+'"/></div></div>';
 							$("#tab2").append(element);
 						}
 						var sectionName = $("#sectionName---"+i).val();
@@ -666,7 +688,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			  	}
 			  	question_elem += '</select></div></div>';
 			  	question_elem += '<div class="form-group"><label class="control-label col-md-3">Question Type</label><div class="col-md-4"><select id="question-type-select---'+question_count_str+'" name="question-type'+question_count_str+'" class="bs-select form-control question-type-select"><option value="noselect">Select</option><option value="radio">Single Select</option><option value="checkbox">Multi Select</option><option value="rating">Rating</option><option value="text">Text</option>';
-			  	question_elem += '</select></div></div>  <div class="form-group"><label class="control-label col-md-3">Question Weight</label><div class="col-md-4"><input type="text" class="form-control" name="question-weight'+question_count_str+'"/></div> </div>';
+			  	question_elem += '</select></div></div>  <div class="form-group" id="question-weight'+question_count_str+'" style="display:none;" ><label class="control-label col-md-3">Question Weight</label><div class="col-md-4"><input type="text" class="form-control" name="question-weight'+question_count_str+'"/></div> </div>';
 
 			  	question_elem += '</div></div></div>';
 			  	$("#tab3").append(question_elem);
@@ -685,6 +707,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			$("#tab3").on("change",".question-type-select",function(){
 				var select_elem_id = $(this)[0].id;
 		  		var question_count_select = select_elem_id.replace("question-type-select---","");
+		  		console.log(question_count_select);
 		  		choice_count[question_count_select] = 1;
 		  		choice_list[question_count_select] = [];
 		  		var question_choice_count = choice_count[question_count_select];
@@ -693,12 +716,16 @@ License: You must have a valid license purchased only from themeforest(the above
 		  		$("#"+choice_elem_div).remove();
 		  		var selectedType = $("#"+select_elem_id+" option:selected").val();
 		  		if(selectedType != "text" && selectedType != "rating"){
+		  			$('#question-weight'+question_count_select).css('display','block');
 		  			var add_another_choice_elem = '<div id="'+choice_elem_div+'"></div>';
 		  			$("#"+question_div+" .portlet-body .scroller").append(add_another_choice_elem);
 		  			$("#"+choice_elem_div).append('<i id="' +question_count_select+'---'+selectedType +'" class="fa fa-plus add-choice btn blue"></i>'); 
 					add_another_choice(question_count_select,selectedType);
+				} else {
+					$('#question-weight'+question_count_select).css('display','none');
 				}
 				if(selectedType == "rating"){
+					$('#question-weight'+question_count_select).css('display','none');
 					var add_another_choice_elem = '<div id="'+choice_elem_div+'"></div>';
 					$("#"+question_div+" .portlet-body .scroller").append(add_another_choice_elem);
 					$("#"+choice_elem_div).append('<div class="form-group"><label class="control-label col-md-3">Min Value <span class="required">* </span></label><div class="col-md-4"><input type="text" class="form-control" name="'+question_count_select+'---'+selectedType+'---Min" id="'+question_count_select+'---'+selectedType+'---Min" placeholder="Minimum Value"/></div></div><div class="form-group"><label class="control-label col-md-3">Max Value <span class="required">* </span></label><div class="col-md-4"><input type="text" class="form-control" name="'+question_count_select+'---'+selectedType+'---Max" id="'+question_count_select+'---'+selectedType+'---Max" placeholder="Maximum Value"/></div></div>');

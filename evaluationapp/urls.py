@@ -47,8 +47,14 @@ urlpatterns = [
     url(r'^privacypolicy', TemplateView.as_view(template_name='privacypolicy.html'), name='privacypolicy'),
     url(r'^getteachersubjects_in_section$', login_required(views.getteachersubjects_in_section), name='getteachersubjectsection'),
     url(r'^assign-targets$', login_required(views.AssignTargets.as_view()), name='assigntargettoteachers'),
+    url(r'^grading-home$', login_required(views.GradingHomeView.as_view()), name='grading_scheme_home'),
+    url(r'^grading-scheme$', login_required(views.GradingScheme.as_view()), name='grade_scheme_create'),
+    url(r'^grading-scheme-list$', login_required(views.GradingSchemeListView.as_view()), name='grading_scheme_list'),
+    url(r'^view-scheme/(?P<pk>\d+)$',login_required(views.GradingSchemeDetailView.as_view()),name='view_scheme'),
+    url(r'^delete-scheme/(?P<pk>\d+)$',login_required(views.deleteScheme),name='delete_scheme'),
     url(r'^review-targets$', login_required(views.ReviewTargets.as_view()), name='target_review'),
     url(r'^get-evaluation-status-stats$', login_required(views.getEvaluationStatusStats), name='evaluationStatusStats'),
     url(r'^teachers-details-dashboard$', login_required(views.teacherDetailsDashboard), name='teacherDetailsTable'),
-    url(r'^dashboard/(?P<school_name>[\w\-]+)$', login_required(views.AdminDashboard.as_view()), name='dashboard')
+    url(r'^dashboard/(?P<school_name>[\w\-]+)$', login_required(views.AdminDashboard.as_view()), name='dashboard'),
+    url(r'^teacher/(?P<pk>\d+)/dashboard$', login_required(views.TeacherDashboard.as_view()), name='teacher_dashboard')
 ]

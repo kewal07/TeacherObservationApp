@@ -288,6 +288,25 @@ License: You must have a valid license purchased only from themeforest(the above
 						</ul>
 					</li>
 					<li>
+						<a href="javascript:;">
+						<fa class="fa fa-check-square-o"></fa>
+						<span class="title">Grading Schemes</span>
+						<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:grade_scheme_create' %}">
+								<fa class="fa fa-plus"></fa>
+								Create</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:grading_scheme_list' %}">
+								<i class="fa fa-search"></i>
+								Review</a>
+							</li>
+						</ul>
+					</li>
+					<li>
 						<a href="{% url 'evaluationapp:index' %}">
 							<i class="fa fa-bar-chart"></i>
 							<span class="title">Analytics</span>
@@ -406,6 +425,18 @@ License: You must have a valid license purchased only from themeforest(the above
 							<div class="tile-object">
 								<div class="name">
 									 Subject
+								</div>
+							</div>
+						</a>
+					</div>
+					<div class="tile bg-red-sunglo">
+						<a href="{% url 'evaluationapp:grade_scheme' %}">
+							<div class="tile-body">
+								<i class="fa fa-graduation-cap"></i>
+							</div>
+							<div class="tile-object">
+								<div class="name">
+									 Grading Schemes
 								</div>
 							</div>
 						</a>

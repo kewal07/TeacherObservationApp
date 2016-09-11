@@ -41,25 +41,22 @@ License: You must have a valid license purchased only from themeforest(the above
 	<link href="{% static 'assets/admin/layout/css/layout.css' %}" rel="stylesheet" type="text/css" />
 	<link id="style_color" href="{% static 'assets/admin/layout/css/themes/darkblue.css' %}" rel="stylesheet" type="text/css" />
 	<link href="{% static 'assets/admin/layout/css/index_teacher.css' %}" rel="stylesheet" type="text/css" />
-	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css' %}"/>
-	<!-- Page Level -->
-	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-select/bootstrap-select.min.css' %}"/>
-	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/select2/select2.css' %}"/>
-	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/jquery-multi-select/css/multi-select.css' %}"/>
-	<link href="{% static 'assets/global/plugins/icheck/skins/all.css' %}" rel="stylesheet"/>
-	<link href="{% static 'assets/admin/layout/css/index_teacher.css' %}" rel="stylesheet" type="text/css" />
-	<!-- End Page Level -->
 	<!-- END THEME STYLES -->
 	<link rel="shortcut icon" href="{% static 'favicon.png' %}" />
-	<style>
-		.errorlist{
-			color:red;
-		}
-	</style>
 </head>
+<!-- END HEAD -->
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->
+<!-- DOC: Apply "page-sidebar-closed" class to the body and "page-sidebar-menu-closed" class to the sidebar menu element to hide the sidebar by default -->
+<!-- DOC: Apply "page-sidebar-hide" class to the body to make the sidebar completely hidden on toggle -->
+<!-- DOC: Apply "page-sidebar-closed-hide-logo" class to the body element to make the logo hidden on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-hide" class to body element to completely hide the sidebar on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-fixed" class to have fixed sidebar -->
+<!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
+<!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
+<!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 <body class="page-header-fixed page-quick-sidebar-over-content">
-<div id="loader">
-</div>
 <!-- BEGIN HEADER -->
 <div class="page-header navbar navbar-fixed-top">
 	<!-- BEGIN HEADER INNER -->
@@ -78,7 +75,6 @@ License: You must have a valid license purchased only from themeforest(the above
 		<a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
 		</a>
 		<!-- END RESPONSIVE MENU TOGGLER -->
-		<!-- BEGIN TOP NAVIGATION MENU -->
 		<!-- BEGIN TOP NAVIGATION MENU -->
 		<div class="top-menu">
 			{% if user.extendeduser.is_admin %}
@@ -102,17 +98,11 @@ License: You must have a valid license purchased only from themeforest(the above
 			            </a>
 			        </li>
 			        <li>
-			            <a href="{% url 'evaluationapp:dashboard' user.extendeduser.school.school_name %}">
+			            <a href="{% url 'evaluationapp:index' %}">
 			              <fa class="fa fa-bar-chart" data-placement="bottom" data-original-title="Evaluations"></fa>
 			              <span id="menu-items-text" class="title tooltips">Analytics</span>
 			            </a>
 			        </li>
-			        <li>
-			            <a href="{% url 'evaluationapp:grading_scheme_home' %}">
-			              <fa class="fa fa-bar-chart" data-placement="bottom" data-original-title="Evaluations"></fa>
-			              <span id="menu-items-text" class="title tooltips">Grading Schemes</span>
-			            </a>
-		        	</li>
 			        <li>
 			            <a href="{% url 'evaluationapp:view_download' %}">
 			              <fa class="fa fa-cloud-download" data-placement="bottom" data-original-title="Export"></fa>
@@ -194,7 +184,6 @@ License: You must have a valid license purchased only from themeforest(the above
 			{% endif %}
 		</div>
 		<!-- END TOP NAVIGATION MENU -->
-		<!-- END TOP NAVIGATION MENU -->
 	</div>
 	<!-- END HEADER INNER -->
 </div>
@@ -205,7 +194,16 @@ License: You must have a valid license purchased only from themeforest(the above
 <div class="page-container">
 	<!-- BEGIN SIDEBAR -->
 	<div class="page-sidebar-wrapper">
+		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
 		<div class="page-sidebar navbar-collapse collapse">
+			<!-- BEGIN SIDEBAR MENU -->
+			<!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+			<!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+			<!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+			<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+			<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+			<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
 			{% if user.extendeduser.is_admin %}
 				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
 					<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
@@ -216,7 +214,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						<!-- END SIDEBAR TOGGLER BUTTON -->
 					</li>
 					<li class="start ">
-						<a href="javascript:;">
+						<a href="{% url 'evaluationapp:index' %}">
 							<i class="icon-home"></i>
 							<span class="title">Home</span>
 						</a>
@@ -309,7 +307,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						</ul>
 					</li>
 					<li>
-						<a href="{% url 'evaluationapp:dashboard' user.extendeduser.school.school_name %}">
+						<a href="{% url 'evaluationapp:index' %}">
 							<i class="fa fa-bar-chart"></i>
 							<span class="title">Analytics</span>
 						</a>
@@ -334,42 +332,43 @@ License: You must have a valid license purchased only from themeforest(the above
 				</ul>
 			{% else %}
 				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-					<li class="sidebar-toggler-wrapper">
-						<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
-						<div class="sidebar-toggler">
-						</div>
-						<!-- END SIDEBAR TOGGLER BUTTON -->
-					</li>
-					<li class="start active">
-						<a href="javascript:;">
-							<i class="icon-home"></i>
-							<span class="title">Home</span>
-						</a>
-					</li>
-					<li>
-						<a href="{% url 'evaluationapp:evaluation_under_me' %}">
-							<i class=" fa fa-check-square-o"></i>
-							<span class="title">Evaluate Others</span>
-						</a>
-					</li>
-					<li>
-						<a href="{% url 'evaluationapp:my_evaluations' %}">
-							<i class="fa fa-thumbs-o-up"></i>
-							<span class="title">My Feedback</span>
-						</a>
-					</li>
-					<li>
-						<a href="javascript:;">
-							<i class="fa fa-cloud-download"></i>
-							<span class="title">Downloads</span>
-						</a>
-					</li>
-					<li class="last ">
-						<a href="{% url 'evaluationapp:view_settings' %}">
-						<i class="fa fa-gear"></i>
-						<span class="title">Settings</span>
-					</li>
-				</ul>
+				<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+				<li class="sidebar-toggler-wrapper">
+					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+					<div class="sidebar-toggler">
+					</div>
+					<!-- END SIDEBAR TOGGLER BUTTON -->
+				</li>
+				<li class="start">
+					<a href="{% url 'evaluationapp:index' %}">
+						<i class="icon-home"></i>
+						<span class="title">Home</span>
+					</a>
+				</li>
+				<li>
+					<a href="{% url 'evaluationapp:evaluation_under_me' %}">
+						<i class=" fa fa-check-square-o"></i>
+						<span class="title">Evaluate Others</span>
+					</a>
+				</li>
+				<li>
+					<a href="{% url 'evaluationapp:my_evaluations' %}">
+						<i class="fa fa-thumbs-o-up"></i>
+						<span class="title">My Feedback</span>
+					</a>
+				</li>
+				<li>
+					<a href="javascript:;">
+						<i class="fa fa-cloud-download"></i>
+						<span class="title">Downloads</span>
+					</a>
+				</li>
+				<li class="last active">
+					<a href="{% url 'evaluationapp:view_settings' %}">
+					<i class="fa fa-gear"></i>
+					<span class="title">Settings</span>
+				</li>
+			</ul>
 			{% endif %}
 			<!-- END SIDEBAR MENU -->
 		</div>
@@ -380,201 +379,45 @@ License: You must have a valid license purchased only from themeforest(the above
 		<div class="page-content">
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
-			Assign Evaluation
+			Settings
 			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
 					<li>
-						<i class="fa fa-home"></i>
-						<a href="{% url 'evaluationapp:index' %}">Home</a>
-						<i class="fa fa-angle-right"></i>
-					</li>
-					<li>
-						<i class="fa fa-check-square-o"></i>
-						<a href="{% url 'evaluationapp:evaluation_home' %}">Evaluations</a>
-						<i class="fa fa-angle-right"></i>
-					</li>
-					<li>
-						<i class="fa fa-plus"></i>
-						<a href="#">Assign Evaluation</a>
+						<i class="fa fa-gear"></i>
+						<a href="#">Settings</a>
 					</li>
 				</ul>
 			</div>
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN PAGE CONTENT-->
-			<div class="row">
-				<div class="col-md-12">
-					<div class="portlet box blue" id="form_wizard_1">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-gift"></i> Assign Evaluation Form Wizard - <span class="step-title">
-								Step 1 of 3 </span>
+			<div class="tiles">
+				{% if user.extendeduser.is_admin %}
+					<div class="tile double-down bg-blue-hoki">
+						<a href="{% url 'evaluationapp:grade_scheme_create' %}">
+							<div class="tile-body">
+								<i class="fa fa-check-square-o"></i>
 							</div>
-							<div class="tools hidden-xs">
-								<a href="javascript:;" class="collapse">
-								</a>
-								<a href="javascript:;" class="reload">
-								</a>
-								<a href="{% url 'evaluationapp:evaluation_home' %}" title="Close" class="remove">
-								</a>
-							</div>
-						</div>
-						<div class="portlet-body form assign-form">
-							<form action="{% url 'evaluationapp:evaluation_assign' %}" class="form-horizontal" id="submit_form" method="POST" enctype="multipart/form-data">
-								{% csrf_token %}
-								<div class="form-wizard">
-									<div class="form-body">
-										<ul class="nav nav-pills nav-justified steps">
-											<li>
-												<a href="#tab1" data-toggle="tab" class="step">
-												<span class="number">
-												1 </span>
-												<span class="desc">
-												<i class="fa fa-check"></i> Select Form</span>
-												</a>
-											</li>
-											<li>
-												<a href="#tab2" data-toggle="tab" class="step">
-												<span class="number">
-												2 </span>
-												<span class="desc">
-												<i class="fa fa-check"></i> Select Evaluator</span>
-												</a>
-											</li>
-											<li>
-												<a href="#tab3" data-toggle="tab" class="step active">
-												<span class="number">
-												3 </span>
-												<span class="desc">
-												<i class="fa fa-check"></i> Select Evaluatee</span>
-												</a>
-											</li>
-											<li>
-												<a href="#tab4" data-toggle="tab" class="step active">
-												<span class="number">
-												4 </span>
-												<span class="desc">
-												<i class="fa fa-check"></i> Other Settings</span>
-												</a>
-											</li>
-										</ul>
-										<div id="bar" class="progress progress-striped" role="progressbar">
-											<div class="progress-bar progress-bar-success">
-											</div>
-										</div>
-										<div class="tab-content">
-											<div class="alert alert-danger display-none">
-												<button class="close" data-dismiss="alert"></button>
-												You have some form errors. Please check below.
-											</div>
-											<div class="alert alert-success display-none">
-												<button class="close" data-dismiss="alert"></button>
-												Your form validation is successful!
-											</div>
-											<div class="tab-pane active" id="tab1">
-												<h3 class="block">Select Form</h3>
-												<div class="form-group">
-													<label class="control-label col-md-3">Form</label>
-													<div class="col-md-4">
-														<select id="form-select" name="selected-form" class="bs-select form-control">
-															{% for form in data.forms %}
-																<option value="{{ form.id }}">{{ form.form_name }}</option>
-															{% endfor %}
-														</select>
-													</div>
-												</div>
-											</div>
-											<div class="tab-pane" id="tab2">
-												<h3 class="block">Select Evaluator</h3>
-												<div class="form-group">
-													<label class="control-label col-md-3">Evaluator</label>
-													<div class="col-md-4">
-														<select id="evaluator-select" name="selected-evaluator" class="bs-select form-control">
-															{% for teacher in data.teachers %}
-																<option value="{{ teacher.user.id }}">{{ teacher.user.first_name|title }} {{ teacher.user.last_name|title }}</option>
-															{% endfor %}
-														</select>
-													</div>
-												</div>
-											</div>
-											<div class="tab-pane" id="tab3">
-												<h3 class="block">Select Evaluatee</h3>
-												<div class="form-group">
-													<label class="control-label col-md-3">Evaluatee</label>
-													<div class="col-md-4">
-														<select id="evaluatee-select" name="selected-evaluatee" class="bs-select form-control">
-															{% for teacher in data.teachers %}
-																<option value="{{ teacher.user.id }}">{{ teacher.user.first_name|title }} {{ teacher.user.last_name|title }}</option>
-															{% endfor %}
-														</select>
-													</div>
-												</div>	
-											</div>
-											<div class="tab-pane" id="tab4">
-												<h3 class="block">Other Settings</h3>
-												<div class="form-group">
-													<label class="col-md-3 control-label">Evaluator Settings</label>
-													<div class="col-md-4">
-														<div class="input-group">
-															<div class="icheck-inline">
-																<label>
-																<input type="checkbox" id="ispeer" class="icheck" name="ispeer"> Is Peer </label>
-																<label>
-																<input type="checkbox" id="issurprised" class="icheck" name="issurprised"> Is Surprised</label>
-															</div>
-														</div>
-													</div>
-												</div>	
-												<div class="form-group">
-													<label class="control-label col-md-3">Scheduled Date</label>
-													<div class="col-md-3">
-														<div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
-															<input type="text" class="scheduled form-control" name="scheduled" readonly>
-															<span class="input-group-btn">
-															<button class="btn default" type="button"><i class="fa fa-calendar"></i></button>
-															</span>
-														</div>
-														<!-- /input-group -->
-														<span class="help-block">
-														Select date </span>
-													</div>
-												</div>
-												<div class="form-group">
-													<label class="control-label col-md-3">Complete By</label>
-													<div class="col-md-3">
-														<div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
-															<input type="text" class=" lastday form-control" name="lastday" readonly>
-															<span class="input-group-btn">
-															<button class="btn default" type="button"><i class="fa fa-calendar"></i></button>
-															</span>
-														</div>
-														<!-- /input-group -->
-														<span class="help-block">
-														Select date </span>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="form-actions">
-										<div class="row">
-											<div class="col-md-offset-3 col-md-9">
-												<a href="javascript:;" class="btn default button-previous">
-												<i class="m-icon-swapleft"></i> Back </a>
-												<a href="javascript:;" class="btn blue button-next">
-												Continue <i class="m-icon-swapright m-icon-white"></i>
-												</a>
-												<a href="javascript:;" class="btn green button-submit" id="assignEvaluationSubmit">
-												Submit <i class="m-icon-swapright m-icon-white"></i>
-												</a>
-											</div>
-										</div>
-									</div>
+							<div class="tile-object">
+								<div class="name">
+									 Create
 								</div>
-							</form>
-						</div>
+							</div>
+						</a>
 					</div>
-				</div>
+					<div class="tile double bg-red-sunglo">
+						<a href="{% url 'evaluationapp:grading_scheme_list' %}">
+							<div class="tile-body">
+								<i class="fa fa-file-text-o"></i>
+							</div>
+							<div class="tile-object">
+								<div class="name">
+									 Review
+								</div>
+							</div>
+						</a>
+					</div>
+				{% endif %}
 			</div>
 			<!-- END PAGE CONTENT-->
 		</div>
@@ -612,117 +455,12 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="{% static 'assets/admin/layout/scripts/layout.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/quick-sidebar.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/demo.js' %}" type="text/javascript"></script>
-<script src="{% static 'assets/admin/layout/scripts/spin.min.js' %}" type="text/javascript"></script>
-<!-- BEGIN PAGE LEVEL PLUGINS -->
-<script src="{% static 'assets/global/plugins/jquery-validation/js/jquery.validate.min.js' %}"></script>
-<script src="{% static 'assets/global/plugins/jquery-validation/js/additional-methods.min.js' %}"></script>
-<script src="{% static 'assets/global/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'assets/global/plugins/bootstrap-select/bootstrap-select.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'assets/global/plugins/select2/select2.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js' %}"></script>
-<script src="{% static 'assets/global/plugins/icheck/icheck.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
-<!-- END PAGE LEVEL PLUGINS -->
-<!-- Page Level Scripts -->
-<script src="{% static 'assets/admin/pages/scripts/components-dropdowns.js' %}"></script>
-<script src="{% static 'assets/admin/pages/scripts/form-wizard.js' %}"></script>
-<script src="{% static 'assets/admin/pages/scripts/form-icheck.js ' %}"></script>
-<script src="{% static 'assets/admin/pages/scripts/components-pickers.js' %}"></script>
-<script src="{% static 'assets/global/plugins/bootbox/bootbox.min.js' %}"></script>
-<script src="{% static 'assets/admin/pages/scripts/ui-alert-dialog-api.js' %}"></script>
-<!-- End Page Level Scripts -->
 <script>
-	  var opts = {
-			  lines: 13 // The number of lines to draw
-			, length: 28 // The length of each line
-			, width: 10 // The line thickness
-			, radius: 25 // The radius of the inner circle
-			, scale: 1 // Scales overall size of the spinner
-			, corners: 1 // Corner roundness (0..1)
-			, color: '#3598dc' // #rgb or #rrggbb or array of colors
-			, opacity: 0.25 // Opacity of the lines
-			, rotate: 0 // The rotation offset
-			, direction: 1 // 1: clockwise, -1: counterclockwise
-			, speed: 1 // Rounds per second
-			, trail: 60 // Afterglow percentage
-			, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
-			, zIndex: 2e9 // The z-index (defaults to 2000000000)
-			, className: 'spinner' // The CSS class to assign to the spinner
-			, top: '50%' // Top position relative to parent
-			, left: '50%' // Left position relative to parent
-			, shadow: false // Whether to render a shadow
-			, hwaccel: false // Whether to use hardware acceleration
-			, position: 'absolute' // Element positioning
-	  }
-
-	  var target = document.getElementById('loader')
       jQuery(document).ready(function() {    
          	Metronic.init(); // init metronic core components
 			Layout.init(); // init current layout
 			QuickSidebar.init(); // init quick sidebar
 			Demo.init(); // init demo features
-			FormWizard.init();
-			ComponentsDropdowns.init();
-			ComponentsPickers.init();
-			UIAlertDialogApi.init();
-
-			
-			var myDate = new Date();
-			var prettyDate =myDate.getDate() + '-' +(myDate.getMonth()+1) + '-' + 
-			        myDate.getFullYear();
-			$(".lastday").val(prettyDate);
-			$(".scheduled").val(prettyDate);
-
-			$('.remove').click(function(event){
-				event.preventDefault();
-				window.location = "{% url 'evaluationapp:evaluation_home' %}";
-			});
-
-			$("#assignEvaluationSubmit").click(function(event){
-				var spinner = new Spinner(opts).spin(target);
-				event.preventDefault();
-				var elemid = "#submit_form";
-				var form_data = new FormData($(elemid)[0]);
-				$("#assignEvaluationSubmit").attr("disabled","disabled");
-				{% if user.is_authenticated %}
-					$.ajax(
-					{
-						type: 'POST',
-						url:"/evaluation-home/assign-evaluation",
-						data:form_data,
-						processData: false,
-						contentType: false,
-						success:function(obj)
-						{
-							spinner.stop();
-							$(".errorlist").remove();
-							if(obj.hasOwnProperty("success")){
-								{% if user.extendeduser.is_admin %}
-									window.location = "{% url 'evaluationapp:evaluation_home' %}";
-								{% else %}
-									window.location = "{% url 'evaluationapp:index' %}";
-								{% endif %}
-								
-							}
-							else{
-								for(var key in obj){
-								    if (obj.hasOwnProperty(key)){
-								    	if(key === "formError")
-									        $("#submit_form").children().first().prepend('<span class="errorlist errorlistForm error-form"><br>'+obj[key]+'</span>');
-									   	else{
-									   		$("#"+key).parent().append('<span class="errorlist errorlistForm"><br>'+obj[key]+'</span>');
-									   	}
-								    }
-								}
-								$("#assignEvaluationSubmit").removeAttr("disabled");
-							}
-						}
-					});
-				{% else %}
-					$(location).attr('href',{% url 'evaluationapp:evaluation_home' %});
-				{% endif %}
-			});
-			// End Form Submit
       });
 </script>
 <!-- END JAVASCRIPTS -->

@@ -98,6 +98,22 @@ class TeacherClassSubject(models.Model):
 	def __str__(self):
 		return self.teacher.first_name+"_"+ self.school_grade_section.school.school_name+"_"+self.school_grade_section.grade.grade_name+"_"+self.school_grade_section.section+"_"+ self.subject.subject_name
 
+class GradeSchemes(models.Model):
+	scheme_name = models.CharField(max_length=64)
+	school = models.ForeignKey(School)
+	teacher = models.ForeignKey(settings.AUTH_USER_MODEL)
+	created_on = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+	def __str__(self):
+		return self.school.school_name+'__'+self.teacher.first_name+'__'+self.scheme_name
+
+class GradesRange(models.Model):
+	schemes = models.ForeignKey(GradeSchemes)
+	grade = models.CharField(max_length=50)
+	maxscore = models.IntegerField(default=100)
+	minscore = models.IntegerField(default=100)
+	def __str__(self):
+		return self.grade+'__'+self.maxscore+'__'+self.minscore
+
 class Form(models.Model):
 	form_name = models.CharField(max_length=200)
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -106,6 +122,7 @@ class Form(models.Model):
 	form_slug = models.SlugField(null=True,blank=True)
 	created_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 	thanks_msg = models.CharField(max_length=400,null=True,blank=True, default="Thank You for Completing the Assessment!!!")
+	grading_scheme = models.ForeignKey(GradeSchemes)
 	number_sections = models.IntegerField(blank=True,null=True,default=0)
 	is_active = models.BooleanField(default=1)
 	is_public = models.BooleanField(default=0)
@@ -128,7 +145,6 @@ class Form(models.Model):
 class FormSection(models.Model):
 	sectionName = models.CharField(max_length=64)
 	sectionOrder = models.IntegerField()
-	section_filler = models.BooleanField(default=1)
 	form = models.ForeignKey(Form)
 	def __str__(self):
 		return self.sectionName+"---"+str(self.sectionOrder)
@@ -153,7 +169,6 @@ class Question(models.Model):
 	que_slug = models.SlugField(null=True,blank=True)
 	created_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 	horizontal_options = models.BooleanField(default=1)
-	weight = models.IntegerField(default=1)
 	def __str__(self):
 		return self.question_text
 
@@ -180,6 +195,8 @@ class Question(models.Model):
 class Choice(models.Model):
 	question = models.ForeignKey(Question)
 	choice_text = models.CharField(max_length=200)
+	choice_weight = models.IntegerField(default=1)
+	choice_value = models.FloatField(default=1.0)
 	def __str__(self):
 		return self.choice_text
 
@@ -191,6 +208,8 @@ class FormQuestion(models.Model):
 	mandatory = models.BooleanField(default=0)
 	min_value  = models.IntegerField(default=0)
 	max_value = models.IntegerField(default=10)
+	weight = models.IntegerField(default=1)
+	value = models.FloatField(default=1.0)
 	section = models.ForeignKey(FormSection,null=True,default=None)
 	def __str__(self):
 		return self.form.form_name+"_"+self.question.question_text+"_"+self.question_type
@@ -215,11 +234,14 @@ class Evaluation(models.Model):
 	is_surprised = models.BooleanField(default=0)
 	external_evaluator = models.ForeignKey(ExternalEvaluator,blank=True,null=True)
 	status = models.ForeignKey(Status)
+	score = models.FloatField(default=1.0)
+	grade = models.CharField(max_length=64,blank=True,null=True)
 	def __str__(self):
 		return self.evaluation_name
 
 class Vote(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
+	question = models.ForeignKey(Question)
 	choice = models.ForeignKey(Choice)
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	evaluation = models.ForeignKey(Evaluation,blank=True,null=True)
@@ -267,4 +289,4 @@ class EvaluationTargets(models.Model):
 	end_date = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 	status = models.CharField(max_length=255)
 	def __str__(self):
-		return "Target of "+ self.target+" evaluations assigned to "+self.teacher.first_name+" of "+self.school.school_name+" ( "+self.start_date+" - "+self.end_date+" ) " 
+		return "Target of "+ str(self.target)+" evaluations assigned to "+self.teacher.first_name+" of "+self.school.school_name+" ( "+str(self.start_date)+" - "+str(self.end_date)+")" 

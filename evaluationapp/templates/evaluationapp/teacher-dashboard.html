@@ -51,10 +51,9 @@ License: You must have a valid license purchased only from themeforest(the above
 		.portlet-title{
 			background: none;
 		}
-		.text-comment{
-		    padding: 0.5rem;
-		    background: lightblue;
-		    margin-left: 3rem;
+		.img-small{
+			width: 40px;
+			height: 40px;
 		}
 	</style>
 </head>
@@ -114,12 +113,6 @@ License: You must have a valid license purchased only from themeforest(the above
 		            <a href="{% url 'evaluationapp:analytics' %}">
 		              <fa class="fa fa-bar-chart" data-placement="bottom" data-original-title="Evaluations"></fa>
 		              <span id="menu-items-text" class="title tooltips">Analytics</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:grading_scheme_home' %}">
-		              <fa class="fa fa-bar-chart" data-placement="bottom" data-original-title="Evaluations"></fa>
-		              <span id="menu-items-text" class="title tooltips">Grading Schemes</span>
 		            </a>
 		        </li>
 		        <li>
@@ -289,52 +282,396 @@ License: You must have a valid license purchased only from themeforest(the above
 			</div>
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN PAGE CONTENT-->
-				<div class="row">
-					<div class="col-md-12">
-					<!-- BEGIN Portlet PORTLET-->
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+					<div class="dashboard-stat blue-madison">
+						<div class="visual">
+							<i class="fa fa-comments"></i>
+						</div>
+						<div class="details">
+							<div class="number">
+								 11
+							</div>
+							<div class="desc">
+								 New Evaluations
+							</div>
+						</div>
+						<a class="more" href="javascript:;">
+						View more <i class="m-icon-swapright m-icon-white"></i>
+						</a>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+					<div class="dashboard-stat red-intense">
+						<div class="visual">
+							<i class="fa fa-bar-chart-o"></i>
+						</div>
+						<div class="details">
+							<div class="number">
+								 8.5
+							</div>
+							<div class="desc">
+								 Overall Rating
+							</div>
+						</div>
+						<a class="more" href="javascript:;">
+						View more <i class="m-icon-swapright m-icon-white"></i>
+						</a>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+					<div class="dashboard-stat green-haze">
+						<div class="visual">
+							<i class="fa fa-shopping-cart"></i>
+						</div>
+						<div class="details">
+							<div class="number">
+								 80%
+							</div>
+							<div class="desc">
+								 Evaluation Completion
+							</div>
+						</div>
+						<a class="more" href="javascript:;">
+						View more <i class="m-icon-swapright m-icon-white"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6 col-sm-6">
+					<!-- BEGIN PORTLET-->
 					<div class="portlet light">
 						<div class="portlet-title">
-							<div class="caption">
-								<i class="icon-speech"></i>
-								<span class="caption-subject bold uppercase"> Performance Analysis</span>
-								<span class="caption-helper">weekly stats...</span>
+							<div class="caption" style="color:#E26A6A !important;font-weight:bold;">
+								Teacher View
 							</div>
-							<div class="actions">
-								
-								<a> Start:10th May, 2016 </a>
-								
-								<a> End:17th May, 2016  </a>
-								
-								<a> Evaluations: 25  </a>
-								
+							<div class="tools">
+								<a href="#portlet-config" data-toggle="modal" class="config">
+								</a>
+								<a href="javascript:;" class="reload">
+								</a>
 							</div>
 						</div>
 						<div class="portlet-body">
-							<div class="scroller" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
-								<h4 style="margin-bottom:5rem;">Q1. The teacher is very interactive with students</h4>
-								<div id="pie_chart_3" class="chart">
-								</div>
-
-								<h4 style="margin-bottom:5rem;">Q2. The teacher is very interactive with students</h4>
-								<div id="chart_1_2" class="chart">
-								</div>
-
-								<h4 style="margin-bottom:5rem;">Q3. The teacher is very interactive with students</h4>
-								<div id="chart_1_1" class="chart">
-								</div>
-
-								<h4 style="margin-bottom:2rem;">Q3. The teacher is very interactive with students</h4>
-								<p class="text-comment"> His teaching style is unique</p>
-								<p class="text-comment"> His English is bad</p>
-								<p class="text-comment"> His English is bad</p>
-								<p class="text-comment"> His English is bad</p>
+							<div id="pie_chart_3" class="chart">
 							</div>
 						</div>
 					</div>
-					<!-- END Portlet PORTLET-->
+					<!-- END PORTLET-->
+				</div>
+				<div class="col-md-6 col-sm-6">
+					<!-- BEGIN PORTLET-->
+					<div class="portlet light ">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="icon-share font-red-sunglo hide"></i>
+								<span class="caption-subject font-red-sunglo bold uppercase">Evaluations</span>
+								<span class="caption-helper">monthly stats...</span>
+							</div>
+							<div class="actions">
+								<div class="btn-group">
+									<a href="" class="btn grey-salsa btn-circle btn-sm dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+									Filter Range<span class="fa fa-angle-down">
+									</span>
+									</a>
+									<ul class="dropdown-menu pull-right">
+										<li>
+											<a href="javascript:;">
+											Q1 2014 <span class="label label-sm label-default">
+											past </span>
+											</a>
+										</li>
+										<li>
+											<a href="javascript:;">
+											Q2 2014 <span class="label label-sm label-default">
+											past </span>
+											</a>
+										</li>
+										<li class="active">
+											<a href="javascript:;">
+											Q3 2014 <span class="label label-sm label-success">
+											current </span>
+											</a>
+										</li>
+										<li>
+											<a href="javascript:;">
+											Q4 2014 <span class="label label-sm label-warning">
+											upcoming </span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div id="site_activities_loading">
+								<img src="../../assets/admin/layout/img/loading.gif" alt="loading"/>
+							</div>
+							<div id="site_activities_content" class="display-none">
+								<div id="site_activities" style="height: 228px;">
+								</div>
+							</div>
+							<div style="margin: 20px 0 10px 30px">
+								<div class="row">
+									<div class="col-md-3 col-sm-3 col-xs-6 text-stat">
+										<span class="label label-sm label-success">
+										Evaluations: </span>
+										<h3>25</h3>
+									</div>
+									<div class="col-md-3 col-sm-3 col-xs-6 text-stat">
+										<span class="label label-sm label-info">
+										Accepted </span>
+										<h3>19</h3>
+									</div>
+									<div class="col-md-3 col-sm-3 col-xs-6 text-stat">
+										<span class="label label-sm label-danger">
+										Rejected </span>
+										<h3>4</h3>
+									</div>
+									<div class="col-md-3 col-sm-3 col-xs-6 text-stat">
+										<span class="label label-sm label-warning">
+										 No-Response </span>
+										<h3>2</h3>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END PORTLET-->
+				</div>
+			</div>
+
+
+			<div class="col-md-12 col-sm-12">
+					<!-- BEGIN EXAMPLE TABLE PORTLET-->
+					<div class="portlet box purple">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-cogs"></i>Table
+							</div>
+						</div>
+						<div class="portlet-body">
+							<table class="table table-striped table-bordered table-hover" id="sample_3">
+							<thead>
+							<tr>
+								<th>
+									#
+								</th>
+								<th>
+									Pic
+								</th>
+								<th>
+									 Name
+								</th>
+								<th>
+									 Score
+								</th>
+								<th>
+									 Action
+								</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr class="odd gradeX">
+								<td>
+									1
+								</td>
+								<td>
+									 <img alt="{{ user.first_name }}" class="img-circle img-small" src="{{ user.extendeduser.get_profile_pic_url }}" />
+								</td>
+								<td>
+									Kewal Krishna
+								</td>
+								<td>
+									<span class="label label-sm label-success">
+									7 </span>
+								</td>
+								<td>
+									<a href="{% url 'evaluationapp:detail_analytics' %}" class="btn blue"> Analyze </a>
+								</td>
+							</tr>
+							<tr class="odd gradeX">
+								<td>
+									2
+								</td>
+								<td>
+									 <img alt="{{ user.first_name }}" class="img-circle img-small" src="{{ user.extendeduser.get_profile_pic_url }}" />
+								</td>
+								<td>
+									Ankit Goyal
+								</td>
+								<td>
+									<span class="label label-sm label-warning">
+									4 </span>
+								</td>
+								<td>
+									<a class="btn blue"> Analyze </a>
+								</td>
+							</tr>
+							<tr class="odd gradeX">
+								<td>
+									3
+								</td>
+								<td>
+									 <img alt="{{ user.first_name }}" class="img-circle img-small" src="{{ user.extendeduser.get_profile_pic_url }}" />
+								</td>
+								<td>
+									Jaganath
+								</td>
+								<td>
+									<span class="label label-sm label-warning">
+									4 </span>
+								</td>
+								<td>
+									<a class="btn blue"> Analyze </a>
+								</td>
+							</tr>
+							<tr class="odd gradeX">
+								<td>
+									1
+								</td>
+								<td>
+									 <img alt="{{ user.first_name }}" class="img-circle img-small" src="{{ user.extendeduser.get_profile_pic_url }}" />
+								</td>
+								<td>
+									Kewal Krishna
+								</td>
+								<td>
+									<span class="label label-sm label-success">
+									7 </span>
+								</td>
+								<td>
+									<a class="btn blue"> Analyze </a>
+								</td>
+							</tr>
+							<tr class="odd gradeX">
+								<td>
+									2
+								</td>
+								<td>
+									 <img alt="{{ user.first_name }}" class="img-circle img-small" src="{{ user.extendeduser.get_profile_pic_url }}" />
+								</td>
+								<td>
+									Ankit Goyal
+								</td>
+								<td>
+									<span class="label label-sm label-warning">
+									4 </span>
+								</td>
+								<td>
+									<a class="btn blue"> Analyze </a>
+								</td>
+							</tr>
+							<tr class="odd gradeX">
+								<td>
+									3
+								</td>
+								<td>
+									 <img alt="{{ user.first_name }}" class="img-circle img-small" src="{{ user.extendeduser.get_profile_pic_url }}" />
+								</td>
+								<td>
+									Jaganath
+								</td>
+								<td>
+									<span class="label label-sm label-warning">
+									4 </span>
+								</td>
+								<td>
+									<a class="btn blue"> Analyze </a>
+								</td>
+							</tr>
+							</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- END EXAMPLE TABLE PORTLET-->
 				</div>
 
+
+
+			<div class="row">
+				<div class="col-md-12 col-sm-12">
+					<!-- BEGIN PORTLET-->
+					<div class="portlet light">
+						<div class="portlet-title">
+							<div class="caption" style="color:#E26A6A !important;font-weight:bold;">
+								Evaluation Analysis
+							</div>
+							<div class="tools">
+								<a href="#portlet-config" data-toggle="modal" class="config">
+								</a>
+								<a href="javascript:;" class="reload">
+								</a>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div class="col-md-4">
+								<select id="form-select" name="selected-form" class="bs-select form-control">
+									<option value="Select">Select Teacher</option>
+									<option value="Select">Teacher 1</option>
+									<option value="Select">Teacher 2</option>
+									<option value="Select">Teacher 3</option>
+								</select>
+							</div>
+							<div class="col-md-4">
+								<select id="form-select" name="selected-form" class="bs-select form-control">
+									<option value="Select">Select Form</option>
+									<option value="Select">Form 1</option>
+									<option value="Select">Form 2</option>
+									<option value="Select">Form 3</option>
+								</select>
+							</div>
+							<div class="col-md-4">
+								<select id="form-select" name="selected-form" class="bs-select form-control">
+									<option value="Select">Select Class</option>
+									<option value="Select">V A</option>
+									<option value="Select">II C</option>
+									<option value="Select">VII D</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<a class="btn blue" href="{% url 'evaluationapp:detail_analytics' %}" style="margin-left:45%">Analyse</a> 
+					<!-- END PORTLET-->
+
+					<!-- BEGIN PORTLET-->
+					<div class="portlet light">
+						<div class="portlet-title">
+							<div class="caption" style="color:#E26A6A !important;font-weight:bold;">
+								Comparative Analysis
+							</div>
+							<div class="tools">
+								<a href="#portlet-config" data-toggle="modal" class="config">
+								</a>
+								<a href="javascript:;" class="reload">
+								</a>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div class="col-md-6">
+								<select id="form-select" name="selected-form" class="bs-select form-control">
+									<option value="Select">Select Teacher</option>
+									<option value="Select">Teacher 1</option>
+									<option value="Select">Teacher 2</option>
+									<option value="Select">Teacher 3</option>
+								</select>
+							</div>
+							<div class="col-md-6">
+								<select id="form-select" name="selected-form" class="bs-select form-control">
+									<option value="Select">Select Teacher</option>
+									<option value="Select">Teacher 1</option>
+									<option value="Select">Teacher 2</option>
+									<option value="Select">Teacher 3</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<a class="btn blue" href="{% url 'evaluationapp:teacher_analytics' %}" style="margin-left:45%">Analyse</a> 
+					<!-- END PORTLET-->
 				</div>
+
+			</div>
 			<!-- END PAGE CONTENT-->
 		</div>
 	</div>

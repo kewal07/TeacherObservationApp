@@ -103,6 +103,12 @@ License: You must have a valid license purchased only from themeforest(the above
 		            </a>
 		        </li>
 		        <li>
+		            <a href="{% url 'evaluationapp:grading_scheme_home' %}">
+		              <fa class="fa fa-bar-chart" data-placement="bottom" data-original-title="Evaluations"></fa>
+		              <span id="menu-items-text" class="title tooltips">Grading Schemes</span>
+		            </a>
+		        </li>
+		        <li>
 		            <a href="{% url 'evaluationapp:view_download' %}">
 		              <fa class="fa fa-cloud-download" data-placement="bottom" data-original-title="Export"></fa>
 		              <span id="menu-items-text" class="title tooltips">Download</span>
@@ -220,24 +226,43 @@ License: You must have a valid license purchased only from themeforest(the above
 					</ul>
 				</li>
 				<li>
-						<a href="javascript:;">
-						<fa class="fa fa-check-square-o"></fa>
-						<span class="title">Targets</span>
-						<span class="arrow "></span>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a href="{% url 'evaluationapp:assigntargettoteachers' %}">
-								<fa class="fa fa-plus"></fa>
-								Assign</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:target_review' %}">
-								<i class="fa fa-search"></i>
-								Review</a>
-							</li>
-						</ul>
-					</li>
+					<a href="javascript:;">
+					<fa class="fa fa-check-square-o"></fa>
+					<span class="title">Targets</span>
+					<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="{% url 'evaluationapp:assigntargettoteachers' %}">
+							<fa class="fa fa-plus"></fa>
+							Assign</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:target_review' %}">
+							<i class="fa fa-search"></i>
+							Review</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="javascript:;">
+					<fa class="fa fa-check-square-o"></fa>
+					<span class="title">Grading Schemes</span>
+					<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="{% url 'evaluationapp:grade_scheme_create' %}">
+							<fa class="fa fa-plus"></fa>
+							Create</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:grading_scheme_list' %}">
+							<i class="fa fa-search"></i>
+							Review</a>
+						</li>
+					</ul>
+				</li>
 				<li>
 					<a href="{% url 'evaluationapp:dashboard' user.extendeduser.school.school_name %}">
 						<i class="fa fa-bar-chart"></i>
