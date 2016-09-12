@@ -122,7 +122,7 @@ class Form(models.Model):
 	form_slug = models.SlugField(null=True,blank=True)
 	created_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 	thanks_msg = models.CharField(max_length=400,null=True,blank=True, default="Thank You for Completing the Assessment!!!")
-	grading_scheme = models.ForeignKey(GradeSchemes)
+	grading_scheme = models.ForeignKey(GradeSchemes, null=True, blank=True, default = None)
 	number_sections = models.IntegerField(blank=True,null=True,default=0)
 	is_active = models.BooleanField(default=1)
 	is_public = models.BooleanField(default=0)
@@ -242,7 +242,7 @@ class Evaluation(models.Model):
 
 class Vote(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
-	question = models.ForeignKey(Question)
+	question = models.ForeignKey(Question, null=True, blank=True, default = None)
 	choice = models.ForeignKey(Choice)
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	evaluation = models.ForeignKey(Evaluation,blank=True,null=True)
