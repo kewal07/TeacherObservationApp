@@ -233,6 +233,7 @@ class Evaluation(models.Model):
 	is_external = models.BooleanField(default=0)
 	is_surprised = models.BooleanField(default=0)
 	external_evaluator = models.ForeignKey(ExternalEvaluator,blank=True,null=True)
+	evaluatee_feedback = models.CharField(max_length=512,blank=True,null=True)
 	status = models.ForeignKey(Status)
 	score = models.FloatField(default=1.0)
 	grade = models.CharField(max_length=64,blank=True,null=True)

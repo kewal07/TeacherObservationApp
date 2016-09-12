@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseNotFound
 from django.views.generic import ListView,DetailView
-from evaluationapp.models import Grade,School,Subject,Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, TeacherClassSubject, SchoolGradeSection, EvaluationTargets, GradeSchemes, GradesRange
+from evaluationapp.models import Grade,School,Subject,Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, TeacherClassSubject, SchoolGradeSection, EvaluationTargets, GradeSchemes, GradesRange, Status
 from evaluationapp import evappconstants
 from django.contrib.auth import login
 from django.contrib.auth.models import User
@@ -984,17 +984,14 @@ class AcceptRejectView(DetailView):
 		action = get_data.get("action","")
 		evaluation = context["evaluation"]
 		if action == "accept":
-			ev_status = EvaluationStatus.objects.filter(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("submitted"))[0]
-			ev_status.evaluation_status_id = evappconstants.getEvStatus("accepted")
-			ev_status.save()
+			evaluation.status = evappconstants.getEvStatus("accepted")
+			evaluation.save()
 		if action == "reject":
-			ev_status = EvaluationStatus.objects.filter(evaluation_id=evaluation, evaluation_status_id=evappconstants.getEvStatus("submitted"))[0]
-			ev_status.evaluation_status_id = evappconstants.getEvStatus("rejected")
-			ev_status.save()
+			evaluation.status = evappconstants.getEvStatus("rejected")
+			evaluation.save()
 		if action == "archive":
-			ev_status = EvaluationStatus.objects.filter(evaluation_id=evaluation)[0]
-			ev_status.evaluation_status_id = evappconstants.getEvStatus("completed")
-			ev_status.save()
+			evaluation.status = evappconstants.getEvStatus("completed")
+			evaluation.save()
 		return context
 
 import xlwt
@@ -1035,7 +1032,7 @@ def excel_view(request):
 			try:
 				form = Form.objects.get(pk=form_id)
 				evaluation = Evaluation.objects.get(evaluation_form=form, evaluatee=teacher)
-				ev_status = EvaluationStatus.objects.filter(evaluation_id=evaluation)[0].evaluation_status_id.status_state
+				ev_status = evaluation.status.status_state
 			except:
 				return HttpResponseNotFound("This Evaluation has not been done yet")
 			# raw data sheet 
@@ -1255,21 +1252,25 @@ class AdminDashboard(ListView):
 		try:
 			data = {}
 			totalStudents = 0
+
 			schoolTeacherList = User.objects.filter(extendeduser__school=self.request.user.extendeduser.school)
 			evaluations = Evaluation.objects.filter(evaluator__in=schoolTeacherList)
 			completedEvaluations = Evaluation.objects.filter(status__status_id=4)
 			totalClasses = SchoolGradeSection.objects.filter(school_id=self.request.user.extendeduser.school_id)
+			
+			completedEvaluations = evaluations.filter(status_id=4)
+			numCompletedEvaluations = len(completedEvaluations)
 
-			for classes in totalClasses:
-				totalStudents += classes.number_boys
-				totalStudents += classes.number_girls
+			avgrating = 0.0
 
-			data['totalStudents'] = totalStudents
-			data['totalTeachers'] = len(schoolTeacherList)
+			for evaluation in completedEvaluations:
+				avgrating += (evaluation.score/(1.0*numCompletedEvaluations))
+
+			data['avgrating'] = avgrating
 			data['totalEvaluations'] = len(evaluations)
 
 			if not len(evaluations) == 0:
-				data['percentageCompletion'] = len(completedEvaluations)/len(evaluations)
+				data['percentageCompletion'] = (len(completedEvaluations)/len(evaluations))*100
 			else:
 				data['percentageCompletion'] = 0
 			return data
