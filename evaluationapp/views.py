@@ -982,12 +982,16 @@ class AcceptRejectView(DetailView):
 		context = super(AcceptRejectView, self).get_context_data(**kwargs)
 		get_data = self.request.GET
 		action = get_data.get("action","")
+		additionalComment = get_data.get("add_comment","");
+		
 		evaluation = context["evaluation"]
 		if action == "accept":
 			evaluation.status = evappconstants.getEvStatus("accepted")
+			evaluation.evaluatee_feedback += " "+additionalComment 
 			evaluation.save()
 		if action == "reject":
 			evaluation.status = evappconstants.getEvStatus("rejected")
+			evaluation.evaluatee_feedback += " "+additionalComment
 			evaluation.save()
 		if action == "archive":
 			evaluation.status = evappconstants.getEvStatus("completed")

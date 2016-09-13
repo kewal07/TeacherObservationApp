@@ -1,66 +1,30 @@
 var UIAlertDialogApi = function () {
 
-    var handleDialogs = function() {
-
-        $('#demo_1').click(function(){
-                bootbox.alert("You already have that book issued. Please visit your library to read it.");    
-            });
-            //end #demo_1
-
-            $('#demo_2').click(function(){
-                bootbox.alert("Book Issued Successfully. Please visit your library to read it.");
-            });
-            //end #demo_2
-        
-            $('#demo_3').click(function(){
-                bootbox.confirm("Are you sure you want to return this book?", function(result) {
-                  return result;
-                }); 
-            });
-            //end #demo_3
-
-            $('#demo_4').click(function(){
-                bootbox.prompt("What is your name?", function(result) {
+    var handleDialogs = function() {			
+			$('.accept-reject').click(function(){
+				var elemid = $(this)[0].id;
+				var action = elemid.split("---")[0];
+				var ev_id = elemid.split("---")[1];
+				bootbox.prompt("Additional Feedback", function(result) {
                     if (result === null) {
-                        alert("Prompt dismissed");
                     } else {
-                        alert("Hi <b>"+result+"</b>");
+						var arurl = "/accept-reject/"+ev_id+"?action="+action+"&add_comment="+result;
+						$.ajax(
+						{
+							type: 'GET',
+							url:arurl,
+							processData: false,
+							contentType: false,
+							success:function(obj)
+							{
+								// console.log("Hello");
+								// window.location = "{% url 'evaluationapp:my_evaluations' %}";
+								window.location = "/my-evaluations";
+							}
+						});
                     }
                 });
-            });
-            //end #demo_6
-
-            $('#demo_5').click(function(){
-                bootbox.dialog({
-                    message: "I am a custom dialog",
-                    title: "Custom title",
-                    buttons: {
-                      success: {
-                        label: "Success!",
-                        className: "green",
-                        callback: function() {
-                          alert("great success");
-                        }
-                      },
-                      danger: {
-                        label: "Danger!",
-                        className: "red",
-                        callback: function() {
-                          alert("uh oh, look out!");
-                        }
-                      },
-                      main: {
-                        label: "Click ME!",
-                        className: "blue",
-                        callback: function() {
-                          alert("Primary button");
-                        }
-                      }
-                    }
-                });
-            });
-            //end #demo_7
-
+			});
     }
 
     var handleAlerts = function() {
