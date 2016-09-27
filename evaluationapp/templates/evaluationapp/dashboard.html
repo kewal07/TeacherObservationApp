@@ -398,6 +398,27 @@ License: You must have a valid license purchased only from themeforest(the above
                             <!-- END PORTLET-->
                         </div>
                         <div class="col-md-6 col-sm-6">
+                            <!-- BEGIN PORTLET-->
+                            <div class="portlet box red">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-gift"></i>Rating Distribution
+                                    </div>
+                                    <div class="tools">
+                                        <a href="#portlet-config" data-toggle="modal" class="config">
+                                        </a>
+                                        <a href="javascript:;" class="reload">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div id="rating_distribution_chart" class="chart">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END PORTLET-->
+                        </div>
+                        <!-- <div class="col-md-6 col-sm-6">
                             <div class="portlet box blue">
                                 <div class="portlet-title">
                                     <div class="caption">
@@ -419,7 +440,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     </div>
                                 </div>
                             </div>    
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="row">
@@ -596,11 +617,60 @@ License: You must have a valid license purchased only from themeforest(the above
             var data = [];
             var series = 0;
 
+            var start_date = $('.daterangepicker_start_input input')[0].value;
+            var end_date = $('.daterangepicker_end_input input')[0].value;
+
+            $('.applyBtn').on('click', function(event){
+                start_date = $('.daterangepicker_start_input input')[0].value;
+                end_date = $('.daterangepicker_end_input input')[0].value;
+            });
+
+            function ratingDistributionChart(){
+                $.ajax({
+                    type: 'POST',
+                    url:'/get-rating-distribution',
+                    data:{'csrfmiddlewaretoken': "{{ csrf_token }}", 'start_date':start_date, 'end_date':end_date},
+                    success:function(response)
+                    {
+                        series = response.length;
+                        for(var i=0; i<response.length; i++){
+                            data[i] = { 
+                                label: response[i]['grade'],
+                                data: response[i]['count']
+                            }
+                        }
+                        if ($('#rating_distribution_chart').size() !== 0) {
+                            $.plot($("#rating_distribution_chart"), data, {
+                                series: {
+                                    pie: {
+                                        show: true,
+                                        radius: 1,
+                                        label: {
+                                            show: true,
+                                            radius: 3 / 4,
+                                            formatter: function(label, series) {
+                                                return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">' + label + '<br/>' + Math.round(series.percent) + '%</div>';
+                                            },
+                                            background: {
+                                                opacity: 0.5
+                                            }
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    show: false
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
             function evaluationStatusStats(){
                 $.ajax({
                     type: 'POST',
                     url:'/get-evaluation-status-stats',
-                    data:{'csrfmiddlewaretoken': "{{ csrf_token }}"},
+                    data:{'csrfmiddlewaretoken': "{{ csrf_token }}", 'start_date':start_date, 'end_date':end_date},
                     success:function(response)
                     {
                         series = response.length;
@@ -702,6 +772,7 @@ License: You must have a valid license purchased only from themeforest(the above
             }
             teacherDetailAnalysis();
             evaluationStatusStats();
+            ratingDistributionChart()
             averageRatingAnalysis();
         });
 </script>

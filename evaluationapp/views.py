@@ -725,6 +725,7 @@ def calculateEvaluationScore(id):
 			if int(avgScore) > range.minscore and int(avgScore) <= range.maxscore:
 				grade = range.grade
 
+		print(grade)
 		evaluation.grade = grade
 		evaluation.score = avgScore
 		evaluation.save()
@@ -987,11 +988,17 @@ class AcceptRejectView(DetailView):
 		evaluation = context["evaluation"]
 		if action == "accept":
 			evaluation.status = evappconstants.getEvStatus("accepted")
-			evaluation.evaluatee_feedback += " "+additionalComment 
+			if evaluation.evaluatee_feedback == None:
+				evaluation.evaluatee_feedback = additionalComment
+			else:
+				evaluation.evaluatee_feedback += " "+additionalComment 
 			evaluation.save()
 		if action == "reject":
 			evaluation.status = evappconstants.getEvStatus("rejected")
-			evaluation.evaluatee_feedback += " "+additionalComment
+			if evaluation.evaluatee_feedback == None:
+				evaluation.evaluatee_feedback = additionalComment
+			else:
+				evaluation.evaluatee_feedback += " "+additionalComment
 			evaluation.save()
 		if action == "archive":
 			evaluation.status = evappconstants.getEvStatus("completed")
@@ -1420,6 +1427,31 @@ def getEvaluationStatusStats(request):
 			temp['count'] = states['total']
 			evState.append(temp)
 		return HttpResponse(json.dumps(evState), content_type='application/json')
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
+		exc_type, exc_obj, tb = sys.exc_info()
+		f = tb.tb_frame
+		lineno = tb.tb_lineno
+		filename = f.f_code.co_filename
+		linecache.checkcache(filename)
+		line = linecache.getline(filename, lineno, f.f_globals)
+		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+def getRatingDistribution(request):
+	try:
+		evaluations = Evaluation.objects.filter(evaluator__extendeduser__school=request.user.extendeduser.school)
+		evaluationGrades = Evaluation.objects.all().values('grade').annotate(total=Count('grade'))
+		evGrade = []
+
+		for grades in evaluationGrades:
+			temp = {}
+			temp['grade'] = grades['grade']
+			temp['count'] = grades['total']
+			evGrade.append(temp)
+		return HttpResponse(json.dumps(evGrade), content_type='application/json')
 	except Exception as e:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

@@ -30,6 +30,7 @@ class MySignupForm(forms.Form):
 	last_name = forms.CharField(max_length=30, label='Last Name', widget=forms.TextInput(attrs={'placeholder': 'Last Name','name':'last_name','id':'signup-full-name'}))
 	gender = forms.ChoiceField(choices=[('F','Female'), ('M','Male'), ('D','NotSay')], label='Gender',widget=forms.Select(attrs={'class':'select2 form-control'}),required=True)
 	school = forms.ChoiceField([(i.id, i.school_name) for i in School.objects.all()], widget=forms.Select(attrs={'class':'select2 form-control'}),required=True)
+	#school = forms.ChoiceField([(1, 'TEST')], widget=forms.Select(attrs={'class':'select2 form-control'}),required=True)
 	address = forms.CharField( max_length=1024, label="Address", widget=forms.TextInput(attrs={'placeholder': 'Address'}),required=False)
 	city = forms.CharField( max_length=512, widget=forms.TextInput(attrs={'placeholder': 'City/Town'}),required=True)
 	country = forms.ChoiceField([i for i in countryAndStateList.countryList], widget=forms.Select(attrs={'id':'select2_sample4', 'class':'select2 form-control'}),required=True)
