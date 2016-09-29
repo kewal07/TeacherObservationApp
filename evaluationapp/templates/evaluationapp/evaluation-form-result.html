@@ -682,6 +682,9 @@ License: You must have a valid license purchased only from themeforest(the above
 			event.preventDefault();
 			window.location = "{% url 'evaluationapp:index' %}";
 		});
+
+		$('body').addClass("page-sidebar-closed");
+		$(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
 		
 		// $(".accept-reject").click(function(){
 		// 	var elemid = $(this)[0].id;

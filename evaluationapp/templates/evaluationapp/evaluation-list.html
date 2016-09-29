@@ -716,6 +716,10 @@ License: You must have a valid license purchased only from themeforest(the above
 			QuickSidebar.init(); // init quick sidebar
 			Demo.init(); // init demo features
 			TableManaged.init();
+
+			$('body').addClass("page-sidebar-closed");
+			$(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
+			
 			{% block document-ready-script %}
 			{% endblock %}
 

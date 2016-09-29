@@ -654,6 +654,9 @@ License: You must have a valid license purchased only from themeforest(the above
 		FormWizard.init();
 		ComponentsDropdowns.init();
 
+		$('body').addClass("page-sidebar-closed");
+		$(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
+
 		$('.remove').click(function(event){
 			event.preventDefault();
 			window.location = "{% url 'evaluationapp:index' %}";
