@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>My Title</title>
+        <style type="text/css">
+            @page {
+                size: {{ pagesize }};
+                margin: 1cm;
+                @frame footer {
+                    -pdf-frame-content: footerContent;
+                    bottom: 0cm;
+                    margin-left: 9cm;
+                    margin-right: 9cm;
+                    height: 1cm;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            {% for item in mylist %}
+                RENDER MY CONTENT
+            {% endfor %}
+        </div>
+        <div id="footerContent">
+            {%block page_foot%}
+                Page <pdf:pagenumber>
+            {%endblock%}
+        </div>
+    </body>
+</html>

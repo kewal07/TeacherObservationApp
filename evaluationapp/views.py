@@ -1618,3 +1618,13 @@ def deleteScheme(request):
 		line = linecache.getline(filename, lineno, f.f_globals)
 		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+class FormLevelReports(ListView):
+	template_name = 'evaluationapp/form-report-download.html'
+	context_object_name = 'data'
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		context['teachers'] = ExtendedUser.objects.filter(school=self.request.user.extendeduser.school).filter(is_admin=0)
+		context['forms'] = Form.objects.filter(is_public=1).filter(user__extendeduser__school=self.request.user.extendeduser.school)
+		return context

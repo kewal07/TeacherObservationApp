@@ -1,7 +1,7 @@
 from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
-from evaluationapp import views
+from evaluationapp import views, pdfviews
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
@@ -57,5 +57,7 @@ urlpatterns = [
     url(r'^get-rating-distribution$', login_required(views.getRatingDistribution), name='ratingDistribution'),
     url(r'^teachers-details-dashboard$', login_required(views.teacherDetailsDashboard), name='teacherDetailsTable'),
     url(r'^dashboard/(?P<school_name>[\w\-]+)$', login_required(views.AdminDashboard.as_view()), name='dashboard'),
-    url(r'^teacher/(?P<pk>\d+)/dashboard$', login_required(views.TeacherDashboard.as_view()), name='teacher_dashboard')
+    url(r'^teacher/(?P<pk>\d+)/dashboard$', login_required(views.TeacherDashboard.as_view()), name='teacher_dashboard'),
+    url(r'^download-form-reports$', login_required(views.FormLevelReports.as_view()), name='formlevelreports'),
+    url(r'^exportpdf',login_required(pdfviews.PDFView.as_view()),name="exportpdfformreport"),
 ]
