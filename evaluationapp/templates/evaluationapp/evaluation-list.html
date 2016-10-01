@@ -560,7 +560,7 @@ License: You must have a valid license purchased only from themeforest(the above
 												{% endif %}
 											</td>
 											<td>
-												{% elif request.path == '/evaluation-under-me' %}
+												{% if request.path == '/evaluation-under-me' %}
 													<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">Evaluate</button></a>
 												{% else %}
 													<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View Evaluation</button></a>
