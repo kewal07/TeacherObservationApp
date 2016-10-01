@@ -310,9 +310,6 @@ License: You must have a valid license purchased only from themeforest(the above
 	<div class="page-content-wrapper">
 		<div class="page-content">
 			<!-- BEGIN PAGE HEADER-->
-			<h3 class="page-title">
-			Edit Evaluation Form 
-			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
 					<li>
@@ -685,6 +682,9 @@ License: You must have a valid license purchased only from themeforest(the above
 			    };
 	  		});
 		})(jQuery);
+
+		$('body').addClass("page-sidebar-closed");
+		$(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
 	  	function add_another_choice(question_count_select,selectedType){
 			var question_choice_count = choice_count[question_count_select];
 	  		choice_list[question_count_select].push(question_choice_count);
@@ -766,41 +766,6 @@ License: You must have a valid license purchased only from themeforest(the above
 				// console.log(sectionNme,loopIndex,$(".question-section-option-"+loopIndex));
 			});
 
-			// $(function() {
-			// 	$( '#tab3' ).on( 'visibility', function() {
-			// 		var $element = $( this );
-			// 		var timer = setInterval( function() {
-			// 			if( $element.is( ':hidden' ) ) {
-			// 			} else {
-			// 				if(sectionUpdated === 0){
-			// 					var i;
-			// 					$('select#question-section-select').remove();
-			// 					noOfSections = $("select#section-select").val();
-			// 					for (i = 1; i <= parseInt(noOfSections); i++) { 
-			// 	   					$('select#question-section-select').append('<option value="'+$("#sectionName---"+i).val()+'">'+$("#sectionName---"+i).val()+'</option>');
-			// 	   				}
-			// 					sectionUpdated = 1;
-			// 				}
-			// 			}
-			// 			}, 600 );
-			// 		}).trigger( 'visibility' );
-			// });
-
-			// $('#tab3').on('show', function(){
-			// 	console.log('sections visible');
-			// });
-
-			// $(".button-next").click(function(){
-			// 	console.log('ankit');
-			// 	var i;
-			//   	noOfSections = $("select#section-select").val();
-			//   	console.log($('#question-section-select'));
-			//   	console.log(noOfSections);
-			//   	for (i = 1; i <= parseInt(noOfSections); i++) { 
-			//   		$('select#question-section-select').append('<option value="'+$("#sectionName---"+i).val()+'">'+$("#sectionName---"+i).val()+'</option>');
-			//   	}
-			//   	sectionUpdated = 1;
-			// });
 
 			// Add Question
 			$("#tab3").on("click",".add-q",function(){

@@ -378,9 +378,6 @@ License: You must have a valid license purchased only from themeforest(the above
 	<div class="page-content-wrapper">
 		<div class="page-content">
 			<!-- BEGIN PAGE HEADER-->
-			<h3 class="page-title">
-			Settings
-			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
 					<li>
@@ -498,6 +495,10 @@ License: You must have a valid license purchased only from themeforest(the above
 			Layout.init(); // init current layout
 			QuickSidebar.init(); // init quick sidebar
 			Demo.init(); // init demo features
+
+			$('body').addClass("page-sidebar-closed");
+			$(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
+
       });
 </script>
 <!-- END JAVASCRIPTS -->

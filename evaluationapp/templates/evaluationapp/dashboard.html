@@ -306,11 +306,13 @@ License: You must have a valid license purchased only from themeforest(the above
                     <div class="page-bar">
                         <ul class="page-breadcrumb">
                             <li>
+                                <i class="fa fa-home"></i>
                                 <a href="index.html">Home</a>
-                                <i class="fa fa-circle"></i>
+                                <i class="fa fa-angle-right"></i>
                             </li>
                             <li>
-                                <span>Dashboard</span>
+                                <i class="fa fa-bar-chart"></i>
+                                <a href="{% url 'evaluationapp:dashboard' user.extendeduser.school.school_name %}"> Dashboard </a>
                             </li>
                         </ul>
                         <div class="page-toolbar">
@@ -321,9 +323,9 @@ License: You must have a valid license purchased only from themeforest(the above
                     </div>
                     <!-- END PAGE BAR -->
                     <!-- BEGIN PAGE TITLE-->
-                    <h3 class="page-title"> Dashboard
+                    <!-- <h3 class="page-title"> Dashboard
                         <small>dashboard & statistics</small>
-                    </h3>
+                    </h3> -->
                     <!-- END PAGE TITLE-->
                     <!-- END PAGE HEADER-->
                     <!-- BEGIN DASHBOARD STATS 1-->
