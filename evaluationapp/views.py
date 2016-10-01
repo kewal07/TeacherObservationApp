@@ -1605,7 +1605,18 @@ class GradingSchemeDetailView(ListView):
 
 def deleteScheme(request):
 	try:
-		pass
+		schemeId = int(request.POST.get('schemeId',''))
+
+		if schemeId:
+			isGradingSchemeUsed = Form.objects.filter(grading_scheme_id=int(schemeId))
+			if(isGradingSchemeUsed):
+				return HttpResponse(json.dumps({'message':'Grading Scheme is used by some Forms!!!'}), content_type='application/json')
+			else:
+				scheme = GradeSchemes.objects.get(pk=int(pk))
+				scheme.delete()
+				return HttpResponse(json.dumps({'success':'Grading Scheme is successfully deleted!!!'}), content_type='application/json')
+		else:
+			return HttpResponse(json.dumps({'message':'Error Occured while deleting Scheme!!!'}), content_type='application/json')
 	except Exception as e:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

@@ -526,7 +526,7 @@ License: You must have a valid license purchased only from themeforest(the above
 											<a href="{% url 'evaluationapp:view_scheme' scheme.id %}"><button type="button" class="btn btn-primary"><i class="fa fa-arrow-right" aria-hidden="true" style="color:white;"></i></button></a>
 										</td>
 										<td>
-											<a href="{% url 'evaluationapp:delete_scheme' scheme.id %}"><button type="button" class="btn btn-primary"><i class="fa fa-trash" aria-hidden="true" style="color:white;"></i></button></a>
+											<button type="button" class="btn btn-primary delete-scheme" id="scheme---{{scheme.id}}"><i class="fa fa-trash" aria-hidden="true" style="color:white;"></i></button>
 										</td>
 									</tr>
 								{% endfor %}
@@ -598,6 +598,28 @@ License: You must have a valid license purchased only from themeforest(the above
 				}
 			});
 	});
+
+	$('.delete-scheme').on('click', function(event){
+		var schemeId = $(this).attr('id').split('---')[1];
+		$.ajax({
+				type: 'POST',
+				url:"delete-scheme",
+				data: {'schemeId':schemeId, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+				success:function(response)
+				{
+					if(response['success'] === undefined){
+						bootbox.alert('<i class="fa fa-exclamation-triangle" aria-hidden="true" style="color:red;"></i>' + "    " +response['message']);
+					} else {
+						bootbox.alert('<i class="fa fa-check-circle" aria-hidden="true" style="color:green;"></i>' + "    " +response['success']);
+					}
+				},
+				error:function(response){
+					console.log(response);
+					bootbox.alert(response['message']);
+				}
+			});
+
+	})
       jQuery(document).ready(function() {    
          	Metronic.init(); // init metronic core components
 			Layout.init(); // init current layout
