@@ -504,7 +504,7 @@ License: You must have a valid license purchased only from themeforest(the above
 											Evaluatee Name
 										</th>
 										<th>
-											 Scheduled On
+											 Complete By
 										</th>
 										<th>
 											 Completed On
@@ -534,11 +534,11 @@ License: You must have a valid license purchased only from themeforest(the above
 											</td>
 											{% if evaluation.dateCrossed %}
 											<td style="color:red;">
-												{{ evaluation.scheduled_at }}
+												{{ evaluation.last_day }}
 											</td>
 											{% else %}
 											<td>
-												{{ evaluation.scheduled_at }}
+												{{ evaluation.last_day }}
 											</td>
 											{% endif %}
 											<td>
@@ -582,7 +582,7 @@ License: You must have a valid license purchased only from themeforest(the above
 											{% endif %}
 										</th>
 										<th>
-											 Scheduled On
+											 Complete By
 										</th>
 										<th>
 											 Completed On
@@ -613,11 +613,11 @@ License: You must have a valid license purchased only from themeforest(the above
 											</td>
 											{% if evaluation.dateCrossed %}
 												<td style="color:red;">
-													{{ evaluation.scheduled_at }}
+													{{ evaluation.last_day }}
 												</td>
 											{% else %}
 												<td>
-													{{ evaluation.scheduled_at }}
+													{{ evaluation.last_day }}
 												</td>
 											{% endif %}
 											<td>

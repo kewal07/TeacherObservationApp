@@ -469,6 +469,8 @@ License: You must have a valid license purchased only from themeforest(the above
 			QuickSidebar.init(); // init quick sidebar
 			Demo.init(); // init demo features
 			TableManaged.init();
+			$('body').addClass("page-sidebar-closed");
+			$(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
 			$('.make-switch').on('switchChange.bootstrapSwitch', function(event, state) {
 				var form_param = $(this)[0].id.split("---");
 				var form_id = form_param[0];
