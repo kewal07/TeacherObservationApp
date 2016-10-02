@@ -948,10 +948,14 @@ def sendMails(action, data_dict):
 		evaluation = Evaluation.objects.get(id=data_dict.get("id"))
 		offset = data_dict.get("offset",0)
 		offset = int(offset)
+		print(evaluation.last_day)
 		lastDayTime = evaluation.last_day - datetime.timedelta(minutes=offset)
+		print(lastDayTime)
+
 		evaluation_url = settings.DOMAIN_URL + reverse('evaluationapp:evaluation_form_vote', kwargs={'pk':evaluation.evaluation_form.id, 'form_slug':evaluation.evaluation_form.form_slug, 'evaluation_id':evaluation.id})
+		print("Hi %s,\n\nPlease complete the evaluation for %s using %s before %s"%(evaluation.evaluator.first_name,evaluation.evaluatee.first_name,evaluation_url,lastDayTime))
 		message = "Hi %s,\n\nPlease complete the evaluation for %s using %s before %s"%(evaluation.evaluator.first_name,evaluation.evaluatee.first_name,evaluation_url,lastDayTime)
-		to_mail = ['kewal07@gmail.com',evaluation.evaluator.email]
+		to_mail = ['goyal.ankit.049@gmail.com',evaluation.evaluator.email]
 	elif action == "evaluatee":
 		subject = "You are being evaluated"
 		evaluation = Evaluation.objects.get(id=data_dict.get("id"))
