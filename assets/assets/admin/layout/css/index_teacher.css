@@ -53,3 +53,6 @@ textarea.distraction-free-text{
     width:87%;
     display: block;
 }
+#pdf-body{
+    width:750px;
+}

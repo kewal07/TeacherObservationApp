@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from login.models import ExtendedUser
 import simplejson as json
 import datetime
+from django.utils import timezone
 import os,sys,linecache
 from django.conf import settings
 from collections import OrderedDict as SortedDict
@@ -17,6 +18,7 @@ from django.core.urlresolvers import resolve,reverse
 import requests
 import uuid
 import base64
+from django.template.loader import render_to_string
 
 class TestView(ListView):
 	template_name = 'evaluationapp/test.html'
@@ -1643,3 +1645,166 @@ class FormLevelReports(ListView):
 		context['teachers'] = ExtendedUser.objects.filter(school=self.request.user.extendeduser.school).filter(is_admin=0)
 		context['forms'] = Form.objects.filter(is_public=1).filter(user__extendeduser__school=self.request.user.extendeduser.school)
 		return context
+
+	def post(self,request,*args,**kwargs):
+		try:
+			post_data = request.POST
+			errors = {}
+			evaluatee_id = int(post_data.get('teacher-select',0))
+			form_id = int(post_data.get('form-select',0))
+			fromdate = post_data.get('from')
+			todate = post_data.get('to')
+			fd = None
+			td = None
+			if not fromdate == '' or not fromdate == None:
+				fd = timezone.make_aware(datetime.datetime.strptime(fromdate, '%m/%d/%Y'), timezone.get_default_timezone())
+			else:
+				errors['from'] = 'Invalid from date'
+			if not todate == '' or not todate == None:
+				td = timezone.make_aware(datetime.datetime.strptime(todate, '%m/%d/%Y'), timezone.get_default_timezone())
+			else:
+				errors['to'] = 'Invalid to date'
+			if errors:
+				return HttpResponse(json.dumps(errors), content_type='application/json')
+			evaluations = Evaluation.objects.filter(evaluatee_id=evaluatee_id,evaluation_form_id=form_id)
+			questions = FormQuestion.objects.filter(form_id=form_id).values('question')
+			evs = {}
+			ev_list = []
+			evaluatee_name = ""
+			form_name = ""
+			for ev in evaluations:
+				ret = {}
+				evaluator_id = ev.evaluator_id
+				evaluator_name = ev.evaluator.first_name + " " + ev.evaluator.last_name
+				evaluatee_name = ev.evaluatee.first_name + " " + ev.evaluatee.last_name
+				form_name = ev.evaluation_form.form_name
+				ev_date = FormVoted.objects.filter(evaluation_id=ev.id, user=ev.evaluator)
+				if ev_date:
+					ev_date = ev_date[0].created_at
+					if ev_date > fd and ev_date < td:
+						qv = []
+						for q in questions:
+							v = Vote.objects.filter(evaluation=ev, user_id=evaluator_id)
+							if v:
+								qv.append([v[0].question.question_text, v[0].choice.choice_text])
+							else:
+								v = VoteText.objects.filter(evaluation=ev, user_id=evaluator_id)
+								if v:
+									qv.append([v[0].question.question_text, v[0].answer_text])
+						ret['ev']=evaluator_name
+						ret['dt']=ev_date
+						ret['qv']=qv
+						ev_list.append(ret)
+			evs["evaluations"] = ev_list
+			evs['eve']=evaluatee_name
+			evs['fn']=form_name
+			table = get_pdf_html(evs)
+			return HttpResponse(json.dumps({'table':table}), content_type='application/json')
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+
+
+class PDFView(ListView):
+	template_name = 'pdftemplates/form_wise_pdf_report.html'
+	context_object_name = 'data'
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		context['teachers'] = ExtendedUser.objects.filter(school=self.request.user.extendeduser.school).filter(is_admin=0)
+		context['forms'] = Form.objects.filter(is_public=1).filter(user__extendeduser__school=self.request.user.extendeduser.school)
+		return context
+
+	def post(self,request,*args,**kwargs):
+		try:
+			post_data = request.POST
+			errors = {}
+			evaluatee_id = int(post_data.get('teacher-select',0))
+			form_id = int(post_data.get('form-select',0))
+			fromdate = post_data.get('from')
+			todate = post_data.get('to')
+			fd = None
+			td = None
+			if not fromdate == '' or not fromdate == None:
+				fd = timezone.make_aware(datetime.datetime.strptime(fromdate, '%m/%d/%Y'), timezone.get_default_timezone())
+			else:
+				errors['from'] = 'Invalid from date'
+			if not todate == '' or not todate == None:
+				td = timezone.make_aware(datetime.datetime.strptime(todate, '%m/%d/%Y'), timezone.get_default_timezone())
+			else:
+				errors['to'] = 'Invalid to date'
+			if errors:
+				return HttpResponse(json.dumps(errors), content_type='application/json')
+			evaluations = Evaluation.objects.filter(evaluatee_id=evaluatee_id,evaluation_form_id=form_id)
+			questions = FormQuestion.objects.filter(form_id=form_id).values('question')
+			evs = {}
+			ev_list = []
+			evaluatee_name = ""
+			form_name = ""
+			for ev in evaluations:
+				ret = {}
+				evaluator_id = ev.evaluator_id
+				evaluator_name = ev.evaluator.first_name + " " + ev.evaluator.last_name
+				evaluatee_name = ev.evaluatee.first_name + " " + ev.evaluatee.last_name
+				form_name = ev.evaluation_form.form_name
+				ev_date = FormVoted.objects.filter(evaluation_id=ev.id, user=ev.evaluator)
+				if ev_date:
+					ev_date = ev_date[0].created_at
+					if ev_date > fd and ev_date < td:
+						qv = []
+						for q in questions:
+							v = Vote.objects.filter(evaluation=ev, user_id=evaluator_id)
+							if v:
+								qv.append([v[0].question.question_text, v[0].choice.choice_text])
+							else:
+								v = VoteText.objects.filter(evaluation=ev, user_id=evaluator_id)
+								if v:
+									qv.append([v[0].question.question_text, v[0].answer_text])
+						ret['ev']=evaluator_name
+						ret['dt']=ev_date
+						ret['qv']=qv
+						ev_list.append(ret)
+			evs["evaluations"] = ev_list
+			evs['eve']=evaluatee_name
+			evs['fn']=form_name
+			table = get_pdf_html(evs)
+			print(table)
+			response = HttpResponse()
+			response.write(table)
+			return response
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+
+
+
+def get_pdf_html(extra_context_data = {}):
+	try:
+		template_name = "form_wise_pdf_report.html"
+		context = {}
+		extra_context_data['domain_url'] = settings.DOMAIN_URL
+		for key in extra_context_data:
+			context[key] = extra_context_data[key]
+		print(context)
+		html = render_to_string(template_name, context)
+		return html
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
