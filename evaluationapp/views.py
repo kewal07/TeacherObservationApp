@@ -490,7 +490,6 @@ class FormPreviewView(DetailView):
 		context['no_of_sections'] = len(questions_section_dict)
 		return context
 
-
 class EvaluationFormVoteView(DetailView):
 	model = Form
 
@@ -925,8 +924,7 @@ class EvaluationListView(ListView):
 			context["evaluations"] = evr
 			context["nav_val"] = "Review Evaluations"
 		elif path.endswith("evaluation-archive"):
-			completed_evaluations = EvaluationStatus.objects.filter(evaluation_status_id__in=completed_status).values_list('evaluation_id', flat=True)
-			ce = Evaluation.objects.filter(id__in=completed_evaluations)
+			ce = Evaluation.objects.filter(status__status_state='Completed')
 			context["evaluations"] = ce
 			context["nav_val"] = "Archived Evaluations"
 		return context
@@ -1712,7 +1710,6 @@ class FormLevelReports(ListView):
 			line = linecache.getline(filename, lineno, f.f_globals)
 			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 
-
 class PDFView(ListView):
 	template_name = 'pdftemplates/form_wise_pdf_report.html'
 	context_object_name = 'data'
@@ -1776,7 +1773,6 @@ class PDFView(ListView):
 			evs['eve']=evaluatee_name
 			evs['fn']=form_name
 			table = get_pdf_html(evs)
-			print(table)
 			response = HttpResponse()
 			response.write(table)
 			return response
@@ -1792,8 +1788,6 @@ class PDFView(ListView):
 			line = linecache.getline(filename, lineno, f.f_globals)
 			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 
-
-
 def get_pdf_html(extra_context_data = {}):
 	try:
 		template_name = "form_wise_pdf_report.html"
@@ -1801,7 +1795,6 @@ def get_pdf_html(extra_context_data = {}):
 		extra_context_data['domain_url'] = settings.DOMAIN_URL
 		for key in extra_context_data:
 			context[key] = extra_context_data[key]
-		print(context)
 		html = render_to_string(template_name, context)
 		return html
 	except Exception as e:
