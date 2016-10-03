@@ -270,7 +270,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					</li>
 					<li>
 						<a href="javascript:;">
-						<fa class="fa fa-check-square-o"></fa>
+						<fa class="fa fa-dot-circle-o"></fa>
 						<span class="title">Targets</span>
 						<span class="arrow "></span>
 						</a>
@@ -288,47 +288,71 @@ License: You must have a valid license purchased only from themeforest(the above
 						</ul>
 					</li>
 					<li>
-						<a href="javascript:;">
-						<fa class="fa fa-check-square-o"></fa>
-						<span class="title">Grading Schemes</span>
-						<span class="arrow "></span>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a href="{% url 'evaluationapp:grade_scheme_create' %}">
-								<fa class="fa fa-plus"></fa>
-								Create</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:grading_scheme_list' %}">
-								<i class="fa fa-search"></i>
-								Review</a>
-							</li>
-						</ul>
-					</li>
-					<li>
 						<a href="{% url 'evaluationapp:index' %}">
 							<i class="fa fa-bar-chart"></i>
 							<span class="title">Analytics</span>
 						</a>
 					</li>
-					<li>
-						<a href="{% url 'evaluationapp:index' %}">
-							<i class="fa fa-cloud-upload"></i>
-							<span class="title">Uploads</span>
-						</a>
-					</li>
-					<li>
-						<a href="{% url 'evaluationapp:view_download' %}">
-							<i class="fa fa-cloud-download"></i>
-							<span class="title">Downloads</span>
-						</a>
-					</li>
-					<li class="last ">
-						<a href="{% url 'evaluationapp:view_settings' %}">
+					<li class="last">
+					<a href="{% url 'evaluationapp:view_settings' %}">
 						<i class="fa fa-gear"></i>
 						<span class="title">Settings</span>
-					</li>
+						<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="javascript:;">
+							<fa class="fa fa-building-o"></fa>
+							<span class="title">Grading Schemes</span>
+							<span class="arrow "></span>
+							</a>
+							<ul class="sub-menu">
+								<li>
+									<a href="{% url 'evaluationapp:grade_scheme_create' %}">
+									<fa class="fa fa-plus"></fa>
+									Create</a>
+								</li>
+								<li>
+									<a href="{% url 'evaluationapp:grading_scheme_list' %}">
+									<i class="fa fa-search"></i>
+									Review</a>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:index' %}">
+								<i class="fa fa-cloud-upload"></i>
+								<span class="title">Uploads</span>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:view_download' %}">
+								<i class="fa fa-cloud-download"></i>
+								<span class="title">Downloads</span>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:school_view' %}">
+							<fa class="fa fa-graduation-cap"></fa>
+							School</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:classes_view' %}">
+							<i class="fa fa-list-ol"></i>
+							Class</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:subjects_view' %}">
+							<i class="fa fa-book"></i>
+							Subjects</a>
+						</li>
+						<li>
+							<a href="{% url 'login:view_change_password' %}">
+							<i class="fa fa-key"></i>
+							Change Password</a>
+						</li>
+					</ul>
+				</li>
 				</ul>
 			{% else %}
 				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
@@ -391,9 +415,45 @@ License: You must have a valid license purchased only from themeforest(the above
 			<div class="tiles">
 				{% if user.extendeduser.is_admin %}
 					<div class="tile double-down bg-blue-hoki">
+						<a href="{% url 'evaluationapp:grading_scheme_home' %}">
+							<div class="tile-body">
+								<i class="fa fa-building-o"></i>
+							</div>
+							<div class="tile-object">
+								<div class="name">
+									 Grading Schemes
+								</div>
+							</div>
+						</a>
+					</div>
+					<div class="tile double-down bg-green-seagreen">
+						<a href="{% url 'evaluationapp:index' %}">
+							<div class="tile-body">
+								<i class="fa fa-cloud-upload"></i>
+							</div>
+							<div class="tile-object">
+								<div class="name">
+									 Uploads
+								</div>
+							</div>
+						</a>
+					</div>
+					<div class="tile double-down bg-red-flamingo">
+						<a href="{% url 'evaluationapp:view_download' %}">
+							<div class="tile-body">
+								<i class="fa fa-cloud-download"></i>
+							</div>
+							<div class="tile-object">
+								<div class="name">
+									 Downloads
+								</div>
+							</div>
+						</a>
+					</div>
+					<div class="tile double-down bg-yellow-casablanca">
 						<a href="{% url 'evaluationapp:school_view' %}">
 							<div class="tile-body">
-								<i class="fa fa-check-square-o"></i>
+								<i class="fa fa-graduation-cap"></i>
 							</div>
 							<div class="tile-object">
 								<div class="name">
@@ -405,7 +465,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					<div class="tile double bg-red-sunglo">
 						<a href="{% url 'evaluationapp:classes_view' %}">
 							<div class="tile-body">
-								<i class="fa fa-file-text-o"></i>
+								<i class="fa fa-list-ol"></i>
 							</div>
 							<div class="tile-object">
 								<div class="name">
@@ -414,10 +474,10 @@ License: You must have a valid license purchased only from themeforest(the above
 							</div>
 						</a>
 					</div>
-					<div class="tile bg-yellow-saffron">
+					<div class="tile bg-purple-studio">
 						<a href="{% url 'evaluationapp:subjects_view' %}">
 							<div class="tile-body">
-								<i class="fa fa-bar-chart-o"></i>
+								<i class="fa fa-book"></i>
 							</div>
 							<div class="tile-object">
 								<div class="name">
@@ -426,10 +486,10 @@ License: You must have a valid license purchased only from themeforest(the above
 							</div>
 						</a>
 					</div>
-					<div class="tile bg-blue">
+					<div class="tile bg-grey-cascade">
 						<a href="{% url 'login:view_change_password' %}">
 							<div class="tile-body">
-								<i class="fa fa-bar-chart-o"></i>
+								<i class="fa fa-key"></i>
 							</div>
 							<div class="tile-object">
 								<div class="name">
@@ -439,10 +499,10 @@ License: You must have a valid license purchased only from themeforest(the above
 						</a>
 					</div>
 				{% else %}
-					<div class="tile bg-blue">
+					<div class="tile bg-blue-madison">
 						<a href="{% url 'login:view_change_password' %}">
 							<div class="tile-body">
-								<i class="fa fa-bar-chart-o"></i>
+								<i class="fa fa-key"></i>
 							</div>
 							<div class="tile-object">
 								<div class="name">
