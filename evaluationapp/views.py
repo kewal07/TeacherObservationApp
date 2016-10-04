@@ -337,7 +337,7 @@ def createForm(form_id, form_name, form_desc, curtime, user, selectedCats, submi
 			form.thanks_msg = submit_text
 			form.number_sections = fSection
 		else:
-			form = Form( user=user, pub_date=curtime, form_name=form_name, description=form_desc, thanks_msg=submit_text, grading_scheme=grading_scheme, number_sections=fSection)
+			form = Form( user=user, pub_date=curtime, form_name=form_name, description=form_desc, thanks_msg=submit_text, grading_scheme=grading_scheme, number_sections=fSection, is_public=1)
 		form.save()
 		if form_id > 0:
 			for fcat in form.formwithcategory_set.all():
@@ -1606,6 +1606,77 @@ class GradingSchemeDetailView(ListView):
 		ranges = GradesRange.objects.filter(schemes__id=schemeId)
 		context['ranges'] = ranges
 		return context
+
+class GradingSchemeEditView(ListView):
+	template_name = 'evaluationapp/gradingscheme-edit.html'
+	context_object_name = 'data'
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		schemeId = int(self.request.path.split('/')[2])
+		scheme = GradeSchemes.objects.get(pk=schemeId)
+		ranges = GradesRange.objects.filter(schemes__id=schemeId)
+
+		for rang in ranges:
+			if rang.grade == 'O':
+				context['O_max'] = rang.maxscore
+				context['O_min'] = rang.minscore
+			elif rang.grade == 'E':
+				context['E_max'] = rang.maxscore
+				context['E_min'] = rang.minscore
+			elif rang.grade == 'A':
+				context['A_max'] = rang.maxscore
+				context['A_min'] = rang.minscore
+			elif rang.grade == 'B':
+				context['B_max'] = rang.maxscore
+				context['B_min'] = rang.minscore
+			elif rang.grade == 'C':
+				context['C_max'] = rang.maxscore
+				context['C_min'] = rang.minscore	
+		context['name'] = scheme.scheme_name
+		context['schemeId'] = schemeId
+		return context
+
+	def post(self, request, *args, **kwargs):
+		try:
+			schemeId = kwargs['pk']
+			scheme = GradeSchemes.objects.get(pk=int(schemeId))
+			ranges = GradesRange.objects.filter(schemes__id=schemeId)
+
+			scheme.name = request.POST.get('scheme-name')
+			for rang in ranges:
+				if rang.grade == 'O':
+					rang.maxscore = request.POST.get('grade_1_max')
+					rang.minscore = request.POST.get('grade_1_min')
+				elif rang.grade == 'E':
+					rang.maxscore = request.POST.get('grade_2_max')
+					rang.minscore = request.POST.get('grade_2_min')
+				elif rang.grade == 'A':
+					rang.maxscore = request.POST.get('grade_3_max')
+					rang.minscore = request.POST.get('grade_3_min')
+				elif rang.grade == 'B':
+					rang.maxscore = request.POST.get('grade_4_max')
+					rang.minscore = request.POST.get('grade_4_min')
+				elif rang.grade == 'C':
+					rang.maxscore = request.POST.get('grade_5_max')
+					rang.minscore = request.POST.get('grade_5_min')
+				if not rang.maxscore and not rang.minscore:
+					return HttpResponse(json.dumps({'error':'Invalid Value !!!'}), content_type='application/json')
+				rang.save()
+			scheme.save()
+			return HttpResponse(json.dumps({'success':'Grading Scheme Updated Successfully !!!'}), content_type='application/json')
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+			exc_type, exc_obj, tb = sys.exc_info()
+			f = tb.tb_frame
+			lineno = tb.tb_lineno
+			filename = f.f_code.co_filename
+			linecache.checkcache(filename)
+			line = linecache.getline(filename, lineno, f.f_globals)
+			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+			return HttpResponseNotFound("Some error occured!!!",content_type="application/json")
 
 def deleteScheme(request):
 	try:

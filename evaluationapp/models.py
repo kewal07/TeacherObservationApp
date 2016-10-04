@@ -112,7 +112,7 @@ class GradesRange(models.Model):
 	maxscore = models.IntegerField(default=100)
 	minscore = models.IntegerField(default=100)
 	def __str__(self):
-		return self.grade+'__'+self.maxscore+'__'+self.minscore
+		return self.grade+'__'+str(self.maxscore)+'__'+str(self.minscore)
 
 class Form(models.Model):
 	form_name = models.CharField(max_length=200)

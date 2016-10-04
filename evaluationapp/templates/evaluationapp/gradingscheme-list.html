@@ -506,6 +506,9 @@ License: You must have a valid license purchased only from themeforest(the above
 										Review
 									</th>
 									<th>
+										Edit
+									</th>
+									<th>
 										Delete
 									</th>
 								</tr>
@@ -523,7 +526,10 @@ License: You must have a valid license purchased only from themeforest(the above
 											{{ scheme.created_on }}
 										</td>
 										<td>
-											<a href="{% url 'evaluationapp:view_scheme' scheme.id %}"><button type="button" class="btn btn-primary"><i class="fa fa-arrow-right" aria-hidden="true" style="color:white;"></i></button></a>
+											<a href="{% url 'evaluationapp:view_scheme' scheme.id %}"><button type="button" class="btn btn-primary"><i class="fa fa-chevron-right" aria-hidden="true" style="color:white;"></i></button></a>
+										</td>
+										<td>
+											<a href="{% url 'evaluationapp:edit_scheme' scheme.id %}"><button type="button" class="btn btn-primary"><i class="fa fa-edit" aria-hidden="true" style="color:white;"></i></button></a>
 										</td>
 										<td>
 											<button type="button" class="btn btn-primary delete-scheme" id="scheme---{{scheme.id}}"><i class="fa fa-trash" aria-hidden="true" style="color:white;"></i></button>

@@ -51,6 +51,7 @@ urlpatterns = [
     url(r'^grading-scheme$', login_required(views.GradingScheme.as_view()), name='grade_scheme_create'),
     url(r'^grading-scheme-list$', login_required(views.GradingSchemeListView.as_view()), name='grading_scheme_list'),
     url(r'^view-scheme/(?P<pk>\d+)$',login_required(views.GradingSchemeDetailView.as_view()),name='view_scheme'),
+    url(r'^edit-scheme/(?P<pk>\d+)$',login_required(views.GradingSchemeEditView.as_view()),name='edit_scheme'),
     url(r'^delete-scheme$',login_required(views.deleteScheme),name='delete_scheme'),
     url(r'^review-targets$', login_required(views.ReviewTargets.as_view()), name='target_review'),
     url(r'^get-evaluation-status-stats$', login_required(views.getEvaluationStatusStats), name='evaluationStatusStats'),
