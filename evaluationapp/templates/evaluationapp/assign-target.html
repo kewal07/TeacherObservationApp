@@ -565,7 +565,9 @@ License: You must have a valid license purchased only from themeforest(the above
 		QuickSidebar.init(); // init quick sidebar
 		Demo.init(); // init demo features
 		ComponentsPickers.init();
-	});   
+	});
+	$('body').addClass("page-sidebar-closed");
+	$(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
 	$('.surveySubmit').click(function(event){
 		event.preventdefault();
 		var spinner = new Spinner(opts).spin(target);

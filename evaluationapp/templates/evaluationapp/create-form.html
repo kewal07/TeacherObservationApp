@@ -462,7 +462,8 @@ License: You must have a valid license purchased only from themeforest(the above
 													</div>
 												</div>
 												<div class="form-group">
-													<label class="col-md-3 control-label">Grading Scheme</label>
+													<label class="col-md-3 control-label">Grading Scheme <span class="required">
+													* </span></label>
 													<div class="col-md-4">
 														<select id="scheme-select" name="grading-scheme" class="form-control">
 														{% for scheme in data.grading_schemes %}
@@ -517,7 +518,6 @@ License: You must have a valid license purchased only from themeforest(the above
 												</div>
 											</div>
 											<div class="tab-pane" id="tab3">
-												<h3 class="block">Add Questions</h3>
 												<p class="add-q btn blue"><i class="fa fa-plus-circle"></i> Add Question</p>
 											</div>
 										</div>
@@ -734,7 +734,6 @@ License: You must have a valid license purchased only from themeforest(the above
 			$("#tab3").on("change",".question-type-select",function(){
 				var select_elem_id = $(this)[0].id;
 		  		var question_count_select = select_elem_id.replace("question-type-select---","");
-		  		console.log(question_count_select);
 		  		choice_count[question_count_select] = 1;
 		  		choice_list[question_count_select] = [];
 		  		var question_choice_count = choice_count[question_count_select];
