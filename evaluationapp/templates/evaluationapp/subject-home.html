@@ -571,31 +571,29 @@ License: You must have a valid license purchased only from themeforest(the above
 										</tr>
 									</thead>
 									<tbody>
-										{% for school in data.school %}
-											<tr class="odd gradeX">
-												<td>
-													{{ school.school_name }}
-												</td>
-												<td>
-													{{ school.number_students }}
-												</td>
-												<td>
-													{{ school.number_teachers }}
-												</td>
-												<td>
-													{{ school.number_emirati }}
-												</td>
-												<td>
-													{{ school.number_nonemirati }}
-												</td>
-												<td>
-													{{ school.number_boys }}
-												</td>
-												<td>
-													{{ school.number_girls }}
-												</td>
-											</tr>
-										{% endfor %}
+										<tr class="odd gradeX">
+											<td>
+												{{ data.school.school_name }}
+											</td>
+											<td>
+												{{ data.school.number_students }}
+											</td>
+											<td>
+												{{ data.school.number_teachers }}
+											</td>
+											<td>
+												{{ data.school.number_emirati }}
+											</td>
+											<td>
+												{{ data.school.number_nonemirati }}
+											</td>
+											<td>
+												{{ data.school.number_boys }}
+											</td>
+											<td>
+												{{ data.school.number_girls }}
+											</td>
+										</tr>
 									</tbody>
 								</table>
 							{% endif %}

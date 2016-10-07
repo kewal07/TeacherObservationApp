@@ -46,6 +46,7 @@ urlpatterns = [
 	url(r'^termsofservice', TemplateView.as_view(template_name='termsofservice.html'), name='termsofservice'),
     url(r'^privacypolicy', TemplateView.as_view(template_name='privacypolicy.html'), name='privacypolicy'),
     url(r'^getteachersubjects_in_section$', login_required(views.getteachersubjects_in_section), name='getteachersubjectsection'),
+    url(r'^getevaluation_of_teacher$', login_required(views.getevaluation_of_teacher), name='getevaluationsofteacher'),
     url(r'^assign-targets$', login_required(views.AssignTargets.as_view()), name='assigntargettoteachers'),
     url(r'^grading-home$', login_required(views.GradingHomeView.as_view()), name='grading_scheme_home'),
     url(r'^grading-scheme$', login_required(views.GradingScheme.as_view()), name='grade_scheme_create'),
@@ -60,5 +61,6 @@ urlpatterns = [
     url(r'^dashboard/(?P<school_name>[\w\-]+)$', login_required(views.AdminDashboard.as_view()), name='dashboard'),
     url(r'^teacher/(?P<pk>\d+)/dashboard$', login_required(views.TeacherDashboard.as_view()), name='teacher_dashboard'),
     url(r'^download-form-reports$', login_required(views.FormLevelReports.as_view()), name='formlevelreports'),
+    url(r'^download-evaluation-reports$', login_required(views.EvaluationLevelReports.as_view()), name='evaluationlevelreports'),
     url(r'^exportpdf',login_required(views.PDFView.as_view()),name="exportpdfformreport"),
 ]

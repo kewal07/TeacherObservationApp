@@ -139,8 +139,9 @@ class SubjectHomeView(ListView):
 			context["classes"] = grades
 			context["nav_val"] = "Classes"
 		elif path.endswith("school-home"):
-			schools = School.objects.all()
-			context["school"] = schools
+			schoolId = self.request.user.extendeduser.school.id
+			school = School.objects.get(pk=schoolId)
+			context["school"] = school
 			context["nav_val"] = "School"
 		return context
 
@@ -1269,6 +1270,38 @@ def getteachersubjects_in_section(request):
 		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
 
+def getevaluation_of_teacher(request):
+	try:
+		response = {}
+		response['evaluations'] = []
+		teacher = int(request.POST.get('teacher'))
+		evaluations = Evaluation.objects.filter(evaluatee_id=teacher)
+
+		for evaluation in evaluations:
+			temp = {}
+			temp['name'] = evaluation.evaluation_name
+			temp['id'] = evaluation.id
+			response['evaluations'].append(temp);
+ 		
+		if not evaluations:
+			response['error'] = "No Evaluation for Selected Teacher!!!"
+
+		print(response)
+
+		return HttpResponse(json.dumps(response), content_type='application/json')
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
+		exc_type, exc_obj, tb = sys.exc_info()
+		f = tb.tb_frame
+		lineno = tb.tb_lineno
+		filename = f.f_code.co_filename
+		linecache.checkcache(filename)
+		line = linecache.getline(filename, lineno, f.f_globals)
+		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
 class AdminDashboard(ListView):
 	context_object_name = 'data'
 	def get_template_names(self, **kwargs):
@@ -1716,6 +1749,17 @@ def deleteScheme(request):
 		line = linecache.getline(filename, lineno, f.f_globals)
 		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+class EvaluationLevelReports(ListView):
+	template_name = 'evaluationapp/evaluation-report-download.html'
+	context_object_name = 'data'
+
+	def get_queryset(self, **kwargs):
+		context = {}
+		context['teachers'] = ExtendedUser.objects.filter(school=self.request.user.extendeduser.school).filter(is_admin=0)
+		#context['evaluations'] = Evaluation.objects.filter(is_public=1).filter(user__extendeduser__school=self.request.user.extendeduser.school)
+		return context
+
 
 class FormLevelReports(ListView):
 	template_name = 'evaluationapp/form-report-download.html'

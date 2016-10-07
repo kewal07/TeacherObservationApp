@@ -42,6 +42,14 @@ License: You must have a valid license purchased only from themeforest(the above
 	<link id="style_color" href="{% static 'assets/admin/layout/css/themes/darkblue.css' %}" rel="stylesheet" type="text/css" />
 	<link href="{% static 'assets/admin/layout/css/index_teacher.css' %}" rel="stylesheet" type="text/css" />
 	<!-- END THEME STYLES -->
+	<!-- BEGIN PAGE LEVEL STYLES -->
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/clockface/css/clockface.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-colorpicker/css/colorpicker.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}"/>
+<!-- END PAGE LEVEL STYLES -->
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-select/bootstrap-select.min.css' %}"/>
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/select2/select2.css' %}"/>
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/jquery-multi-select/css/multi-select.css' %}"/>
@@ -213,7 +221,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					</a>
 					<ul class="sub-menu">
 						<li>
-							<a href="{% url 'evaluationapp:grading_scheme_home' %}">
+							<a href="javascript:;">
 							<fa class="fa fa-building-o"></fa>
 							<span class="title">Grading Schemes</span>
 							<span class="arrow "></span>
@@ -274,9 +282,6 @@ License: You must have a valid license purchased only from themeforest(the above
 	<div class="page-content-wrapper">
 		<div class="page-content">
 			<!-- BEGIN PAGE HEADER-->
-			<!-- <h3 class="page-title">
-			Downloads
-			</h3> -->
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
 					<li>
@@ -286,48 +291,50 @@ License: You must have a valid license purchased only from themeforest(the above
 					</li>
 					<li>
 						<i class="fa fa-cloud-download"></i>
-						<a href="{% url 'evaluationapp:evaluation_home' %}">Downloads</a>
+						<a href="/download-home">Downloads</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
+					<li>
+						<i class="fa fa-cloud-download"></i>
+						<a href="/download-evaluation-reports">Evaluation Reports</a>
+						<i class="fa fa-angle-right"></i>
 					</li>
 				</ul>
 			</div>
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN PAGE CONTENT-->
-			<div class="tiles">
-				<div class="tile double-down bg-blue-hoki">
-					<a href="{% url 'evaluationapp:formlevelreports' %}">
-						<div class="tile-body">
-							<i class="fa fa-plus"></i>
-						</div>
-						<div class="tile-object">
-							<div class="name">
-								 Form Reports
+			<div class="row">
+				<div class="col-md-12">
+					<form action="{% url 'evaluationapp:exportpdfformreport' %}" class="form-horizontal" id="submit_form" method="POST" enctype="multipart/form-data" target="_blank">
+					{% csrf_token %}
+					<input type="hidden" name="export_type" value="evaluation_per_teacher_per_form" />
+						<div class="form-body">
+							<div class="form-group">
+								<label class="control-label col-md-3">Select Teacher</label>
+								<div class="col-md-4">
+									<select id="teacher-select" name="teacher-select" class="bs-select form-control">
+										{% for teacher in data.teachers %}
+										<option value="{{teacher.user.id}}">{{teacher.user.first_name}} {{teacher.user.last_name}}</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-md-3">Select Evaluation</label>
+								<div class="col-md-4">
+									<select id="evaluation-select" name="form-select" class="bs-select form-control">
+									</select>
+								</div>
 							</div>
 						</div>
-					</a>
-				</div>
-				<div class="tile double bg-red-sunglo">
-					<a href="{% url 'evaluationapp:evaluationlevelreports' %}">
-						<div class="tile-body">
-							<i class="fa fa-search"></i>
-						</div>
-						<div class="tile-object">
-							<div class="name">
-								 Evaluation Reports
+						<div class="form-actions">
+							<div class="row">
+								<div class="col-md-offset-3 col-md-9">
+									<input type="submit" value="Download PDF" class="btn green button-submit export-excel" id="evaluation_per_teacher_per_form_download"/>
+								</div>
 							</div>
 						</div>
-					</a>
-				</div>
-				<div class="tile double bg-yellow-saffron">
-					<a href="{% url 'evaluationapp:evaluation_archive' %}">
-						<div class="tile-body">
-							<i class="fa fa-archive"></i>
-						</div>
-						<div class="tile-object">
-							<div class="name">
-								 Forms
-							</div>
-						</div>
-					</a>
+					</form>
 				</div>
 			</div>
 			<!-- END PAGE CONTENT-->
@@ -370,26 +377,90 @@ License: You must have a valid license purchased only from themeforest(the above
 <script type="text/javascript" src="{% static 'assets/global/plugins/bootstrap-select/bootstrap-select.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/global/plugins/select2/select2.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js' %}"></script>
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script type="text/javascript" src="{% static 'assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/clockface/js/clockface.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/bootstrap-daterangepicker/moment.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="{% static 'assets/admin/pages/scripts/components-pickers.js' %}"></script>
+<script src="{% static 'assets/global/plugins/bootbox/bootbox.min.js' %}" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
 <script src="{% static 'assets/admin/pages/scripts/components-dropdowns.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/html2canvas.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/jspdf-debug.js' %}"></script>
 <script>
       jQuery(document).ready(function() {    
          	Metronic.init(); // init metronic core components
 			Layout.init(); // init current layout
 			QuickSidebar.init(); // init quick sidebar
 			Demo.init(); // init demo features
+			ComponentsPickers.init();
 			ComponentsDropdowns.init();
+
+			function populateEvaluations(){
+				$('#evaluation-select').empty();
+				console.log($('#teacher-select').find(":selected").attr('value'));
+				$.ajax({
+					type: 'POST',
+					url:'/getevaluation_of_teacher',
+					data:{'teacher':$('#teacher-select').find(":selected").attr('value'),'csrfmiddlewaretoken': "{{ csrf_token }}" },
+					success:function(response)
+					{
+						if("evaluations" in response){
+							$.each(response['evaluations'], function (i, item) {
+	    						$('#evaluation-select').append(new Option(item.name, item.id));
+	    						$('#evaluation-select').css('display','block');
+	    						$('#evaluation-select + .bs-select').css('display','none');
+							});
+						}else{
+							bootbox.alert(response['error']);
+						}
+					}
+				});
+			}
+
+			populateEvaluations();
+
+			$('#teacher-select').change(function(event){
+				populateEvaluations();
+			});
 
 			$(".export-excel").click(function(event){
 				event.preventDefault();
 				var elemid = "#submit_form";
 				var form_data = $(elemid).serialize();
-				var export_url = "/exportexcel?" + form_data;
-				var subButElem = $(this);
-				{% if user.is_authenticated %}
-					window.open(export_url);
-				{% else %}
-					location.reload();
-				{% endif %}
+
+				$.ajax({
+					type: 'POST',
+					data: form_data,
+					success:function(response)
+					{
+						$('body').append('<div id="pdf-body">'+response.table+'</div>');
+
+						var a4  =[ 595.28,  841.89];
+			  			var doc = new jsPDF('p', 'pt', 'a4', false);
+			  			doc.setProperties({
+							title: 'Teacher Analysis',
+							subject: 'Teacher Analysis',
+							author: 'Eduzen',
+							creator: 'Eduzen'
+						});
+						html2canvas($("#pdf-body"), {
+					        onrendered: function (canvas) {
+					            var	pdfimg = (canvas.toDataURL("image/png"));
+					            doc.addImage(pdfimg, 'JPEG',20,20);
+					  			doc.save("Teacher Analysis");
+								$('body').find($("#pdf-body")).remove();
+						    },
+						});
+					}
+				});
 			});
       });
 </script>
