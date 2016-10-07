@@ -733,6 +733,10 @@ License: You must have a valid license purchased only from themeforest(the above
 		var mandatory = {{ allMandatory|yesno:"true,false" }};
 		var addComment = {{ allAC|yesno:"true,false" }};
 		var horizontalOptions = {{ allHO|yesno:"true,false" }};
+		var flag = 0;
+		var element =
+			'<div class="my-popover popover confirmation fade top in" id="confirmation644182" style="top: -7rem !important; left: 24rem !important; display: block;"><div class="arrow" style="left: 50%;"></div><h3 style="color:black;" class="popover-title">Are you Sure? </h3><div class="popover-content text-center"><div class="btn-group"><a class="btn btn-xs btn-success" data-apply="confirmation"><i class="glyphicon glyphicon-ok"></i> Yes</a><a class="btn btn-xs btn-danger" data-dismiss="confirmation"><i class="glyphicon glyphicon-remove"></i> No</a></div></div></div>';
+
 		{% for fquestion in form.formquestion_set.all %}
 			question_count += 1;
 			question_list.push(question_count.toString());
@@ -996,42 +1000,63 @@ License: You must have a valid license purchased only from themeforest(the above
 			// Form Submit
 			$(".surveySubmit").click(function(event){
 				event.preventDefault();
-				var elemid = "#submit_form";
-				var form_data = new FormData($(elemid)[0]);
-				form_data.append('question_count', JSON.stringify(question_list));
-				form_data.append('choice_count', JSON.stringify(choice_list));
-				$("#createSurveySubmit").attr("disabled","disabled");
-				{% if user.is_authenticated %}
-					$.ajax(
-					{
-						type: 'POST',
-						url:"/create-form?fid={{ form.id }}",
-						data:form_data,
-						processData: false,
-						contentType: false,
-						success:function(obj)
-						{
-							$(".errorlist").remove();
-							if(obj.hasOwnProperty("success")){
-								window.location.href = "{{ DOMAIN_URL }}/forms-home";
-							}
-							else{
-								for(var key in obj){
-								    if (obj.hasOwnProperty(key)){
-								    	if(key === "formError")
-									        $(".create-form").children().first().prepend('<span class="errorlist errorlistForm error-form"><br>'+obj[key]+'</span>');
-									   	else{
-									   		$("#"+key).parent().append('<span class="errorlist errorlistForm"><br>'+obj[key]+'</span>');
-									   	}
-								    }
+				if(flag == 0){
+					flag = 1;
+					var that = $(this);
+					$(this).append(element);
+
+					$(".btn-success").click(function(e) {
+						e.stopPropagation();
+						flag = 0;
+						$(".my-popover").remove();
+
+						var elemid = "#submit_form";
+						var form_data = new FormData($(elemid)[0]);
+
+						form_data.append('question_count', JSON.stringify(question_list));
+						form_data.append('choice_count', JSON.stringify(choice_list));
+
+						$("#createSurveySubmit").attr("disabled","disabled");
+
+						{% if user.is_authenticated %}
+							$.ajax(
+							{
+								type: 'POST',
+								url:"/create-form?fid={{ form.id }}",
+								data:form_data,
+								processData: false,
+								contentType: false,
+								success:function(obj)
+								{
+									$(".errorlist").remove();
+									if(obj.hasOwnProperty("success")){
+										window.location = "{% url 'evaluationapp:edit_evaluations' %}";
+									}
+									else{
+										for(var key in obj){
+										    if (obj.hasOwnProperty(key)){
+										    	if(key === "formError")
+											        $(".create-form").children().first().prepend('<span class="errorlist errorlistForm error-form"><br>'+obj[key]+'</span>');
+											   	else{
+											   		$("#"+key).parent().append('<span class="errorlist errorlistForm"><br>'+obj[key]+'</span>');
+											   	}
+										    }
+										}
+										$("#createSurveySubmit").removeAttr("disabled");
+									}
 								}
-								$("#createSurveySubmit").removeAttr("disabled");
-							}
-						}
+							});
+						{% else %}
+							$(location).attr('href',create_url);
+						{% endif %}
 					});
-				{% else %}
-					$(location).attr('href',create_url);
-				{% endif %}
+
+					$(".btn-danger").click(function(e){
+						e.stopPropagation();
+						$(".my-popover").remove();
+						flag = 0;
+					});
+				}
 			});
 			// End Form Submit
       });

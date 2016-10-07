@@ -319,10 +319,6 @@ class EvaluationFormEditView(DetailView):
 		context['allAC'] = allAC
 		context['allHO'] = allHO
 		context['grading_schemes'] = GradeSchemes.objects.filter(school=self.request.user.extendeduser.school)
-		print("***********************************")
-		print(context)
-		print(context['form'].grading_scheme.id)
-		print("***********************************")
 		return context
 
 def getCheckedValue(boolVal):

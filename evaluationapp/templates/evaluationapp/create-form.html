@@ -842,47 +842,52 @@ License: You must have a valid license purchased only from themeforest(the above
 					flag = 1;
 					var that = $(this);
 					$(this).append(element);
+					
 					$(".btn-success").click(function(e) {
 						e.stopPropagation();
 						flag = 0;
 						$(".my-popover").remove();
+
 						var elemid = "#submit_form";
-				var form_data = new FormData($(elemid)[0]);
-				form_data.append('question_count', JSON.stringify(question_list));
-				form_data.append('choice_count', JSON.stringify(choice_list));
-				$("#createSurveySubmit").attr("disabled","disabled");
-				{% if user.is_authenticated %}
-					$.ajax(
-					{
-						type: 'POST',
-						url:"/create-form",
-						data:form_data,
-						processData: false,
-						contentType: false,
-						success:function(obj)
-						{
-							$(".errorlist").remove();
-							if(obj.hasOwnProperty("success")){
-								window.location = "{% url 'evaluationapp:edit_evaluations' %}";
-							}
-							else{
-								for(var key in obj){
-								    if (obj.hasOwnProperty(key)){
-								    	if(key === "formError")
-									        $(".create-form").children().first().prepend('<span class="errorlist errorlistForm error-form"><br>'+obj[key]+'</span>');
-									   	else{
-									   		$("#"+key).parent().append('<span class="errorlist errorlistForm"><br>'+obj[key]+'</span>');
-									   	}
-								    }
+						var form_data = new FormData($(elemid)[0]);
+
+						form_data.append('question_count', JSON.stringify(question_list));
+						form_data.append('choice_count', JSON.stringify(choice_list));
+
+						$("#createSurveySubmit").attr("disabled","disabled");
+						
+						{% if user.is_authenticated %}
+							$.ajax({
+								type: 'POST',
+								url:"/create-form",
+								data:form_data,
+								processData: false,
+								contentType: false,
+								success:function(obj)
+								{
+									$(".errorlist").remove();
+									if(obj.hasOwnProperty("success")){
+										window.location = "{% url 'evaluationapp:edit_evaluations' %}";
+									}
+									else{
+										for(var key in obj){
+										    if (obj.hasOwnProperty(key)){
+										    	if(key === "formError")
+											        $(".create-form").children().first().prepend('<span class="errorlist errorlistForm error-form"><br>'+obj[key]+'</span>');
+											   	else{
+											   		$("#"+key).parent().append('<span class="errorlist errorlistForm"><br>'+obj[key]+'</span>');
+											   	}
+										    }
+										}
+										$("#createSurveySubmit").removeAttr("disabled");
+									}
 								}
-								$("#createSurveySubmit").removeAttr("disabled");
-							}
-						}
+							});
+						{% else %}
+							$(location).attr('href',create_url);
+						{% endif %}
 					});
-				{% else %}
-					$(location).attr('href',create_url);
-				{% endif %}
-					});
+
 					$(".btn-danger").click(function(e){
 						e.stopPropagation();
 						$(".my-popover").remove();

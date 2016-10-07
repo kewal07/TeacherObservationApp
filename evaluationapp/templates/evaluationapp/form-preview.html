@@ -345,12 +345,12 @@ License: You must have a valid license purchased only from themeforest(the above
 				<ul class="page-breadcrumb">
 					<li>
 						<i class="fa fa-home"></i>
-						<a href="#">Home</a>
+						<a href="{% url 'evaluationapp:index' %}">Home</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
 						<i class="fa fa-home"></i>
-						<a href="#">Preview Forms</a>
+						<a href="{% url 'evaluationapp:edit_evaluations' %}">Preview Forms</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
@@ -467,7 +467,7 @@ License: You must have a valid license purchased only from themeforest(the above
 																		{{ question.answer }}
 																	</textarea>
 																{% elif question.type == "rating" %}
-																	<input id="range_2" type="text" name="range{{ question.question.id }}" value="{{ question.min_value }};{{ question.max_value }}"/>
+																	<input id="range_2" type="text" name="range{{ question.question.id }}" value="{{ question.min_value }};{{ question.max_value }}" class="rangeSlider" />
 																{% else %}
 																	<div class="input-group">
 																		{% for choice in question.question.choice_set.all %}
@@ -504,8 +504,8 @@ License: You must have a valid license purchased only from themeforest(the above
 												<a href="javascript:;" class="btn blue button-next">
 												Continue <i class="m-icon-swapright m-icon-white"></i>
 												</a>
-												<a href="javascript:;" class="btn disabled green button-submit voteSubmit surveySubmit" id="vote{{ survey.id }}">
-												Submit <i class="m-icon-swapright m-icon-white"></i>
+												<a href="{% url 'evaluationapp:edit_evaluations' %}" class="btn green button-submit" id="vote{{ survey.id }}">
+												Close <i class="m-icon-swapright m-icon-white"></i>
 												</a>
 											</div>
 										</div>
@@ -594,7 +594,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						<div class="form-actions">
 							<div class="row">
 								<div class="col-md-offset-3 col-md-9">
-									<a href="javascript:;" class="btn disabled green button-submit voteSubmit surveySubmit" id="vote{{ survey.id }}">
+									<a href="{% url 'evaluationapp:edit_evaluations' %}" class="btn green button-submit" id="vote{{ survey.id }}">
 									Submit <i class="m-icon-swapright m-icon-white"></i>
 									</a>
 								</div>
@@ -689,27 +689,27 @@ License: You must have a valid license purchased only from themeforest(the above
 			$(".distraction-free-mode").show();
 		});
 
-		$('.surveySubmit').click(function(){
-			var subButElem = $(this);
-			subButElem.attr("disabled","disabled");
-			$(".errorlist").remove();
-			var form_data = $("#submit_form").serialize();
-			$.ajax({
-				type: 'POST',
-				url:'',
-				data:form_data,
-				success:function(response)
-				{
-					if("success" in response){
-					}else{
-						for(key in response){
-							$("#survey-question"+key).append('<span class="errorlist">'+response[key]+'</span>');
-						}
-					}
-					subButElem.removeAttr("disabled");
-				}
-			});
-		});
+		// $('.surveySubmit').click(function(){
+		// 	var subButElem = $(this);
+		// 	subButElem.attr("disabled","disabled");
+		// 	$(".errorlist").remove();
+		// 	var form_data = $("#submit_form").serialize();
+		// 	$.ajax({
+		// 		type: 'POST',
+		// 		url:'',
+		// 		data:form_data,
+		// 		success:function(response)
+		// 		{
+		// 			if("success" in response){
+		// 			}else{
+		// 				for(key in response){
+		// 					$("#survey-question"+key).append('<span class="errorlist">'+response[key]+'</span>');
+		// 				}
+		// 			}
+		// 			subButElem.removeAttr("disabled");
+		// 		}
+		// 	});
+		// });
 	});
 </script>
 </body>

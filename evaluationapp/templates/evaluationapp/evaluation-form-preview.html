@@ -435,7 +435,7 @@ License: You must have a valid license purchased only from themeforest(the above
 																		{{ question.answer }}
 																	</textarea>
 																{% elif question.type == "rating" %}
-																	<input id="range_2" type="text" name="range{{ question.question.id }}" value="{{ question.min_value }};{{ question.max_value }}"/>
+																	<input id="range_2" type="text" name="range{{ question.question.id }}" value="{{ question.min_value }};{{ question.max_value }}" class="rangeSlider"/>
 																{% else %}
 																	<div class="input-group">
 																		{% for choice in question.question.choice_set.all %}
