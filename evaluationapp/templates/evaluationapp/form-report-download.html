@@ -344,11 +344,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						<div class="form-actions">
 							<div class="row">
 								<div class="col-md-offset-3 col-md-9">
-									<!-- <a href="javascript:;" class="btn green button-submit export-excel" id="evaluation_per_teacher_per_form_download"> -->
 									<input type="submit" value="Download PDF" class="btn green button-submit export-excel" id="evaluation_per_teacher_per_form_download"/>
-									<!-- Download PDF <i class="m-icon-swapright m-icon-white"></i>
-									</submit> -->
-									<!-- </a> -->
 								</div>
 							</div>
 						</div>
@@ -420,46 +416,18 @@ License: You must have a valid license purchased only from themeforest(the above
 			ComponentsPickers.init();
 			ComponentsDropdowns.init();
 
-			// $(".export-excel").click(function(event){
-			// 	event.preventDefault();
-			// 	var elemid = "#submit_form";
-			// 	var form_data = $(elemid).serialize();
-			// 	var export_url = "/exportexcel?" + form_data;
-			// 	var subButElem = $(this);
-			// 	{% if user.is_authenticated %}
-			// 		window.open(export_url);
-			// 	{% else %}
-			// 		location.reload();
-			// 	{% endif %}
-			// });
-
-			// $(".export-excel").click(function(event){
-			// 	event.preventDefault();
-			// 	var elemid = "#submit_form";
-			// 	var form_data = $(elemid).serialize();
-			// 	var export_url = "/exportpdf?" + form_data;
-			// 	var subButElem = $(this);
-			// 	{% if user.is_authenticated %}
-			// 		window.open(export_url);
-			// 	{% else %}
-			// 		location.reload();
-			// 	{% endif %}
-			// });
-
 			$(".export-excel").click(function(event){
 				event.preventDefault();
 				var elemid = "#submit_form";
 				var form_data = $(elemid).serialize();
-				// var w = window.open();
+
 				$.ajax({
 					type: 'POST',
 					data: form_data,
 					success:function(response)
 					{
 						$('body').append('<div id="pdf-body">'+response.table+'</div>');
-						// var html = $("#pdf-body").html();
 
-						// $(w.document.body).html(response.table);
 						var a4  =[ 595.28,  841.89];
 			  			var doc = new jsPDF('p', 'pt', 'a4', false);
 			  			doc.setProperties({
@@ -470,10 +438,8 @@ License: You must have a valid license purchased only from themeforest(the above
 						});
 						html2canvas($("#pdf-body"), {
 					        onrendered: function (canvas) {
-					            //Set hidden field's value to image data (base-64 string
 					            var	pdfimg = (canvas.toDataURL("image/png"));
 					            doc.addImage(pdfimg, 'JPEG',20,20);
-					            // doc.addHTML(response.table);
 					  			doc.save("Teacher Analysis");
 								$('body').find($("#pdf-body")).remove();
 						    },
