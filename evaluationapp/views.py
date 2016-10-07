@@ -220,6 +220,7 @@ class CreateFormView(ListView):
 				addComment = post_data.get("question-require-feedback"+str(que_index),False)
 				mandatory = post_data.get("question-mandatory"+str(que_index),False)
 				horizontalOptions = post_data.get("question-horizontal-options"+str(que_index),False)
+				na = post_data.get("addNA-"+str(que_index), False)
 				que['text'] = que_text
 				que['desc'] = que_desc
 				que['type'] = que_type
@@ -227,9 +228,11 @@ class CreateFormView(ListView):
 				que['addComment'] = addComment
 				que['mandatory'] = mandatory
 				que['horizontalOptions'] = horizontalOptions
+				que['na'] = na
 				que['sectionName'] = post_data.get("question-section"+str(que_index)).strip()
 				choices = []
 				choice_weights = []
+				choice_na = []
 				queError = ""
 				min_max = {}
 				if not que_text:
@@ -259,14 +262,20 @@ class CreateFormView(ListView):
 						choice_weight = post_data.getlist(choice_weight_id)[0].strip()
 						choices.append(choice)
 						choice_weights.append(choice_weight)
+						choice_na.append(0)
 						if not choice:
 							errors[choice_elem_id] = "Choice required"
 					if len(choices)!=len(set(choices)):
 						queError += "Please provide different choices<br>"
+					if na:
+						choices.append('N/A')
+						choice_weights.append(0)
+						choice_na.append(1)
 				if queError:
 					errors["question-title"+str(que_index)] = queError
 				que['choice_texts'] = choices
 				que['choice_weights'] = choice_weights
+				que['choice_na'] = choice_na 
 				que['min_max'] = min_max
 				ques_list.append(que)
 			if errors:
@@ -388,12 +397,14 @@ def createFormQues(form,ques_list,curtime,user,edit):
 			horizontalOptions = 0
 			if que['horizontalOptions']:
 				horizontalOptions = 1
+			if que['na']:
+				na = 1
 			if que['weight']:
 				que['weight'] = int(que['weight'])
 			else:
 				que['weight'] = 1
 
-			question = Question(user=user, created_at=curtime, question_text=que['text'], description=que['desc'], horizontal_options=horizontalOptions)
+			question = Question(user=user, created_at=curtime, question_text=que['text'], description=que['desc'], horizontal_options=horizontalOptions, na=na)
 			question.save()
 
 			"""
@@ -406,7 +417,7 @@ def createFormQues(form,ques_list,curtime,user,edit):
 
 			for index,choice_text in enumerate(que['choice_texts']):
 				temp_choice_value = float(float(que['choice_weights'][index])/float(max_weight))
-				choice = Choice(question=question,choice_text=choice_text, choice_weight=que['choice_weights'][index], choice_value=temp_choice_value)
+				choice = Choice(question=question,choice_text=choice_text, choice_weight=que['choice_weights'][index], choice_value=temp_choice_value, na=que['choice_na'][index])
 				choice.save()
 			min_value = que['min_max'].get("min_value",0)
 			max_value = que['min_max'].get("max_value",10)

@@ -163,12 +163,13 @@ class FormWithCategory(models.Model):
 		super(FormWithCategory, self).save(*args, **kwargs)
 
 class Question(models.Model):
-	question_text = models.CharField(max_length=200)
-	user = models.ForeignKey(settings.AUTH_USER_MODEL)
-	description = models.CharField(max_length=400,null=True,blank=True)
-	que_slug = models.SlugField(null=True,blank=True)
-	created_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+	question_text      = models.CharField(max_length=200)
+	user               = models.ForeignKey(settings.AUTH_USER_MODEL)
+	description        = models.CharField(max_length=400,null=True,blank=True)
+	que_slug           = models.SlugField(null=True,blank=True)
+	created_at         = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 	horizontal_options = models.BooleanField(default=1)
+	na                 = models.BooleanField(default=0)
 	def __str__(self):
 		return self.question_text
 
@@ -193,24 +194,25 @@ class Question(models.Model):
 		super(Question, self).save(*args, **kwargs)
 
 class Choice(models.Model):
-	question = models.ForeignKey(Question)
-	choice_text = models.CharField(max_length=200)
+	question      = models.ForeignKey(Question)
+	choice_text   = models.CharField(max_length=200)
 	choice_weight = models.IntegerField(default=1)
-	choice_value = models.FloatField(default=1.0)
+	choice_value  = models.FloatField(default=1.0)
+	na            = models.BooleanField(default=0)
 	def __str__(self):
 		return self.choice_text
 
 class FormQuestion(models.Model):
-	form = models.ForeignKey(Form)
-	question = models.ForeignKey(Question)
+	form          = models.ForeignKey(Form)
+	question      = models.ForeignKey(Question)
 	question_type = models.CharField(max_length=20)
-	add_comment = models.BooleanField(default=0)
-	mandatory = models.BooleanField(default=0)
-	min_value  = models.IntegerField(default=0)
-	max_value = models.IntegerField(default=10)
-	weight = models.IntegerField(default=1)
-	value = models.FloatField(default=1.0)
-	section = models.ForeignKey(FormSection,null=True,default=None)
+	add_comment   = models.BooleanField(default=0)
+	mandatory     = models.BooleanField(default=0)
+	min_value     = models.IntegerField(default=0)
+	max_value     = models.IntegerField(default=10)
+	weight        = models.IntegerField(default=1)
+	value         = models.FloatField(default=1.0)
+	section       = models.ForeignKey(FormSection,null=True,default=None)
 	def __str__(self):
 		return self.form.form_name+"_"+self.question.question_text+"_"+self.question_type
 
