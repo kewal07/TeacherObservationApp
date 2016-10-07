@@ -89,8 +89,13 @@ Page Header
   display: inline-block;
   float: left;
 }
-.page-header.navbar .page-logo .logo-default {
+.page-header.navbar .page-logo{
   margin: 16px 0 0 0;
+}
+
+.logo-default{
+  height: 40px;
+  width: 100px;
 }
 .page-header.navbar .page-logo .logo-mini {
   display: none;

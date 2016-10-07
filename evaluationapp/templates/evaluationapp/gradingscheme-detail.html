@@ -97,54 +97,6 @@ License: You must have a valid license purchased only from themeforest(the above
 		<!-- BEGIN TOP NAVIGATION MENU -->
 		<div class="top-menu">
 			<ul class="nav navbar-nav pull-right">
-				<li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Home"></i>
-		              <span id="menu-items-text" class="title tooltips">Home</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:evaluation_home' %}">
-		              <fa class="fa fa-check-square-o" data-placement="bottom" data-original-title="Evaluations"></fa>
-		              <span id="menu-items-text" class="title tooltips">Evaluations</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:view_forms_home' %}">
-		              <i class="fa fa-file-text-o tooltips" data-placement="bottom" data-original-title="Forms"></i>
-		              <span id="menu-items-text" class="title tooltips">Forms</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:dashboard' user.extendeduser.school.school_name %}">
-		              <fa class="fa fa-bar-chart" data-placement="bottom" data-original-title="Evaluations"></fa>
-		              <span id="menu-items-text" class="title tooltips">Analytics</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:grading_scheme_home' %}">
-		              <fa class="fa fa-building-o" data-placement="bottom" data-original-title="Evaluations"></fa>
-		              <span id="menu-items-text" class="title tooltips">Grading Schemes</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:view_download' %}">
-		              <fa class="fa fa-cloud-download" data-placement="bottom" data-original-title="Export"></fa>
-		              <span id="menu-items-text" class="title tooltips">Download</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <fa class="fa fa-cloud-upload" data-placement="bottom" data-original-title="Upload"></fa>
-		              <span id="menu-items-text" class="title tooltips">Upload</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:view_settings' %}">
-		              <i class="fa fa-gear tooltips" data-placement="bottom" data-original-title="Settings"></i>
-		              <span id="menu-items-text" class="title tooltips">Settings</span>
-		            </a>
-		        </li>
 				<li class="dropdown dropdown-user">
 					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
 		              <img alt="{{ user.first_name }}" class="img-circle" src="{{ user.extendeduser.get_profile_pic_url }}" />
