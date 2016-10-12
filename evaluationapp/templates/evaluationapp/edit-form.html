@@ -463,6 +463,7 @@ License: You must have a valid license purchased only from themeforest(the above
 													<label class="control-label col-md-3">No Of Sections</label>
 													<div class="col-md-4">
 														<select id="section-select" name="no-of-section" class="bs-select form-control">
+															<option value="1" {{ 1|getSelectedSection:form.formsection_set.count }} >One</option>
 															<option value="2" {{ 2|getSelectedSection:form.formsection_set.count }} >Two</option>
 															<option value="3" {{ 3|getSelectedSection:form.formsection_set.all.count }}>Three</option>
 															<option value="4" {{ 4|getSelectedSection:form.formsection_set.all.count }}>Four</option>
@@ -514,9 +515,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		  													<div class="form-group">
 		  														<label class="control-label col-md-3">Question Description</label>
 		  														<div class="col-md-4">
-		  															<textarea class="form-control" rows="3" name="question-description{{ forloop.counter }}">
-		  																{{ form_que.question.description }}
-		  															</textarea>
+		  															<textarea class="form-control" rows="3" name="question-description{{ forloop.counter }}">{{ form_que.question.description }}</textarea>
 		  														</div>
 		  													</div>
 		  													<div class="form-group">
@@ -565,6 +564,22 @@ License: You must have a valid license purchased only from themeforest(the above
 			  															<input type="text" class="form-control" name="question-weight{{ forloop.counter }}" value="{{ form_que.weight }}" />
 			  														</div> 
 			  													</div>
+
+			  													{% if form_que.question.na %}
+				  													<div class="form-group" id="addNA-{{ forloop.counter }}">
+				  														<label class="control-label col-md-3">Add NA</label>
+				  														<div class="col-md-4">
+				  															<input type="checkbox" class="form-control" name="addNA-{{ forloop.counter }}" class="icheck" style="width:3%;" checked/>
+				  														</div>
+				  													</div>
+			  													{% else %}
+			  														<div class="form-group" id="addNA-{{ forloop.counter }}">
+			  															<label class="control-label col-md-3">Add NA</label>
+			  															<div class="col-md-4">
+			  																<input type="checkbox" class="form-control" name="addNA-{{ forloop.counter }}" class="icheck" style="width:3%;"/>
+				  														</div>
+				  													</div>
+			  													{% endif %}
 		  													{% endif %}
 
 		  													<div id="question{{ forloop.counter }}choiceDiv">
@@ -582,18 +597,20 @@ License: You must have a valid license purchased only from themeforest(the above
 		  														{% elif form_que.question_type != "text" %}
 		  														<i id="{{ forloop.counter }}---{{ form_que.question_type }}" class="fa fa-plus btn blue add-choice"></i>
 		  														{% for choice in form_que.question.choice_set.all %}
-		  														<div class="form-group" id="questionDiv{{ forloop.parentloop.counter }}choice{{ forloop.counter }}Div">
-		  															<label class="control-label col-md-3"></label>
-		  															<div class="col-md-4">
-		  																<input type="text" class="form-control" name="questionDiv{{ forloop.parentloop.counter }}choice{{ forloop.counter }}" id="questionDiv{{ forloop.parentloop.counter }}choice{{ forloop.counter }}" placeholder="Enter Choice Value" value="{{ choice.choice_text }}"/>
-		  															</div>
-		  															<div class="col-md-1">
-		  																<input type="text" class="form-control" name="questionDiv{{ forloop.parentloop.counter }}choice{{ forloop.counter }}_weight" id="questionDiv{{ forloop.parentloop.counter }}choice{{ forloop.counter }}_weight" placeholder="weight" value="{{ choice.choice_weight }}"/>
-		  															</div>
-		  															<div class="col-md-4">
-		  																<i id="{{ forloop.parentloop.counter }}---{{ forloop.counter }}---{{ form_que.question_type }}" class="fa fa-minus remove-choice"></i>
-		  															</div>
-		  														</div>
+		  															{% if not choice.na %}
+				  														<div class="form-group" id="questionDiv{{ forloop.parentloop.counter }}choice{{ forloop.counter }}Div">
+				  															<label class="control-label col-md-3"></label>
+				  															<div class="col-md-4">
+				  																<input type="text" class="form-control" name="questionDiv{{ forloop.parentloop.counter }}choice{{ forloop.counter }}" id="questionDiv{{ forloop.parentloop.counter }}choice{{ forloop.counter }}" placeholder="Enter Choice Value" value="{{ choice.choice_text }}"/>
+				  															</div>
+				  															<div class="col-md-1">
+				  																<input type="text" class="form-control" name="questionDiv{{ forloop.parentloop.counter }}choice{{ forloop.counter }}_weight" id="questionDiv{{ forloop.parentloop.counter }}choice{{ forloop.counter }}_weight" placeholder="weight" value="{{ choice.choice_weight }}"/>
+				  															</div>
+				  															<div class="col-md-4">
+				  																<i id="{{ forloop.parentloop.counter }}---{{ forloop.counter }}---{{ form_que.question_type }}" class="fa fa-minus remove-choice"></i>
+				  															</div>
+				  														</div>
+				  													{% endif %}
 		  														{% endfor %}
 		  														{% endif %}
 		  													</div>
@@ -695,8 +712,10 @@ License: You must have a valid license purchased only from themeforest(the above
 			choice_count[question_count] = 0;
 	  		choice_list[question_count] = [];
 			{% for choice in fquestion.question.choice_set.all %}
-				choice_count[question_count] += 1;
-				choice_list[question_count].push(choice_count[question_count]);
+				{% if not choice.na %}
+					choice_count[question_count] += 1;
+					choice_list[question_count].push(choice_count[question_count]);
+				{% endif %}
 			{% endfor %}
 			choice_count[question_count] += 1;
 		{% endfor %}
@@ -828,7 +847,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			  	}
 			  	question_elem += '</select></div></div>';
 			  	question_elem += '<div class="form-group"><label class="control-label col-md-3">Question Type</label><div class="col-md-4"><select id="question-type-select---'+question_count_str+'" name="question-type'+question_count_str+'" class="bs-select form-control question-type-select"><option value="noselect">Select</option><option value="radio">Single Select</option><option value="checkbox">Multi Select</option><option value="rating">Rating</option><option value="text">Text</option>';
-			  	question_elem += '</select></div></div>   <div class="form-group" id="question-weight'+question_count_str+'" style="display:none;" ><label class="control-label col-md-2">Question Weight</label><div class="col-md-4"><input type="text" class="form-control" name="question-weight'+question_count_str+'"/></div> </div>';
+			  	question_elem += '</select></div></div>   <div class="form-group" id="question-weight'+question_count_str+'" style="display:none;" ><label class="control-label col-md-2">Question Weight</label><div class="col-md-4"><input type="text" class="form-control" name="question-weight'+question_count_str+'"/></div> </div>   <div class="form-group" id="addNA-'+question_count_str+'" style="display:none;"><label class="control-label col-md-3">Add NA</label><div class="col-md-4"><input type="checkbox" class="form-control" name="addNA-'+question_count_str+'" class="icheck" style="width:3%;" /></div> </div>';
 			  	question_elem += '</div></div></div>';
 			  	$("#tab3").append(question_elem);
 			  	question_count += 1;
@@ -857,6 +876,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
 		  		if(selectedType != "text" && selectedType != "rating"){
 		  			$('#question-weight'+question_count_select).css('display','block');
+		  			$('#addNA-'+question_count_select).css('display','block');
 		  			var add_another_choice_elem = '<div id="'+choice_elem_div+'"></div>';
 		  			$("#"+question_div+" .portlet-body .scroller").append(add_another_choice_elem);
 		  			$("#"+choice_elem_div).append('<i id="' +question_count_select+'---'+selectedType +'" class="fa fa-plus add-choice btn blue"> </i>'); 
@@ -866,6 +886,7 @@ License: You must have a valid license purchased only from themeforest(the above
 				}
 				if(selectedType == "rating"){
 					$('#question-weight'+question_count_select).css('display','none');
+					$('#addNA-'+question_count_select).css('display','none');
 					var add_another_choice_elem = '<div id="'+choice_elem_div+'"></div>';
 					$("#"+question_div+" .portlet-body .scroller").append(add_another_choice_elem);
 					$("#"+choice_elem_div).append('<div class="form-group"><label class="control-label col-md-3">Min Value <span class="required">* </span></label><div class="col-md-4"><input type="text" class="form-control" name="'+question_count_select+'---'+selectedType+'---Min" id="'+question_count_select+'---'+selectedType+'---Min" placeholder="Minimum Value"/></div></div><div class="form-group"><label class="control-label col-md-3">Max Value <span class="required">* </span></label><div class="col-md-4"><input type="text" class="form-control" name="'+question_count_select+'---'+selectedType+'---Max" id="'+question_count_select+'---'+selectedType+'---Max" placeholder="Maximum Value"/></div></div>');
