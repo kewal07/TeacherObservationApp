@@ -423,7 +423,7 @@ License: You must have a valid license purchased only from themeforest(the above
 								My Feedback
 							{% elif request.path == '/evaluation-under-me' %}
 								<i class="fa fa-check-square-o"></i>
-								Evaluate Others
+								Evaluation List
 							{% elif request.path == '/evaluation-review' %}
 								<i class="fa fa-search"></i>
 								Review Evaluations
@@ -519,14 +519,14 @@ License: You must have a valid license purchased only from themeforest(the above
 											</td>
 											<td>
 												{% if request.path == '/evaluation-under-me' %}
-													<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">Evaluate</button></a>
+													<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">Start Evaluation</button></a>
 												{% else %}
-													<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View Evaluation</button></a>
+													<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View</button></a>
 												{% endif %}
 												
 												{% if evaluation.status.status_state == 'Ongoing' %}
 													<a href="#" class="evaluation_reminder_button" id="{{ evaluation.id }}">
-													<button type="button" class="btn btn-primary">Send Reminder</button></a></a>
+													<button type="button" class="btn btn-primary">Remind</button></a></a>
 												{% endif %}
 											</td>
 										</tr>
@@ -597,9 +597,9 @@ License: You must have a valid license purchased only from themeforest(the above
 											</td>
 											<td>
 												{% if request.path == '/my-evaluations' %}
-													<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View Evaluation</button></a>
+													<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View</button></a>
 												{% elif request.path == '/evaluation-under-me' %}
-													<a href="{% url 'evaluationapp:evaluation_form_vote' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View Evaluation</button></a>
+													<a href="{% url 'evaluationapp:evaluation_form_vote' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View</button></a>
 												{% endif %}
 											</td>
 										</tr>
