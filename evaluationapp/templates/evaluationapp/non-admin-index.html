@@ -140,16 +140,31 @@ License: You must have a valid license purchased only from themeforest(the above
 						<span class="title">My Feedback</span>
 					</a>
 				</li>
-				<li>
-					<a href="javascript:;">
-						<i class="fa fa-cloud-download"></i>
-						<span class="title">Downloads</span>
-					</a>
-				</li>
-				<li class="last ">
+				<li class="last">
 					<a href="{% url 'evaluationapp:view_settings' %}">
-					<i class="fa fa-gear"></i>
-					<span class="title">Settings</span>
+						<i class="fa fa-gear"></i>
+						<span class="title">Settings</span>
+						<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="{% url 'evaluationapp:index' %}">
+								<i class="fa fa-cloud-upload"></i>
+								<span class="title">Uploads</span>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:view_download' %}">
+								<i class="fa fa-cloud-download"></i>
+								<span class="title">Downloads</span>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'login:view_change_password' %}">
+							<i class="fa fa-key"></i>
+							Change Password</a>
+						</li>
+					</ul>
 				</li>
 			</ul>
 			<!-- END SIDEBAR MENU -->

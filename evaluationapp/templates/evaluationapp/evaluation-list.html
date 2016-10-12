@@ -137,46 +137,16 @@ License: You must have a valid license purchased only from themeforest(the above
 		<!-- BEGIN TOP NAVIGATION MENU -->
 		<div class="top-menu">
 			<ul class="nav navbar-nav pull-right">
-				<li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="icon-user tooltips" data-placement="bottom" data-original-title="Home"></i>
-		              <span id="menu-items-text" class="title tooltips">Home</span>
-		            </a>
-		        </li>
-		        <li>
-					<a href="{% url 'evaluationapp:evaluation_under_me' %}">
-						<i class=" fa fa-check-square-o tooltips" data-placement="bottom" data-original-title="Evaluate Others"></i>
-					 	<span id="menu-items-text" class="title tooltips">Evaluate Others</span>
-					</a>
-				</li>
-				<li>
-					<a href="{% url 'evaluationapp:my_evaluations' %}">
-						<i class="fa fa-thumbs-o-up tooltips" data-placement="bottom" data-original-title="My Feedback"></i>
-						<span id="menu-items-text" class="title tooltips">My Feedback</span>
-					</a>
-				</li>
-		        <li>
-		            <a href="{% url 'evaluationapp:index' %}">
-		              <i class="fa fa-cloud-download" data-placement="bottom" data-original-title="Evaluations"></i>
-		              <span id="menu-items-text" class="title tooltips">Download</span>
-		            </a>
-		        </li>
-		        <li>
-		            <a href="{% url 'evaluationapp:view_settings' %}">
-		              <i class="fa fa-gear tooltips" data-placement="bottom" data-original-title="Settings"></i>
-		              <span id="menu-items-text" class="title tooltips">Settings</span>
-		            </a>
-		        </li>
 				<li class="dropdown dropdown-user">
 					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-		              <img alt="{{ user.first_name }}" class="img-circle" src="{{ user.extendeduser.get_profile_pic_url }}" />
-		              <span class="username username-hide-on-mobile">{{ user.username }}</span>
-		              <i class="fa fa-angle-down"></i>
+		            	<img alt="{{ user.first_name }}" class="img-circle" src="{{ user.extendeduser.get_profile_pic_url }}" />
+		            	<span class="username username-hide-on-mobile">{{ user.username }}</span>
+		              	<i class="fa fa-angle-down"></i>
 		            </a>
 		            <ul class="dropdown-menu dropdown-menu-default">
-		              <li class="my-index-logout">
-		                <a href="{% url 'login:logout' %}"> <i class="icon-key"></i> Log Out </a>
-		              </li>
+		            	<li class="my-index-logout">
+		                	<a href="{% url 'login:logout' %}"> <i class="icon-key"></i> Log Out </a>
+		              	</li>
 		            </ul>
 				</li>
 				<!-- END USER LOGIN DROPDOWN -->
@@ -395,16 +365,31 @@ License: You must have a valid license purchased only from themeforest(the above
 							<span id="menu-items-text" class="title tooltips">My Feedback</span>
 						</a>
 					</li>
-					<li>
-						<a href="javascript:;">
-							<i class="fa fa-cloud-download"></i>
-							<span class="title">Downloads</span>
-						</a>
-					</li>
-					<li class="last ">
+					<li class="last">
 						<a href="{% url 'evaluationapp:view_settings' %}">
-						<i class="fa fa-gear tooltips"></i>
-						<span class="title">Settings</span>
+							<i class="fa fa-gear"></i>
+							<span class="title">Settings</span>
+							<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:index' %}">
+									<i class="fa fa-cloud-upload"></i>
+									<span class="title">Uploads</span>
+								</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:view_download' %}">
+									<i class="fa fa-cloud-download"></i>
+									<span class="title">Downloads</span>
+								</a>
+							</li>
+							<li>
+								<a href="{% url 'login:view_change_password' %}">
+								<i class="fa fa-key"></i>
+								Change Password</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 				<!-- END SIDEBAR MENU -->

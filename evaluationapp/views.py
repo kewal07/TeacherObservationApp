@@ -191,9 +191,6 @@ class CreateFormView(ListView):
 				form = Form.objects.get(pk=request.GET.get("fid"))
 			user = request.user
 			post_data = request.POST
-			print('*******************************************************')
-			print(post_data)
-			print('*******************************************************')
 			errors = {}
 			form_name = post_data.get("fullname").strip()
 			form_desc = post_data.get("description").strip()
