@@ -307,6 +307,17 @@ License: You must have a valid license purchased only from themeforest(the above
 						</div>
 					</a>
 				</div>
+				<div class="tile bg-red-sunglo">
+					<a href="{% url 'evaluationapp:target_home' %}">
+					<div class="tile-body">
+						<i class="fa fa-dot-circle-o"></i>
+					</div>
+					<div class="tile-object">
+						<div class="name">
+							 Targets
+						</div>
+					</div>
+				</div>
 				<div class="tile bg-yellow-saffron">
 					<a href="{% url 'evaluationapp:dashboard' user.extendeduser.school.school_name %}">
 					<div class="tile-body">
@@ -325,10 +336,20 @@ License: You must have a valid license purchased only from themeforest(the above
 						</div>
 						<div class="tile-object">
 							<div class="name">
-								Export Data
+								Downloads
 							</div>
 						</div>
 					</a>
+				</div>
+				<div class="tile bg-red-sunglo">
+					<div class="tile-body">
+						<i class="fa fa-cloud-upload"></i>
+					</div>
+					<div class="tile-object">
+						<div class="name">
+							 Uploads
+						</div>
+					</div>
 				</div>
 				<div class="tile bg-blue-steel">
 					<a href="{% url 'evaluationapp:view_settings' %}">
@@ -342,16 +363,6 @@ License: You must have a valid license purchased only from themeforest(the above
 						</div>
 					</a>
 				</div>
-				<div class="tile bg-red-sunglo">
-					<div class="tile-body">
-						<i class="fa fa-cloud-upload"></i>
-					</div>
-					<div class="tile-object">
-						<div class="name">
-							 Uploads
-						</div>
-				</div>
-			</div>
 			<!-- END PAGE CONTENT-->
 		</div>
 	</div>

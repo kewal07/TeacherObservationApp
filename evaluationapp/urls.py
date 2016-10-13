@@ -5,9 +5,6 @@ from evaluationapp import views, pdfviews
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-	# r'',
-    # Examples:
-    # url(r'^blog/', include('blog.urls')),
 	url(r'^$',login_required(views.IndexView.as_view()), name='index'),
 	url(r'^gettoken/', views.gettoken, name='gettoken'),
 	url(r'^test$',login_required(views.TestView.as_view()),name='test'),
@@ -54,6 +51,7 @@ urlpatterns = [
     url(r'^view-scheme/(?P<pk>\d+)$',login_required(views.GradingSchemeDetailView.as_view()),name='view_scheme'),
     url(r'^edit-scheme/(?P<pk>\d+)$',login_required(views.GradingSchemeEditView.as_view()),name='edit_scheme'),
     url(r'^delete-scheme$',login_required(views.deleteScheme),name='delete_scheme'),
+    url(r'^target-home$', login_required(TemplateView.as_view(template_name='evaluationapp/target-home.html')), name='target_home'),
     url(r'^review-targets$', login_required(views.ReviewTargets.as_view()), name='target_review'),
     url(r'^get-evaluation-status-stats$', login_required(views.getEvaluationStatusStats), name='evaluationStatusStats'),
     url(r'^get-rating-distribution$', login_required(views.getRatingDistribution), name='ratingDistribution'),

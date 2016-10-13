@@ -42,6 +42,9 @@ License: You must have a valid license purchased only from themeforest(the above
 	<link id="style_color" href="{% static 'assets/admin/layout/css/themes/darkblue.css' %}" rel="stylesheet" type="text/css" />
 	<link href="{% static 'assets/admin/layout/css/index_teacher.css' %}" rel="stylesheet" type="text/css" />
 	<!-- END THEME STYLES -->
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/bootstrap-select/bootstrap-select.min.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/select2/select2.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/global/plugins/jquery-multi-select/css/multi-select.css' %}"/>
 	<link rel="shortcut icon" href="{% static 'favicon.png' %}" />
 </head>
 <!-- END HEAD -->
@@ -103,6 +106,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
 	<!-- BEGIN SIDEBAR -->
+	{% if user.extendeduser.is_admin %}
 	<div class="page-sidebar-wrapper">
 		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
 		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
@@ -114,96 +118,95 @@ License: You must have a valid license purchased only from themeforest(the above
 			<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
 			<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
 			<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-			{% if user.extendeduser.is_admin %}
-				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-					<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
-					<li class="sidebar-toggler-wrapper">
-						<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
-						<div class="sidebar-toggler">
-						</div>
-						<!-- END SIDEBAR TOGGLER BUTTON -->
-					</li>
-					<li class="start ">
-						<a href="{% url 'evaluationapp:index' %}">
-							<i class="icon-home"></i>
-							<span class="title">Home</span>
-						</a>
-					</li>
-					<li>
-						<a href="{% url 'evaluationapp:evaluation_home' %}">
-						<fa class="fa fa-check-square-o"></fa>
-						<span class="title">Evaluations</span>
+			<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+				<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+				<li class="sidebar-toggler-wrapper">
+					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+					<div class="sidebar-toggler">
+					</div>
+					<!-- END SIDEBAR TOGGLER BUTTON -->
+				</li>
+				<li class="start ">
+					<a href="{% url 'evaluationapp:index' %}">
+						<i class="icon-home"></i>
+						<span class="title">Home</span>
+					</a>
+				</li>
+				<li>
+					<a href="{% url 'evaluationapp:evaluation_home' %}">
+					<fa class="fa fa-check-square-o"></fa>
+					<span class="title">Evaluations</span>
+					<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="{% url 'evaluationapp:evaluation_assign' %}">
+							<fa class="fa fa-plus"></fa>
+							Assign</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:evaluation_review' %}">
+							<i class="fa fa-search"></i>
+							Review</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:evaluation_archive' %}">
+							<i class="fa fa-archive"></i>
+							Archive</a>
+						</li>
+						
+					</ul>
+				</li>
+				<li>
+					<a href="javascript:;">
+						<i class="fa fa-file-text-o"></i>
+						<span class="title">Forms</span>
 						<span class="arrow "></span>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a href="{% url 'evaluationapp:evaluation_assign' %}">
-								<fa class="fa fa-plus"></fa>
-								Assign</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:evaluation_review' %}">
-								<i class="fa fa-search"></i>
-								Review</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:evaluation_archive' %}">
-								<i class="fa fa-archive"></i>
-								Archive</a>
-							</li>
-							
-						</ul>
-					</li>
-					<li>
-						<a href="javascript:;">
-							<i class="fa fa-file-text-o"></i>
-							<span class="title">Forms</span>
-							<span class="arrow "></span>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a href="{% url 'evaluationapp:create-form' %}">
-								<i class="fa fa-plus"></i>
-								Create</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:edit_evaluations' %}">
-								<i class="fa fa-edit"></i>
-								View</a>
-							</li>
-							<li>
-								<a href="#">
-								<i class="fa fa-archive"></i>
-								Archived</a>
-							</li>
-						</ul>
-					</li>
-					<li>
-						<a href="javascript:;">
-						<fa class="fa fa-dot-circle-o"></fa>
-						<span class="title">Targets</span>
-						<span class="arrow "></span>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a href="{% url 'evaluationapp:assigntargettoteachers' %}">
-								<fa class="fa fa-plus"></fa>
-								Assign</a>
-							</li>
-							<li>
-								<a href="{% url 'evaluationapp:target_review' %}">
-								<i class="fa fa-search"></i>
-								Review</a>
-							</li>
-						</ul>
-					</li>
-					<li>
-						<a href="{% url 'evaluationapp:index' %}">
-							<i class="fa fa-bar-chart"></i>
-							<span class="title">Analytics</span>
-						</a>
-					</li>
-					<li class="last">
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="{% url 'evaluationapp:create-form' %}">
+							<i class="fa fa-plus"></i>
+							Create</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:edit_evaluations' %}">
+							<i class="fa fa-edit"></i>
+							View</a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="fa fa-archive"></i>
+							Archived</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="javascript:;">
+					<fa class="fa fa-dot-circle-o"></fa>
+					<span class="title">Targets</span>
+					<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a href="{% url 'evaluationapp:assigntargettoteachers' %}">
+							<fa class="fa fa-plus"></fa>
+							Assign</a>
+						</li>
+						<li>
+							<a href="{% url 'evaluationapp:target_review' %}">
+							<i class="fa fa-search"></i>
+							Review</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="{% url 'evaluationapp:dashboard' user.extendeduser.school.school_name %}">
+						<i class="fa fa-bar-chart"></i>
+						<span class="title">Analytics</span>
+					</a>
+				</li>
+				<li class="last">
 					<a href="{% url 'evaluationapp:view_settings' %}">
 						<i class="fa fa-gear"></i>
 						<span class="title">Settings</span>
@@ -211,7 +214,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					</a>
 					<ul class="sub-menu">
 						<li>
-							<a href="javascript:;">
+							<a href="{% url 'evaluationapp:grading_scheme_home' %}">
 							<fa class="fa fa-building-o"></fa>
 							<span class="title">Grading Schemes</span>
 							<span class="arrow "></span>
@@ -263,165 +266,127 @@ License: You must have a valid license purchased only from themeforest(the above
 						</li>
 					</ul>
 				</li>
-				</ul>
-			{% else %}
-				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-				<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
-				<li class="sidebar-toggler-wrapper">
-					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
-					<div class="sidebar-toggler">
-					</div>
-					<!-- END SIDEBAR TOGGLER BUTTON -->
-				</li>
-				<li class="start">
-					<a href="{% url 'evaluationapp:index' %}">
-						<i class="icon-home"></i>
-						<span class="title">Home</span>
-					</a>
-				</li>
-				<li>
-					<a href="{% url 'evaluationapp:evaluation_under_me' %}">
-						<i class=" fa fa-check-square-o"></i>
-						<span class="title">Evaluate Others</span>
-					</a>
-				</li>
-				<li>
-					<a href="{% url 'evaluationapp:my_evaluations' %}">
-						<i class="fa fa-thumbs-o-up"></i>
-						<span class="title">My Feedback</span>
-					</a>
-				</li>
-				<li>
-					<a href="javascript:;">
-						<i class="fa fa-cloud-download"></i>
-						<span class="title">Downloads</span>
-					</a>
-				</li>
-				<li class="last active">
-					<a href="{% url 'evaluationapp:view_settings' %}">
-					<i class="fa fa-gear"></i>
-					<span class="title">Settings</span>
-				</li>
 			</ul>
-			{% endif %}
 			<!-- END SIDEBAR MENU -->
 		</div>
 	</div>
+	{% else %}
+	<div class="page-sidebar-wrapper">
+			<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+			<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+			<div class="page-sidebar navbar-collapse collapse">
+				<!-- BEGIN SIDEBAR MENU -->
+				<!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+				<!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+				<!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+				<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+				<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+				<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+					<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+					<li class="sidebar-toggler-wrapper">
+						<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+						<div class="sidebar-toggler">
+						</div>
+						<!-- END SIDEBAR TOGGLER BUTTON -->
+					</li>
+					<li class="start ">
+						<a href="{% url 'evaluationapp:index' %}">
+							<i class="icon-home"></i>
+							<span class="title">Home</span>
+						</a>
+					</li>
+					<li class="evaluate-o">
+						<a href="{% url 'evaluationapp:evaluation_under_me' %}">
+							<i class=" fa fa-check-square-o tooltips" data-placement="bottom" data-original-title="Evaluate Others"></i>
+						 	<span id="menu-items-text" class="title tooltips">Evaluate Others</span>
+						</a>
+					</li>
+					<li class="evaluate-m">
+						<a href="{% url 'evaluationapp:my_evaluations' %}">
+							<i class="fa fa-thumbs-o-up tooltips" data-placement="bottom" data-original-title="My Feedback"></i>
+							<span id="menu-items-text" class="title tooltips">My Feedback</span>
+						</a>
+					</li>
+					<li class="last">
+						<a href="{% url 'evaluationapp:view_settings' %}">
+							<i class="fa fa-gear"></i>
+							<span class="title">Settings</span>
+							<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:index' %}">
+									<i class="fa fa-cloud-upload"></i>
+									<span class="title">Uploads</span>
+								</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:view_download' %}">
+									<i class="fa fa-cloud-download"></i>
+									<span class="title">Downloads</span>
+								</a>
+							</li>
+							<li>
+								<a href="{% url 'login:view_change_password' %}">
+								<i class="fa fa-key"></i>
+								Change Password</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<!-- END SIDEBAR MENU -->
+			</div>
+		</div>
+	{% endif %}
 	<!-- END SIDEBAR -->
 	<!-- BEGIN CONTENT -->
 	<div class="page-content-wrapper">
 		<div class="page-content">
 			<!-- BEGIN PAGE HEADER-->
+			<!-- <h3 class="page-title">
+			Downloads
+			</h3> -->
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
 					<li>
-						<i class="fa fa-gear"></i>
-						<a href="#">Settings</a>
+						<i class="fa fa-home"></i>
+						<a href="{% url 'evaluationapp:index' %}">Home</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
+					<li>
+						<i class="fa fa-dot-circle-o"></i>
+						<a href="{% url 'evaluationapp:target_home' %}">Targets</a>
 					</li>
 				</ul>
 			</div>
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN PAGE CONTENT-->
 			<div class="tiles">
-				{% if user.extendeduser.is_admin %}
-					<div class="tile double-down bg-blue-hoki">
-						<a href="{% url 'evaluationapp:grading_scheme_home' %}">
-							<div class="tile-body">
-								<i class="fa fa-building-o"></i>
+				<div class="tile double-down bg-blue-hoki">
+					<a href="{% url 'evaluationapp:assigntargettoteachers' %}">
+						<div class="tile-body">
+							<i class="fa fa-plus"></i>
+						</div>
+						<div class="tile-object">
+							<div class="name">
+								Assign
 							</div>
-							<div class="tile-object">
-								<div class="name">
-									 Grading Schemes
-								</div>
+						</div>
+					</a>
+				</div>
+				<div class="tile double bg-red-sunglo">
+					<a href="{% url 'evaluationapp:target_review' %}">
+						<div class="tile-body">
+							<i class="fa fa-search"></i>
+						</div>
+						<div class="tile-object">
+							<div class="name">
+								Review
 							</div>
-						</a>
-					</div>
-					<div class="tile double-down bg-green-seagreen">
-						<a href="{% url 'evaluationapp:index' %}">
-							<div class="tile-body">
-								<i class="fa fa-cloud-upload"></i>
-							</div>
-							<div class="tile-object">
-								<div class="name">
-									 Uploads
-								</div>
-							</div>
-						</a>
-					</div>
-					<div class="tile double-down bg-red-flamingo">
-						<a href="{% url 'evaluationapp:view_download' %}">
-							<div class="tile-body">
-								<i class="fa fa-cloud-download"></i>
-							</div>
-							<div class="tile-object">
-								<div class="name">
-									 Downloads
-								</div>
-							</div>
-						</a>
-					</div>
-					<div class="tile double-down bg-yellow-casablanca">
-						<a href="{% url 'evaluationapp:school_view' %}">
-							<div class="tile-body">
-								<i class="fa fa-graduation-cap"></i>
-							</div>
-							<div class="tile-object">
-								<div class="name">
-									 School
-								</div>
-							</div>
-						</a>
-					</div>
-					<div class="tile double bg-red-sunglo">
-						<a href="{% url 'evaluationapp:classes_view' %}">
-							<div class="tile-body">
-								<i class="fa fa-list-ol"></i>
-							</div>
-							<div class="tile-object">
-								<div class="name">
-									 Class
-								</div>
-							</div>
-						</a>
-					</div>
-					<div class="tile bg-purple-studio">
-						<a href="{% url 'evaluationapp:subjects_view' %}">
-							<div class="tile-body">
-								<i class="fa fa-book"></i>
-							</div>
-							<div class="tile-object">
-								<div class="name">
-									 Subject
-								</div>
-							</div>
-						</a>
-					</div>
-					<div class="tile bg-grey-cascade">
-						<a href="{% url 'login:view_change_password' %}">
-							<div class="tile-body">
-								<i class="fa fa-key"></i>
-							</div>
-							<div class="tile-object">
-								<div class="name">
-									 Change Password
-								</div>
-							</div>
-						</a>
-					</div>
-				{% else %}
-					<div class="tile bg-blue-madison">
-						<a href="{% url 'login:view_change_password' %}">
-							<div class="tile-body">
-								<i class="fa fa-key"></i>
-							</div>
-							<div class="tile-object">
-								<div class="name">
-									 Change Password
-								</div>
-							</div>
-						</a>
-					</div>
-				{% endif %}
+						</div>
+					</a>
+				</div>
 			</div>
 			<!-- END PAGE CONTENT-->
 		</div>
@@ -459,16 +424,18 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="{% static 'assets/admin/layout/scripts/layout.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/quick-sidebar.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/admin/layout/scripts/demo.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/global/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/bootstrap-select/bootstrap-select.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/select2/select2.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js' %}"></script>
+<script src="{% static 'assets/admin/pages/scripts/components-dropdowns.js' %}"></script>
 <script>
       jQuery(document).ready(function() {    
          	Metronic.init(); // init metronic core components
 			Layout.init(); // init current layout
 			QuickSidebar.init(); // init quick sidebar
 			Demo.init(); // init demo features
-
-			$('body').addClass("page-sidebar-closed");
-			$(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
-
+			ComponentsDropdowns.init();
       });
 </script>
 <!-- END JAVASCRIPTS -->

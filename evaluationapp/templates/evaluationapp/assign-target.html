@@ -376,7 +376,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     </li>
 					<li>
 						<i class="fa fa-dot-circle-o"></i>
-						<a href="#">Targets</a>
+						<a href="{% url 'evaluationapp:target_home' %}">Targets</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
@@ -454,7 +454,7 @@ License: You must have a valid license purchased only from themeforest(the above
 									<div class="row">
 										<div class="col-md-offset-3 col-md-9">
 											<button type="submit" class="btn green">Submit</button>
-											<button type="button" class="btn default">Cancel</button>
+											<button type="button" class="btn default" id="cancelAssignment">Cancel</button>
 										</div>
 									</div>
 								</div>
@@ -542,6 +542,10 @@ License: You must have a valid license purchased only from themeforest(the above
 				subButElem.removeAttr("disabled");
 			}
 		});
+	});
+
+	$("#cancelAssignment").on("click",function(event){
+		window.location.href = "/review-targets"
 	});
 </script>
 <!-- END JAVASCRIPTS -->
