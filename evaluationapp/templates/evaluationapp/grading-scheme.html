@@ -311,7 +311,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					</li>
 					<li>
 						<i class="fa fa-file-text-o"></i>
-						<a href="{% url 'evaluationapp:view_forms_home' %}">Forms</a>
+						<a href="{% url 'evaluationapp:view_forms_home' %}">Grading Schemes</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
@@ -522,7 +522,7 @@ License: You must have a valid license purchased only from themeforest(the above
 								{
 									$(".errorlist").remove();
 									if(obj.hasOwnProperty("success")){
-										window.location = "{% url 'evaluationapp:edit_evaluations' %}";
+										window.location = "{% url 'evaluationapp:grading_scheme_list' %}";
 									}
 									else{
 										for(var key in obj){
