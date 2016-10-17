@@ -392,29 +392,6 @@ License: You must have a valid license purchased only from themeforest(the above
                             </div>
                             <!-- END PORTLET-->
                         </div>
-                        <!-- <div class="col-md-6 col-sm-6">
-                            <div class="portlet box blue">
-                                <div class="portlet-title">
-                                    <div class="caption">
-                                        <i class="fa fa-gift"></i>Average Rating
-                                    </div>
-                                    <div class="tools">
-                                        <a href="javascript:;" class="collapse">
-                                        </a>
-                                        <a href="#portlet-config" data-toggle="modal" class="config">
-                                        </a>
-                                        <a href="javascript:;" class="reload">
-                                        </a>
-                                        <a href="javascript:;" class="remove">
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="portlet-body">
-                                    <div id="average-rating-graph" class="chart">
-                                    </div>
-                                </div>
-                            </div>    
-                        </div> -->
                     </div>
 
                     <div class="row">
@@ -571,6 +548,7 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="{% static 'assets/admin/pages/scripts/table-managed.js' %}"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
         <script>
+        $(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
         jQuery(document).ready(function() {    
             Metronic.init();
             Layout.init();
@@ -587,7 +565,6 @@ License: You must have a valid license purchased only from themeforest(the above
             ChartsFlotcharts.initCharts();
             ChartsFlotcharts.initBarCharts();
             TableManaged.init();
-            $(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
 
             var data = [];
             var series = 0;
