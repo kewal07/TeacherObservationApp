@@ -292,4 +292,4 @@ class EvaluationTargets(models.Model):
 	year = models.IntegerField(blank=True,null=True,default=0)
 	status = models.CharField(max_length=255)
 	def __str__(self):
-		return "Target of "+ str(self.target)+" evaluations assigned to "+self.teacher.first_name+" of "+self.school.school_name+" ( "+str(self.start_date)+" - "+str(self.end_date)+")" 
+		return "Target of "+ str(self.target)+" evaluations assigned to "+self.teacher.first_name+" of "+self.school.school_name+" ( "+ month +")" 
