@@ -848,6 +848,7 @@ class AssignEvaluationView(ListView):
 			is_surprised = post_data.get("issurprised",False)
 			tab3error = ""
 
+			classAndSubjectsOFEvaluatee = TeacherClassSubject.objects.filter(teacher=evaluatee)
 			if not classAndSubjectsOFEvaluatee:
 				tab3error += "Please Assign a Class and Subject to Teacher before Assigning an Evaluation."
 			if evaluatee == evaluator:
