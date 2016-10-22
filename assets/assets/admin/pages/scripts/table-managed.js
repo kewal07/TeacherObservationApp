@@ -210,10 +210,10 @@ var TableManaged = function () {
                 "lengthMenu": " _MENU_ records"
             },
             "columnDefs": [{  // set default column settings
-                'orderable': false,
+                'orderable': true,
                 'targets': [0]
             }, {
-                "searchable": false,
+                "searchable": true,
                 "targets": [0]
             }],
             "order": [
