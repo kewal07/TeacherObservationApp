@@ -364,25 +364,28 @@ License: You must have a valid license purchased only from themeforest(the above
 								<thead>
 									<tr>
 										<th>
-											 Employee Id
+											Employee Id
 										</th>
 										<th>
-											 Full Name
+											Full Name
 										</th>
 										<th>
-											 Duration
+											Month
 										</th>
 										<th>
-											 Form
+											Year
 										</th>
 										<th>
-											 Target
+											Form
 										</th>
 										<th>
-											 Completion
+											Target
 										</th>
 										<th>
-											 Delete
+											Completion
+										</th>
+										<th>
+											Delete
 										</th>
 									</tr>
 								</thead>
@@ -395,8 +398,11 @@ License: You must have a valid license purchased only from themeforest(the above
 											<td>
 												 {{ row.name }}
 											</td>
-											<td class="center">
-												 {{ row.duration }}
+											<td>
+												 {{ row.month }}
+											</td>
+											<td>
+												 {{ row.year }}
 											</td>
 											<td>
 												{{ row.form }}
@@ -408,7 +414,7 @@ License: You must have a valid license purchased only from themeforest(the above
 												{{ row.completion }} %
 											</td>
 											<td>
-												<a class="delete" href="javascript:;">
+												<a class="target-delete" id="target---{{ row.targetId }}" href="javascript:;">
 												Delete </a>
 											</td>
 										</tr>
@@ -460,6 +466,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <script type="text/javascript" src="{% static 'assets/global/plugins/select2/select2.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/global/plugins/datatables/media/js/jquery.dataTables.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js' %}"></script>
+<script src="{% static 'assets/global/plugins/bootbox/bootbox.min.js' %}" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
@@ -481,6 +488,29 @@ License: You must have a valid license purchased only from themeforest(the above
 	});
 	$('body').addClass("page-sidebar-closed");
 	$(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
+
+	$('.target-delete').click(function(event){
+		targetId = $(this).attr('id').split('---')[1];
+		bootbox.confirm("Are you sure?", function(){
+			$.ajax({
+				type: 'POST',
+				url:'/delete-target',
+				data:{'targetId':targetId,'csrfmiddlewaretoken': "{{ csrf_token }}" },
+				success:function(response)
+				{
+					if("success" in response){
+						bootbox.alert(response['success'], function(){
+							window.location.href = "/review-targets";
+						});
+					}else{
+						bootbox.alert(response['error'], function(){
+							window.location.href = "/review-targets";
+						});
+					}
+				}
+			});
+		});
+	});
 </script>
 <!-- END JAVASCRIPTS -->
 </body>

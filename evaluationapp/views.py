@@ -1390,8 +1390,6 @@ class AssignTargets(ListView):
 		try:
 			teacherid = int(request.POST.get('teacher',''))
 			month = request.POST.get('month','')
-			fromdate  = request.POST.get('from_date','')
-			todate    = request.POST.get('to_date')
 			teacherslist = request.POST.get('teacherslist','')
 			formTargets = {}
 			teacherUsers = []
@@ -1423,7 +1421,9 @@ class AssignTargets(ListView):
 			for teacher in teacherUsers:
 				for key,val in formTargets.items():
 					form = Form.objects.get(pk=int(key))
-					evaluationTarget = EvaluationTargets(school=currentUser.extendeduser.school, teacher=teacher, form=form, target=val,  month=month.split(',')[0], year=month.split(',')[1], status='N/A')
+					evaluationTarget, created = EvaluationTargets.objects.get_or_create(school=currentUser.extendeduser.school, teacher=teacher, form=form, month=month.split(',')[0], year=month.split(',')[1])
+					evaluationTarget.target = val
+					evaluationTarget.status = 'N/A'
 					evaluationTarget.save()
 			return HttpResponse(json.dumps({'success':'Target set successfully!!!'}), content_type='application/json')
 		except Exception as e:
@@ -1448,17 +1448,25 @@ class ReviewTargets(ListView):
 			context = {}
 			tgts = []
 			targets = EvaluationTargets.objects.filter(school=self.request.user.extendeduser.school)
-			
+			monthName = ['','January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 			for target in targets:
-				temp = {}
-				temp['id']       = target.teacher.id
-				temp['name']     = target.teacher.first_name+' '+target.teacher.last_name
-				temp['duration'] = str(target.start_date.strftime("%Y/%m/%d"))+' - '+str(target.end_date.strftime("%Y/%m/%d"))
-				temp['target']   = target.target
-				temp['form']     = target.form.form_name
-				evaluationInDuration = Evaluation.objects.filter(evaluator_id=target.teacher.id, completed_on__day__gte=target.start_date.day, completed_on__month__gte=target.start_date.month, completed_on__year__gte=target.start_date.year, completed_on__day__lt=target.end_date.day, completed_on__month__lt=target.end_date.month, completed_on__year__lt=target.end_date.year)
-				temp['completion'] = int(len(evaluationInDuration)) /int(target.target)
-				tgts.append(temp)
+				if not target.target == 0:
+					temp = {}
+					temp['id']       = target.teacher.id
+					temp['name']     = target.teacher.first_name+' '+target.teacher.last_name
+					temp['month']    = target.month
+					temp['year']     = target.year
+					temp['target']   = target.target
+					temp['form']     = target.form.form_name
+					temp['targetId'] = target.id
+					evaluationInMonth = Evaluation.objects.filter(evaluator_id=target.teacher.id, completed_on__year=target.year)
+					count = 0
+					for eval in evaluationInMonth:
+						if eval.completed_on.strftime('%B') == target.month:
+							count += 1
+					temp['completion'] = (count /int(target.target)) * 100
+					tgts.append(temp)
+					count = 0
 			context['targets'] = tgts
 			return context
 		except Exception as e:
@@ -1473,6 +1481,27 @@ class ReviewTargets(ListView):
 			line = linecache.getline(filename, lineno, f.f_globals)
 			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 			return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+
+def deleteTarget(request):
+	try:
+		targetId = request.POST.get('targetId',0)
+		target = EvaluationTargets.objects.get(pk=targetId)
+		target.delete()
+		return HttpResponse(json.dumps({'success':'Target Deleted Successfully!!!'}), content_type='application/json')
+		
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
+		exc_type, exc_obj, tb = sys.exc_info()
+		f = tb.tb_frame
+		lineno = tb.tb_lineno
+		filename = f.f_code.co_filename
+		linecache.checkcache(filename)
+		line = linecache.getline(filename, lineno, f.f_globals)
+		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+		return HttpResponse(json.dumps({'error':'Error Occured While Deleting Target !!!'}), content_type='application/json')
+
 
 def getEvaluationStatusStats(request):
 	try:
