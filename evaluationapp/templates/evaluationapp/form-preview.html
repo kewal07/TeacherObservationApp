@@ -468,7 +468,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					</div>
 				</div>
 			</div>
-			<div class="row distraction-free-mode">
+			<div class="row distraction-free-mode" id="pdf-body">
 				<div class="col-md-12">
 					<form action="#" class="form-horizontal" id="submit_form" method="POST" enctype="multipart/form-data">
 						<input type="hidden" name="survey-id" value="{{ form.id }}" />
@@ -545,9 +545,14 @@ License: You must have a valid license purchased only from themeforest(the above
 						{% endfor %}
 						<div class="form-actions">
 							<div class="row">
-								<div class="col-md-offset-3 col-md-9">
+								<div class="col-md-offset-3 col-md-3">
 									<a href="{% url 'evaluationapp:edit_evaluations' %}" class="btn green button-submit" id="vote{{ survey.id }}">
 									Submit <i class="m-icon-swapright m-icon-white"></i>
+									</a>
+								</div>
+								<div class="col-md-offset-3 col-md-3">
+									<a href="#" class="btn green button-submit" id="download-pdf">
+									Download <i class="m-icon-swapright m-icon-white"></i>
 									</a>
 								</div>
 							</div>
@@ -608,6 +613,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="{% static 'assets/admin/pages/scripts/form-samples.js ' %}"></script>
 <script src="{% static 'assets/global/plugins/ion.rangeslider/js/ion-rangeSlider/ion.rangeSlider.min.js' %}"></script>
 <script src="{% static 'assets/admin/pages/scripts/components-ion-sliders.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/html2canvas.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/global/plugins/jspdf-debug.js' %}"></script>
 <!-- End Page Level Scripts -->
 <script>
 	jQuery(document).ready(function() {    
@@ -623,6 +630,24 @@ License: You must have a valid license purchased only from themeforest(the above
 		$('.remove').click(function(event){
 			event.preventDefault();
 			window.location = "{% url 'evaluationapp:edit_evaluations' %}";
+		});
+
+		$('#download-pdf').click(function(event){
+			var a4  =[ 595.28,  841.89];
+			var doc = new jsPDF('p', 'pt', 'a4', false);
+			doc.setProperties({
+				title: 'Teacher Analysis',
+				subject: 'Teacher Analysis',
+				author: 'Eduzen',
+				creator: 'Eduzen'
+			});
+			html2canvas($("#pdf-body"), {
+				onrendered: function (canvas) {
+					var	pdfimg = (canvas.toDataURL("image/png"));
+					doc.addImage(pdfimg, 'JPEG',20,20);
+					doc.save("Teacher Analysis");
+				},
+			});
 		});
 
 		
