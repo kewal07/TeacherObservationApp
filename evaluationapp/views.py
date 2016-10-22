@@ -1313,45 +1313,10 @@ class AdminDashboard(ListView):
 	def get_template_names(self, **kwargs):
 		template_name = 'evaluationapp/dashboard.html'
 		return [template_name]
-
+	
 	def get_queryset(self):
-		try:
-			data = {}
-			totalStudents = 0
-
-			schoolTeacherList = User.objects.filter(extendeduser__school=self.request.user.extendeduser.school)
-			evaluations = Evaluation.objects.filter(evaluator__in=schoolTeacherList)
-			completedEvaluations = Evaluation.objects.filter(status__status_id=4)
-			totalClasses = SchoolGradeSection.objects.filter(school_id=self.request.user.extendeduser.school_id)
-			
-			completedEvaluations = evaluations.filter(status_id=4)
-			numCompletedEvaluations = len(completedEvaluations)
-
-			avgrating = 0.0
-
-			for evaluation in completedEvaluations:
-				avgrating += (evaluation.score/(1.0*numCompletedEvaluations))
-
-			data['avgrating'] = avgrating
-			data['totalEvaluations'] = len(evaluations)
-
-			if not len(evaluations) == 0:
-				data['percentageCompletion'] = (len(completedEvaluations)/len(evaluations))*100
-			else:
-				data['percentageCompletion'] = 0
-			return data
-		except Exception as e:
-			exc_type, exc_obj, exc_tb = sys.exc_info()
-			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-			print(exc_type, fname, exc_tb.tb_lineno)
-			exc_type, exc_obj, tb = sys.exc_info()
-			f = tb.tb_frame
-			lineno = tb.tb_lineno
-			filename = f.f_code.co_filename
-			linecache.checkcache(filename)
-			line = linecache.getline(filename, lineno, f.f_globals)
-			print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
-			return HttpResponseNotFound("Evaluation not found",content_type="application/json")
+		data = {}
+		return data
 
 class AssignTargets(ListView):
 	template_name = 'evaluationapp/assign-target.html'
@@ -1502,11 +1467,51 @@ def deleteTarget(request):
 		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 		return HttpResponse(json.dumps({'error':'Error Occured While Deleting Target !!!'}), content_type='application/json')
 
+def getDashboardKPI(request):
+	try:
+		start_date = datetime.datetime.strptime(request.POST.get('start_date',''), '%m/%d/%Y')
+		end_date = datetime.datetime.strptime(request.POST.get('end_date',''), '%m/%d/%Y')
+		data = {}
+		totalStudents = 0
+		schoolTeacherList = User.objects.filter(extendeduser__school=request.user.extendeduser.school)
+		evaluations = Evaluation.objects.filter(created_at__gte=start_date, created_at__lt=end_date, evaluator__in=schoolTeacherList)
+		totalClasses = SchoolGradeSection.objects.filter(school_id=request.user.extendeduser.school_id)
+		
+		completedEvaluations = evaluations.filter(status_id=4)
+		numCompletedEvaluations = len(completedEvaluations)
+
+		avgrating = 0.0
+
+		for evaluation in completedEvaluations:
+			avgrating += (evaluation.score/(1.0*numCompletedEvaluations))
+
+		data['avgrating'] = avgrating
+		data['totalEvaluations'] = len(evaluations)
+
+		if not len(evaluations) == 0:
+			data['percentageCompletion'] = (len(completedEvaluations)/len(evaluations))*100
+		else:
+			data['percentageCompletion'] = 0
+		return HttpResponse(json.dumps(data), content_type='application/json')
+	except Exception as E:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
+		exc_type, exc_obj, tb = sys.exc_info()
+		f = tb.tb_frame
+		lineno = tb.tb_lineno
+		filename = f.f_code.co_filename
+		linecache.checkcache(filename)
+		line = linecache.getline(filename, lineno, f.f_globals)
+		print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+		return HttpResponseNotFound("Evaluation not found",content_type="application/json")
 
 def getEvaluationStatusStats(request):
 	try:
-		evaluations = Evaluation.objects.filter(evaluator__extendeduser__school=request.user.extendeduser.school)
-		evaluationStates = Evaluation.objects.all().values('status__status_state').annotate(total=Count('status__status_state'))
+		start_date = datetime.datetime.strptime(request.POST.get('start_date',''), '%m/%d/%Y')
+		end_date = datetime.datetime.strptime(request.POST.get('end_date',''), '%m/%d/%Y')
+		#evaluations = Evaluation.objects.filter(created_at__gte=start_date, created_at__lt=end_date, evaluator__extendeduser__school=request.user.extendeduser.school)
+		evaluationStates = Evaluation.objects.filter(created_at__gte=start_date, created_at__lt=end_date, evaluator__extendeduser__school=request.user.extendeduser.school).values('status__status_state').annotate(total=Count('status__status_state'))
 		evState = []
 
 		for states in evaluationStates:
@@ -1530,8 +1535,10 @@ def getEvaluationStatusStats(request):
 
 def getRatingDistribution(request):
 	try:
-		evaluations = Evaluation.objects.filter(evaluator__extendeduser__school=request.user.extendeduser.school)
-		evaluationGrades = Evaluation.objects.all().values('grade').annotate(total=Count('grade'))
+		start_date = datetime.datetime.strptime(request.POST.get('start_date',''), '%m/%d/%Y')
+		end_date = datetime.datetime.strptime(request.POST.get('end_date',''), '%m/%d/%Y')
+		#evaluations = Evaluation.objects.filter(created_at__gte=start_date, created_at__lt=end_date, evaluator__extendeduser__school=request.user.extendeduser.school)
+		evaluationGrades = Evaluation.objects.filter(created_at__gte=start_date, created_at__lt=end_date, evaluator__extendeduser__school=request.user.extendeduser.school).values('grade').annotate(total=Count('grade'))
 		evGrade = []
 
 		for grades in evaluationGrades:
@@ -1556,25 +1563,29 @@ def getRatingDistribution(request):
 def teacherDetailsDashboard(request):
 	try:
 		response = []
-		fromDate = request.POST.get('fromdate')
-		toDate = request.POST.get('todate')
-
-		if not fromDate:
-			fromDate = datetime.datetime(1970, 12, 31, 23, 59, 59, 0)
-		else:
-			fromDate = fromDate.strftime("%Y/%m/%d")
-
-		if not toDate:
-			toDate = datetime.datetime.now()
-		else:
-			toDate = toDate.strftime("%Y/%m/%d")
+		start_date = datetime.datetime.strptime(request.POST.get('start_date',''), '%m/%d/%Y')
+		end_date = datetime.datetime.strptime(request.POST.get('end_date',''), '%m/%d/%Y')
 		teachers = User.objects.filter(extendeduser__school=request.user.extendeduser.school)
 
 		for teacher in teachers:
+			evaluations = Evaluation.objects.filter(evaluatee=teacher, created_at__gte=start_date, created_at__lt=end_date, evaluator__extendeduser__school=request.user.extendeduser.school)
+
+			totalScore = 0
+			count = 0
 			temp = {}
+
+			for evaluation in evaluations:
+				count += 1
+				totalScore += evaluation.score
+			
+			if not count == 0:
+				temp['rating'] = totalScore/count
+			else:
+				temp['rating'] = 'N/A'
 			temp['id'] = teacher.id
 			temp['name'] = teacher.first_name+' '+teacher.last_name
 			temp['profilepic'] = teacher.extendeduser.get_profile_pic_url()
+			temp['evaluations'] = len(evaluations)
 			response.append(temp)
 		return HttpResponse(json.dumps(response), content_type='application/json')
 	except Exception as e:
@@ -1796,7 +1807,6 @@ class EvaluationLevelReports(ListView):
 	def get_queryset(self, **kwargs):
 		context = {}
 		context['teachers'] = ExtendedUser.objects.filter(school=self.request.user.extendeduser.school).filter(is_admin=0)
-		#context['evaluations'] = Evaluation.objects.filter(is_public=1).filter(user__extendeduser__school=self.request.user.extendeduser.school)
 		return context
 
 

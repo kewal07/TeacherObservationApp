@@ -54,6 +54,7 @@ urlpatterns = [
     url(r'^target-home$', login_required(TemplateView.as_view(template_name='evaluationapp/target-home.html')), name='target_home'),
     url(r'^review-targets$', login_required(views.ReviewTargets.as_view()), name='target_review'),
 	url(r'^delete-target$', login_required(views.deleteTarget), name='target_delete'),
+	url(r'^get-dashboard-kpi', login_required(views.getDashboardKPI), name='dashboard_kpi'),
     url(r'^get-evaluation-status-stats$', login_required(views.getEvaluationStatusStats), name='evaluationStatusStats'),
     url(r'^get-rating-distribution$', login_required(views.getRatingDistribution), name='ratingDistribution'),
     url(r'^teachers-details-dashboard$', login_required(views.teacherDetailsDashboard), name='teacherDetailsTable'),

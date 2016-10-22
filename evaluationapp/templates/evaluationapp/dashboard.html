@@ -308,8 +308,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <i class="fa fa-shopping-cart"></i>
                                 </div>
                                 <div class="details">
-                                    <div class="number">
-                                        {{ data.totalEvaluations }}
+                                    <div class="number" id="number-of-evaluations">
                                     </div>
                                     <div class="desc">
                                          Evaluations
@@ -323,8 +322,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <i class="fa fa-bar-chart-o"></i>
                                 </div>
                                 <div class="details">
-                                    <div class="number">
-                                        {{ data.percentageCompletion }} %
+                                    <div class="number" id="percentage-completion">
                                     </div>
                                     <div class="desc">
                                          Percentage Completion
@@ -338,8 +336,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <i class="fa fa-comments"></i>
                                 </div>
                                 <div class="details">
-                                    <div class="number">
-                                        {{ data.avgrating }} %
+                                    <div class="number" id="average-rating">
                                     </div>
                                     <div class="desc">
                                          Average Rating
@@ -396,20 +393,13 @@ License: You must have a valid license purchased only from themeforest(the above
                             <div class="portlet box grey-cascade">
                                 <div class="portlet-title">
                                     <div class="caption">
-                                        <i class="fa fa-globe"></i>Managed Table
-                                    </div>
-                                    <div class="tools">
-                                        <a href="javascript:;" class="collapse">
-                                        </a>
+                                        <i class="fa fa-globe"></i>Teacher Detail
                                     </div>
                                 </div>
                                 <div class="portlet-body">
-                                    <table class="table table-striped table-bordered table-hover" id="sample_1">
+                                    <table class="table table-striped table-bordered table-hover" id="sample_3">
                                     <thead>
                                         <tr>
-                                            <th class="table-checkbox">
-                                                <input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes"/>
-                                            </th>
                                             <th>
                                                  Id
                                             </th>
@@ -417,10 +407,10 @@ License: You must have a valid license purchased only from themeforest(the above
                                                  Name
                                             </th>
                                             <th>
-                                                 Target
+                                                 Evaluations
                                             </th>
                                             <th>
-                                                 Completed
+                                                 Rating
                                             </th>
                                             <th>
                                                  Detail Analysis
@@ -536,7 +526,22 @@ License: You must have a valid license purchased only from themeforest(the above
             $('.applyBtn').on('click', function(event){
                 start_date = $('.daterangepicker_start_input input')[0].value;
                 end_date = $('.daterangepicker_end_input input')[0].value;
+                getDashBoardKPIs();
             });
+
+            function getDashBoardKPIs(){
+                $.ajax({
+                    type: 'POST',
+                    url:'/get-dashboard-kpi',
+                    data:{'csrfmiddlewaretoken': "{{ csrf_token }}", 'start_date':start_date, 'end_date':end_date},
+                    success:function(response)
+                    {
+                        $('#number-of-evaluations').html(response['totalEvaluations']);
+                        $('#percentage-completion').text(response['percentageCompletion']);
+                        $('#average-rating').text(response['avgrating']);
+                    }
+                });
+            }
 
             function ratingDistributionChart(){
                 $.ajax({
@@ -625,68 +630,27 @@ License: You must have a valid license purchased only from themeforest(the above
                 $.ajax({
                     type: 'POST',
                     url:'/teachers-details-dashboard',
-                    data:{'fromdate':$('#teacher-detail-fromdate').text(), 'todate':$('#teacher-detail-todate').text(), 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                    data:{'fromdate':$('#teacher-detail-fromdate').text(), 'todate':$('#teacher-detail-todate').text(), 'csrfmiddlewaretoken': '{{ csrf_token }}', 'start_date':start_date, 'end_date':end_date},
                     success:function(response)
                     {
                         for(var i=0; i<response.length; i++){
-                            $('#teacher-detail-table').append('<tr><td><input type="checkbox" class="checkboxes" value="1"/></td><td>'+response[i].id+'</td><td>'+response[i].name+'</td><td>25</td><td>20</td><td><a href="{% url "evaluationapp:teacher_dashboard" user.id %}"> Analyze </a> </td></tr>');
+                            if(response[i].rating !== 'N/A' && response[i].rating > 80){
+                                $('#teacher-detail-table').append('<tr><td>'+response[i].id+'</td><td>'+response[i].name+'</td><td>'+response[i].evaluations+'</td><td><span class="label label-sm label-success">'+response[i].rating+'</span></td><td><a href="{% url "evaluationapp:teacher_dashboard" user.id %}"> Analyze </a> </td></tr>');
+                            } else if(response[i].rating !== 'N/A' && response[i].rating > 60){
+                                $('#teacher-detail-table').append('<tr><td>'+response[i].id+'</td><td>'+response[i].name+'</td><td>'+response[i].evaluations+'</td><td><span class="label label-sm label-warning">'+response[i].rating+'</span></td><td><a href="{% url "evaluationapp:teacher_dashboard" user.id %}"> Analyze </a> </td></tr>');
+                            } else if(response[i].rating !== 'N/A'){
+                                $('#teacher-detail-table').append('<tr><td>'+response[i].id+'</td><td>'+response[i].name+'</td><td>'+response[i].evaluations+'</td><td><span class="label label-sm label-danger">'+response[i].rating+'</span></td><td><a href="{% url "evaluationapp:teacher_dashboard" user.id %}"> Analyze </a> </td></tr>');
+                            } else {
+                                $('#teacher-detail-table').append('<tr><td>'+response[i].id+'</td><td>'+response[i].name+'</td><td>'+response[i].evaluations+'</td><td><span class="label label-sm label-default">'+response[i].rating+'</span></td><td><a href="{% url "evaluationapp:teacher_dashboard" user.id %}"> Analyze </a> </td></tr>');
+                            }
                         }
                     }
                 });
             }
-
-            function averageRatingAnalysis(){
-                var data = GenerateSeries(0);
-
-                function GenerateSeries(added) {
-                    var data = [];
-                    var start = 1 + added;
-                    var end = 2 + added;
-
-                    for (i = 1; i <= 12; i++) {
-                        var d = Math.floor(Math.random() * (end - start + 1) + start);
-                        data.push([i, d]);
-                        start++;
-                        end++;
-                    }
-                    return data;
-                }
-
-                var options = {
-                    series: {
-                        bars: {
-                            show: true
-                        }
-                    },
-                    bars: {
-                        barWidth: 0.8,
-                        lineWidth: 0.5, // in pixels
-                        shadowSize: 0.5,
-                        align: 'left'
-                    },
-
-                    grid: {
-                        tickColor: "#eee",
-                        borderColor: "#eee",
-                        borderWidth: 1
-                    }
-                };
-
-
-                if ($('#average-rating-graph').size() !== 0) {
-                    $.plot($("#average-rating-graph"), [{
-                        data: data,
-                        lines: {
-                            lineWidth: 1,
-                        },
-                        shadowSize: 0
-                    }], options);
-                }
-            }
+            getDashBoardKPIs();
             teacherDetailAnalysis();
             evaluationStatusStats();
             ratingDistributionChart()
-            averageRatingAnalysis();
         });
 </script>
 </body>
