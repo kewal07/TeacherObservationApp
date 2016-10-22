@@ -400,6 +400,8 @@ def createFormQues(form,ques_list,curtime,user,edit):
 				horizontalOptions = 1
 			if que['na']:
 				na = 1
+			else:
+				na = 0
 			if que['weight']:
 				que['weight'] = int(que['weight'])
 			else:
@@ -1356,8 +1358,16 @@ class AssignTargets(ListView):
 			context = {}
 			schoolTeacherList = User.objects.filter(extendeduser__school=self.request.user.extendeduser.school)
 			formsCreatedBySchool = Form.objects.filter(user__extendeduser__school=self.request.user.extendeduser.school)
+			currentDateTime = datetime.datetime.now()
+			delta = datetime.timedelta(365/12)
+
+			temp = [currentDateTime.strftime('%B')+', '+str(currentDateTime.year) ]
+			for i in range(12):
+				currentDateTime += delta
+				temp.append(currentDateTime.strftime('%B')+', '+str(currentDateTime.year))
 			context['teachers'] = schoolTeacherList
 			context['forms'] = formsCreatedBySchool
+			context['months'] = temp
 			return context
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -1375,21 +1385,15 @@ class AssignTargets(ListView):
 	def post(self, request, *args, **kwargs):
 		try:
 			teacherid = int(request.POST.get('teacher',''))
+			month = request.POST.get('month','')
 			fromdate  = request.POST.get('from_date','')
 			todate    = request.POST.get('to_date')
 			teacherslist = request.POST.get('teacherslist','')
 			formTargets = {}
 			teacherUsers = []
 
-			if not fromdate == '' or not fromdate == None:
-				fd = datetime.datetime.strptime(fromdate, '%m/%d/%Y')
-			else:
-				return HttpResponse(json.dumps({'error':'Invalid from date'}), content_type='application/json')
-
-			if not todate == '' or not todate == None:
-				td = datetime.datetime.strptime(todate, '%m/%d/%Y')
-			else:
-				return HttpResponse(json.dumps({'error':'Invalid to date'}), content_type='application/json')
+			if month == '' or month == None:
+				return HttpResponse(json.dumps({'error':'Invalid Month'}), content_type='application/json')
 
 			try:
 				if teacherslist:
@@ -1406,6 +1410,8 @@ class AssignTargets(ListView):
 
 			for key,val in request.POST.items():
 				if key.startswith("form_"):
+					if val == None or val == '':
+						val = 0
 					formTargets[key.split('_')[1]] = val
 
 			currentUser = self.request.user
@@ -1413,7 +1419,7 @@ class AssignTargets(ListView):
 			for teacher in teacherUsers:
 				for key,val in formTargets.items():
 					form = Form.objects.get(pk=int(key))
-					evaluationTarget = EvaluationTargets(school=currentUser.extendeduser.school, teacher=teacher, form=form, target=val,  start_date=fd, end_date=td, status='N/A')
+					evaluationTarget = EvaluationTargets(school=currentUser.extendeduser.school, teacher=teacher, form=form, target=val,  month=month.split(',')[0], year=month.split(',')[1], status='N/A')
 					evaluationTarget.save()
 			return HttpResponse(json.dumps({'success':'Target set successfully!!!'}), content_type='application/json')
 		except Exception as e:

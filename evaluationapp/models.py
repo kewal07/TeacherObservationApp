@@ -288,8 +288,8 @@ class EvaluationTargets(models.Model):
 	teacher = models.ForeignKey(settings.AUTH_USER_MODEL)
 	form = models.ForeignKey(Form)
 	target = models.IntegerField(blank=True,null=True,default=0)
-	start_date = models.DateTimeField(blank=True, null=True, auto_now_add=True)
-	end_date = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+	month = models.CharField(blank=False,null=False,default='October', max_length=25)
+	year = models.IntegerField(blank=True,null=True,default=0)
 	status = models.CharField(max_length=255)
 	def __str__(self):
 		return "Target of "+ str(self.target)+" evaluations assigned to "+self.teacher.first_name+" of "+self.school.school_name+" ( "+str(self.start_date)+" - "+str(self.end_date)+")" 
