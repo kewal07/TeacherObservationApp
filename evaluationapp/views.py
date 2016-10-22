@@ -847,6 +847,9 @@ class AssignEvaluationView(ListView):
 			is_peer = post_data.get("ispeer",False)
 			is_surprised = post_data.get("issurprised",False)
 			tab3error = ""
+
+			if not classAndSubjectsOFEvaluatee:
+				tab3error += "Please Assign a Class and Subject to Teacher before Assigning an Evaluation."
 			if evaluatee == evaluator:
 				tab3error += "Evaluator & Evaluatee cannot be the same person"
 			if Evaluation.objects.filter(evaluation_name=evaluation_name):
