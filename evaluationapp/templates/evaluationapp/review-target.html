@@ -354,7 +354,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						<div class="tools">
 							<a href="javascript:;" class="collapse">
 							</a>
-							<a href="javascript:;" class="remove" title="Close">
+							<a href="{% url 'evaluationapp:target_home' %}" class="remove" title="Close">
 							</a>
 						</div>
 					</div>
@@ -488,6 +488,10 @@ License: You must have a valid license purchased only from themeforest(the above
 	});
 	$('body').addClass("page-sidebar-closed");
 	$(".page-sidebar-menu").addClass("page-sidebar-menu-closed");
+
+	$('.remove').click(function(event){
+		window.location.href="{% url 'evaluationapp:target_home' %}";
+	});
 
 	$('.target-delete').click(function(event){
 		targetId = $(this).attr('id').split('---')[1];
