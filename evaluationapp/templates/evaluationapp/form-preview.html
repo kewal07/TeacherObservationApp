@@ -516,7 +516,7 @@ License: You must have a valid license purchased only from themeforest(the above
 													{{ question.answer }}
 												</textarea>
 											{% elif question.type == "rating" %}
-												<input id="range_6" type="text" name="range{{ question.question.id }}" value="{{ question.min_value }};{{ question.max_value }}"/>
+												<input id="range_2" type="text" name="range{{ question.question.id }}" value="{{ question.min_value }};{{ question.max_value }}" class="rangeSlider" />
 											{% else %}
 												<div class="input-group">
 													{% for choice in question.question.choice_set.all %}
@@ -666,27 +666,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			$(".distraction-free-mode").show();
 		});
 
-		// $('.surveySubmit').click(function(){
-		// 	var subButElem = $(this);
-		// 	subButElem.attr("disabled","disabled");
-		// 	$(".errorlist").remove();
-		// 	var form_data = $("#submit_form").serialize();
-		// 	$.ajax({
-		// 		type: 'POST',
-		// 		url:'',
-		// 		data:form_data,
-		// 		success:function(response)
-		// 		{
-		// 			if("success" in response){
-		// 			}else{
-		// 				for(key in response){
-		// 					$("#survey-question"+key).append('<span class="errorlist">'+response[key]+'</span>');
-		// 				}
-		// 			}
-		// 			subButElem.removeAttr("disabled");
-		// 		}
-		// 	});
-		// });
+		$("#distraction-free-mode").click();
 	});
 </script>
 </body>

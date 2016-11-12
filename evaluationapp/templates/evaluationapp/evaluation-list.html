@@ -491,9 +491,21 @@ License: You must have a valid license purchased only from themeforest(the above
 											</td>
 											<td>
 												{% if request.path == '/evaluation-under-me' %}
-													<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">Start Evaluation</button></a>
+													<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">
+														{% if evaluation.status.status_state == 'Ongoing' %}
+															Evaluate
+														{% else %}
+															View
+														{% endif %}
+													</button></a>
 												{% else %}
-													<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">View</button></a>
+													<a href="{% url 'evaluationapp:view_evaluation' evaluation.evaluation_form.id evaluation.evaluation_form.form_slug  evaluation.id %}"><button type="button" class="btn btn-primary">
+														{% if evaluation.status.status_state == 'Ongoing' %}
+															Evaluate
+														{% else %}
+															View
+														{% endif %}
+													</button></a>
 												{% endif %}
 												
 												{% if evaluation.status.status_state == 'Ongoing' %}

@@ -495,24 +495,26 @@ License: You must have a valid license purchased only from themeforest(the above
 
 	$('.target-delete').click(function(event){
 		targetId = $(this).attr('id').split('---')[1];
-		bootbox.confirm("Are you sure?", function(){
-			$.ajax({
-				type: 'POST',
-				url:'/delete-target',
-				data:{'targetId':targetId,'csrfmiddlewaretoken': "{{ csrf_token }}" },
-				success:function(response)
-				{
-					if("success" in response){
-						bootbox.alert(response['success'], function(){
-							window.location.href = "/review-targets";
-						});
-					}else{
-						bootbox.alert(response['error'], function(){
-							window.location.href = "/review-targets";
-						});
+		bootbox.confirm("Are you sure?", function(result){
+			if(result){
+				$.ajax({
+					type: 'POST',
+					url:'/delete-target',
+					data:{'targetId':targetId,'csrfmiddlewaretoken': "{{ csrf_token }}" },
+					success:function(response)
+					{
+						if("success" in response){
+							bootbox.alert(response['success'], function(){
+								window.location.href = "/review-targets";
+							});
+						}else{
+							bootbox.alert(response['error'], function(){
+								window.location.href = "/review-targets";
+							});
+						}
 					}
-				}
-			});
+				});
+			}
 		});
 	});
 </script>

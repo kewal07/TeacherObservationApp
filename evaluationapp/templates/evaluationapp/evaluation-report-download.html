@@ -114,169 +114,221 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
 	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<!-- BEGIN SIDEBAR MENU -->
-			<!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
-			<!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
-			<!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
-			<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-			<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
-			<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-			<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-				<!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
-				<li class="sidebar-toggler-wrapper">
-					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
-					<div class="sidebar-toggler">
-					</div>
-					<!-- END SIDEBAR TOGGLER BUTTON -->
-				</li>
-				<li class="start ">
-					<a href="{% url 'evaluationapp:index' %}">
-						<i class="icon-home"></i>
-						<span class="title">Home</span>
-					</a>
-				</li>
-				<li>
-					<a href="{% url 'evaluationapp:evaluation_home' %}">
-					<fa class="fa fa-check-square-o"></fa>
-					<span class="title">Evaluations</span>
-					<span class="arrow "></span>
-					</a>
-					<ul class="sub-menu">
-						<li>
-							<a href="{% url 'evaluationapp:evaluation_assign' %}">
-							<fa class="fa fa-plus"></fa>
-							Assign</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:evaluation_review' %}">
-							<i class="fa fa-search"></i>
-							Review</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:evaluation_archive' %}">
-							<i class="fa fa-archive"></i>
-							Archive</a>
-						</li>
-						
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:;">
-						<i class="fa fa-file-text-o"></i>
-						<span class="title">Forms</span>
+	{% if user.extendeduser.is_admin %}
+		<div class="page-sidebar-wrapper">
+			<div class="page-sidebar navbar-collapse collapse">
+				<!-- BEGIN SIDEBAR MENU -->
+				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+					<li class="sidebar-toggler-wrapper">
+						<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+						<div class="sidebar-toggler">
+						</div>
+						<!-- END SIDEBAR TOGGLER BUTTON -->
+					</li>
+					<li class="start ">
+						<a href="{% url 'evaluationapp:index' %}">
+							<i class="icon-home"></i>
+							<span class="title">Home</span>
+						</a>
+					</li>
+					<li>
+						<a href="{% url 'evaluationapp:evaluation_home' %}">
+						<fa class="fa fa-check-square-o"></fa>
+						<span class="title">Evaluations</span>
 						<span class="arrow "></span>
-					</a>
-					<ul class="sub-menu">
-						<li>
-							<a href="{% url 'evaluationapp:create-form' %}">
-							<i class="fa fa-plus"></i>
-							Create</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:edit_evaluations' %}">
-							<i class="fa fa-edit"></i>
-							View</a>
-						</li>
-						<li>
-							<a href="#">
-							<i class="fa fa-archive"></i>
-							Archived</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:;">
-					<fa class="fa fa-dot-circle-o"></fa>
-					<span class="title">Targets</span>
-					<span class="arrow "></span>
-					</a>
-					<ul class="sub-menu">
-						<li>
-							<a href="{% url 'evaluationapp:assigntargettoteachers' %}">
-							<fa class="fa fa-plus"></fa>
-							Assign</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:target_review' %}">
-							<i class="fa fa-search"></i>
-							Review</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="{% url 'evaluationapp:dashboard' user.extendeduser.school.school_name %}">
-						<i class="fa fa-bar-chart"></i>
-						<span class="title">Analytics</span>
-					</a>
-				</li>
-				<li class="last">
-					<a href="{% url 'evaluationapp:view_settings' %}">
-						<i class="fa fa-gear"></i>
-						<span class="title">Settings</span>
-						<span class="arrow "></span>
-					</a>
-					<ul class="sub-menu">
-						<li>
-							<a href="javascript:;">
-							<fa class="fa fa-building-o"></fa>
-							<span class="title">Grading Schemes</span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:evaluation_assign' %}">
+								<fa class="fa fa-plus"></fa>
+								Assign</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:evaluation_review' %}">
+								<i class="fa fa-search"></i>
+								Review</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:evaluation_archive' %}">
+								<i class="fa fa-archive"></i>
+								Archive</a>
+							</li>
+							
+						</ul>
+					</li>
+					<li>
+						<a href="javascript:;">
+							<i class="fa fa-file-text-o"></i>
+							<span class="title">Forms</span>
 							<span class="arrow "></span>
-							</a>
-							<ul class="sub-menu">
-								<li>
-									<a href="{% url 'evaluationapp:grade_scheme_create' %}">
-									<fa class="fa fa-plus"></fa>
-									Create</a>
-								</li>
-								<li>
-									<a href="{% url 'evaluationapp:grading_scheme_list' %}">
-									<i class="fa fa-search"></i>
-									Review</a>
-								</li>
-							</ul>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:index' %}">
-								<i class="fa fa-cloud-upload"></i>
-								<span class="title">Uploads</span>
-							</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:view_download' %}">
-								<i class="fa fa-cloud-download"></i>
-								<span class="title">Downloads</span>
-							</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:school_view' %}">
-							<fa class="fa fa-graduation-cap"></fa>
-							School</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:classes_view' %}">
-							<i class="fa fa-list-ol"></i>
-							Class</a>
-						</li>
-						<li>
-							<a href="{% url 'evaluationapp:subjects_view' %}">
-							<i class="fa fa-book"></i>
-							Subjects</a>
-						</li>
-						<li>
-							<a href="{% url 'login:view_change_password' %}">
-							<i class="fa fa-key"></i>
-							Change Password</a>
-						</li>
-					</ul>
-				</li>
-			</ul>
-			<!-- END SIDEBAR MENU -->
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:create-form' %}">
+								<i class="fa fa-plus"></i>
+								Create</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:edit_evaluations' %}">
+								<i class="fa fa-edit"></i>
+								View</a>
+							</li>
+							<li>
+								<a href="#">
+								<i class="fa fa-archive"></i>
+								Archived</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="javascript:;">
+						<fa class="fa fa-dot-circle-o"></fa>
+						<span class="title">Targets</span>
+						<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:assigntargettoteachers' %}">
+								<fa class="fa fa-plus"></fa>
+								Assign</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:target_review' %}">
+								<i class="fa fa-search"></i>
+								Review</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="{% url 'evaluationapp:dashboard' user.extendeduser.school.school_name %}">
+							<i class="fa fa-bar-chart"></i>
+							<span class="title">Analytics</span>
+						</a>
+					</li>
+					<li class="last">
+						<a href="{% url 'evaluationapp:view_settings' %}">
+							<i class="fa fa-gear"></i>
+							<span class="title">Settings</span>
+							<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="javascript:;">
+								<fa class="fa fa-building-o"></fa>
+								<span class="title">Grading Schemes</span>
+								<span class="arrow "></span>
+								</a>
+								<ul class="sub-menu">
+									<li>
+										<a href="{% url 'evaluationapp:grade_scheme_create' %}">
+										<fa class="fa fa-plus"></fa>
+										Create</a>
+									</li>
+									<li>
+										<a href="{% url 'evaluationapp:grading_scheme_list' %}">
+										<i class="fa fa-search"></i>
+										Review</a>
+									</li>
+								</ul>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:index' %}">
+									<i class="fa fa-cloud-upload"></i>
+									<span class="title">Uploads</span>
+								</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:view_download' %}">
+									<i class="fa fa-cloud-download"></i>
+									<span class="title">Downloads</span>
+								</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:school_view' %}">
+								<fa class="fa fa-graduation-cap"></fa>
+								School</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:classes_view' %}">
+								<i class="fa fa-list-ol"></i>
+								Class</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:subjects_view' %}">
+								<i class="fa fa-book"></i>
+								Subjects</a>
+							</li>
+							<li>
+								<a href="{% url 'login:view_change_password' %}">
+								<i class="fa fa-key"></i>
+								Change Password</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<!-- END SIDEBAR MENU -->
+			</div>
 		</div>
-	</div>
+	{% else %}
+		<div class="page-sidebar-wrapper">
+			<div class="page-sidebar navbar-collapse collapse">
+				<!-- BEGIN SIDEBAR MENU -->
+				<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+					<li class="sidebar-toggler-wrapper">
+						<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+						<div class="sidebar-toggler">
+						</div>
+						<!-- END SIDEBAR TOGGLER BUTTON -->
+					</li>
+					<li class="start ">
+						<a href="{% url 'evaluationapp:index' %}">
+							<i class="icon-home"></i>
+							<span class="title">Home</span>
+						</a>
+					</li>
+					<li class="evaluate-o">
+						<a href="{% url 'evaluationapp:evaluation_under_me' %}">
+							<i class=" fa fa-check-square-o tooltips" data-placement="bottom" data-original-title="Evaluate Others"></i>
+						 	<span id="menu-items-text" class="title tooltips">Evaluate Others</span>
+						</a>
+					</li>
+					<li class="evaluate-m">
+						<a href="{% url 'evaluationapp:my_evaluations' %}">
+							<i class="fa fa-thumbs-o-up tooltips" data-placement="bottom" data-original-title="My Feedback"></i>
+							<span id="menu-items-text" class="title tooltips">My Feedback</span>
+						</a>
+					</li>
+					<li class="last">
+						<a href="{% url 'evaluationapp:view_settings' %}">
+							<i class="fa fa-gear"></i>
+							<span class="title">Settings</span>
+							<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="{% url 'evaluationapp:index' %}">
+									<i class="fa fa-cloud-upload"></i>
+									<span class="title">Uploads</span>
+								</a>
+							</li>
+							<li>
+								<a href="{% url 'evaluationapp:view_download' %}">
+									<i class="fa fa-cloud-download"></i>
+									<span class="title">Downloads</span>
+								</a>
+							</li>
+							<li>
+								<a href="{% url 'login:view_change_password' %}">
+								<i class="fa fa-key"></i>
+								Change Password</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<!-- END SIDEBAR MENU -->
+			</div>
+		</div>
+	{% endif %}
 	<!-- END SIDEBAR -->
 	<!-- BEGIN CONTENT -->
 	<div class="page-content-wrapper">
