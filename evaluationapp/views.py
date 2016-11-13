@@ -1969,6 +1969,9 @@ def get_pdf_html(extra_context_data = {}):
 		template_name = "form_wise_pdf_report.html"
 		context = {}
 		extra_context_data['domain_url'] = settings.DOMAIN_URL
+		print('*********************************************')
+		print(extra_context_data)
+		print('*********************************************')
 		for key in extra_context_data:
 			context[key] = extra_context_data[key]
 		html = render_to_string(template_name, context)
