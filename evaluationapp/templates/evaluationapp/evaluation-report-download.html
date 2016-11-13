@@ -455,6 +455,10 @@ License: You must have a valid license purchased only from themeforest(the above
 			ComponentsPickers.init();
 			ComponentsDropdowns.init();
 
+			$('#evaluation_per_teacher_per_form_download').click(function(event){
+				bootbox.alert("Still Under Development");
+			});
+
 			function populateEvaluations(){
 				$('#evaluation-select').empty();
 				console.log($('#teacher-select').find(":selected").attr('value'));
