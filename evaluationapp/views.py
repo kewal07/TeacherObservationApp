@@ -1858,7 +1858,7 @@ class FormLevelReports(ListView):
 					if ev_date > fd and ev_date < td:
 						qv = []
 						for q in questions:
-							v = Vote.objects.filter(evaluation=ev, user_id=evaluator_id)
+							v = Vote.objects.filter(evaluation=ev, user_id=evaluator_id, question=q)
 							if v:
 								qv.append([v[0].question.question_text, v[0].choice.choice_text])
 							else:
