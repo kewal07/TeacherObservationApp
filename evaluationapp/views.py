@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.db.models import Count
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.views.generic import ListView,DetailView
 from evaluationapp.models import Grade,School,Subject,Form, Category, FormWithCategory, FormSection, FormQuestion, Question, Choice, FormVoted, Voted, VoteText, Vote, Evaluation, TeacherClassSubject, SchoolGradeSection, EvaluationTargets, GradeSchemes, GradesRange, Status
 from evaluationapp import evappconstants
@@ -19,6 +19,8 @@ import requests
 import uuid
 import base64
 from django.template.loader import render_to_string
+from django.contrib.auth import login
+from allauth.account.models import EmailAddress
 
 class TestView(ListView):
 	template_name = 'evaluationapp/test.html'
@@ -1195,7 +1197,7 @@ def write_on_sheet1(ws0, form_question_list):
 def get_token_from_code(auth_code, redirect_uri):
 	scopes = ['openid', 'https://outlook.office.com/mail.read']
 	authority = 'https://login.microsoftonline.com'
-	token_url = '{0}{1}'.format(authority, '/common/oauth2/v2.0/token')
+	token_url = '{0}{1}'.format(authority, '/common/oauth2/token')
 	post_data = {
 		'grant_type': 'authorization_code',
         	'code': auth_code,
@@ -1224,21 +1226,48 @@ def get_user_email_from_id_token(id_token):
 	# URL-safe base64 decode the token parts
 	decoded = base64.urlsafe_b64decode(encoded_token.encode('utf-8')).decode('utf-8')
 	jwt = json.loads(decoded)
-	return jwt['preffered_username']
+	return jwt
 
 def gettoken(request):
-	auth_code = request.GET['code']
-	redirect_uri = request.build_absolute_uri(reverse('evaluationapp:gettoken'))
-	token = get_token_from_code(auth_code, redirect_uri)
-	access_token = token['access_token']
-	user_email = get_user_email_from_id_token(token['id_token'])
-	request.session['access_token'] = access_token
-	request.session['user_email'] = user_email 
 	try:
-		print(r.json())
-		return r.json()
-	except:
-		return 'Error retrieving token: {0} - {1}'.format(r.status_code, r.text)
+		auth_code = request.GET['code']
+		redirect_uri = request.build_absolute_uri(reverse('evaluationapp:gettoken'))
+		token = get_token_from_code(auth_code, redirect_uri)
+		access_token = token['access_token']
+		jwt = get_user_email_from_id_token(token['id_token'])
+		user_email = jwt['upn']
+		user_name = jwt['given_name']
+		existingUser = User.objects.filter(email=user_email)
+	
+		if existingUser:
+			existingUser = existingUser[0]
+			existingUser.backend = 'django.contrib.auth.backends.ModelBackend'
+			login(request, existingUser)
+		else:
+			tempusername = User.objects.filter(username=jwt['given_name'])
+			if not tempusername:
+				tempusername=jwt['given_name']
+			else:
+				i = 1
+				while tempusername:
+					temptestusername = jwt['given_name'] + str(i)
+					i = i + 1
+					tempusername = User.objects.filter(username=temptestusername)
+				tempusername = temptestusername
+
+			newUser = User(first_name=jwt['given_name'], email=user_email, username=tempusername)
+			newUser.save()
+			new_extended_user = ExtendedUser(user=newUser)
+			new_extended_user.save()
+			newUserMailStatus = EmailAddress(email=user_email, verified=1, primary=1, user=newUser)
+			newUserMailStatus.save()
+			newUser.backend = 'django.contrib.auth.backends.ModelBackend'
+			login(request, newUser)
+		url = reverse('evaluationapp:index')
+		return HttpResponseRedirect(url)
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		print(' Exception occured in function %s() at line number %d of %s,\n%s:%s ' % (exc_tb.tb_frame.f_code.co_name, exc_tb.tb_lineno, __file__, exc_type.__name__, exc_obj))
 
 def getteachersubjects_in_section(request):
 	try:
