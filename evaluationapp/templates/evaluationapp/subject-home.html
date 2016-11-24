@@ -493,10 +493,10 @@ License: You must have a valid license purchased only from themeforest(the above
 									<thead>
 										<tr>
 											<th>
-												Class ID
+												Class
 											</th>
 											<th>
-												Class Name
+												Section
 											</th>
 											<th>
 												Number of Students
@@ -519,10 +519,10 @@ License: You must have a valid license purchased only from themeforest(the above
 										{% for class in data.classes %}
 											<tr class="odd gradeX">
 												<td>
-													{{ class.grade_id }}
+													{{ class.grade.grade_name }}
 												</td>
 												<td>
-													{{ class.grade_name }}
+													{{ class.section }}
 												</td>
 												<td>
 													{{ class.students_count }}

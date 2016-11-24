@@ -135,7 +135,7 @@ class SubjectHomeView(ListView):
 			context["subjects"] = subjects
 			context["nav_val"] = "Subjects"
 		elif path.endswith("classes-home"):
-			grades = Grade.objects.all()
+			grades = SchoolGradeSection.objects.filter(school=self.request.user.extendeduser.school)
 			context["classes"] = grades
 			context["nav_val"] = "Classes"
 		elif path.endswith("school-home"):
